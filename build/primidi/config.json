@@ -1,0 +1,12 @@
+{
+	"midi-devices": 		["/dev/midi4", "/dev/midi3", "/dev/midi2", "/dev/midi1"],
+	"send-midi-events":		true,
+	"autoplay-new-musics":	false,
+	"width":				1280,
+	"height":				720,
+	"fps":					60,
+	"speed":				1.0,
+	"start-bpm":			120.0,
+	"start-offset":			1000,
+	"skin": 				"default-skin"
+}

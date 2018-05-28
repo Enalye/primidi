@@ -1,0 +1,30 @@
+module primidi.workstation.piano.panel;
+
+import primidi.common.all;
+import primidi.core.all;
+import primidi.render.all;
+import primidi.ui.all;
+
+import primidi.workstation.piano.pianoview;
+
+class PianoPanel: WidgetGroup {
+	private {
+		Sprite _backgroundSprite;
+		PianoContainer _pianoView;
+	}
+
+	this() {
+		_position = centerScreen;
+		_size = screenSize;
+
+		_backgroundSprite = fetch!Sprite("gui.background");
+		
+		_pianoView = new PianoContainer;
+		addChild(_pianoView);
+	}
+
+	override void draw() {
+		_backgroundSprite.draw(centerScreen);
+		super.draw();
+	}
+}

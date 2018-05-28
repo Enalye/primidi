@@ -1,0 +1,25 @@
+{
+	"name": "primidi",
+	"description": "Simple midi renderer",
+	"copyright": "Copyright © 2016, Enalye",
+	"authors": ["Enalye"],
+	"dependencies": {
+		"derelict-sdl2": "~>1.9.7"
+	},
+	"targetName": "primidi",
+	"targetPath": "build/primidi",
+	"workingDirectory": "build/primidi",
+	"configurations": [
+		{
+			"name": "linux-build",
+			"targetType": "executable",
+			"platforms": ["linux"],
+			"libs": ["asound"]
+		},
+		{
+			"name": "windows-build",
+			"targetType": "executable",
+			"platforms": ["windows"]
+		}
+	]
+}

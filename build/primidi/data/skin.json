@@ -1,0 +1,260 @@
+{
+	"font-size": 				50,
+	"show-channels-intensity": 	true,
+	"show-central-bar":			true,
+	"show-title":				true,
+	"enable-particles":			true,
+	"background": {
+		"texture": "background",
+		"x": 0,
+		"y": 0,
+		"w": 1280,
+		"h": 720
+	},
+	"foreground": {
+		"texture": "foreground",
+		"x": 0,
+		"y": 0,
+		"w": 1280,
+		"h": 720
+	},
+	"loading": {
+		"texture": "loading",
+		"x": 0,
+		"y": 0,
+		"w": 1280,
+		"h": 720
+	},
+	"overlay": {
+		"texture": "overlay",
+		"x": 0,
+		"y": 0,
+		"w": 1280,
+		"h": 720
+	},
+	"taskbar": {
+		"texture": "taskbar",
+		"x": 0,
+		"y": 0,
+		"w": 1280,
+		"h": 64
+	},
+	"stop": {
+		"texture": "ui",
+		"x": 0,
+		"y": 0,
+		"w": 64,
+		"h": 64
+	},
+	"next": {
+		"texture": "ui",
+		"x": 64,
+		"y": 0,
+		"w": 64,
+		"h": 64
+	},
+	"restart": {
+		"texture": "ui",
+		"x": 128,
+		"y": 0,
+		"w": 64,
+		"h": 64
+	},
+	"fullscreen": {
+		"texture": "ui",
+		"x": 192,
+		"y": 0,
+		"w": 64,
+		"h": 64
+	},
+	"cursor": {
+		"texture": "ui",
+		"x": 64,
+		"y": 64,
+		"w": 64,
+		"h": 64
+	},
+	"chan1": {
+		"is-displayed": true,
+		"is-instrument": true,
+		"color": [178, 102, 225],
+		"speed": 1.0,
+		"bounciness": 1.0,
+		"size": 0,
+		"min-pos": 10,
+		"max-pos": 700,
+		"use-absolute-pos": false
+	},
+	"chan2": {
+		"is-displayed": true,
+		"is-instrument": true,
+		"color": [255, 102, 255],
+		"speed": 1.0,
+		"bounciness": 1.0,
+		"size": 0,
+		"min-pos": 10,
+		"max-pos": 700,
+		"use-absolute-pos": false
+	},
+	"chan3": {
+		"is-displayed": true,
+		"is-instrument": true,
+		"color": [255, 102, 178],
+		"speed": 1.0,
+		"bounciness": 1.0,
+		"size": 0,
+		"min-pos": 10,
+		"max-pos": 700,
+		"use-absolute-pos": false
+	},
+	"chan4": {
+		"is-displayed": true,
+		"is-instrument": true,
+		"color": [255, 102, 102],
+		"speed": 1.0,
+		"bounciness": 1.0,
+		"size": 0,
+		"min-pos": 10,
+		"max-pos": 700,
+		"use-absolute-pos": false
+	},
+	"chan5": {
+		"is-displayed": true,
+		"is-instrument": true,
+		"color": [255, 178, 102],
+		"speed": 1.0,
+		"bounciness": 1.0,
+		"size": 0,
+		"min-pos": 10,
+		"max-pos": 700,
+		"use-absolute-pos": false
+	},
+	"chan6": {
+		"is-displayed": true,
+		"is-instrument": true,
+		"color": [255, 255, 102],
+		"speed": 1.0,
+		"bounciness": 1.0,
+		"size": 0,
+		"min-pos": 10,
+		"max-pos": 700,
+		"use-absolute-pos": false
+	},
+	"chan7": {
+		"is-displayed": true,
+		"is-instrument": true,
+		"color": [178, 255, 102],
+		"speed": 1.0,
+		"bounciness": 1.0,
+		"size": 0,
+		"min-pos": 10,
+		"max-pos": 700,
+		"use-absolute-pos": false
+	},
+	"chan8": {
+		"is-displayed": true,
+		"is-instrument": true,
+		"color": [102, 255, 102],
+		"speed": 1.0,
+		"bounciness": 1.0,
+		"size": 0,
+		"min-pos": 10,
+		"max-pos": 700,
+		"use-absolute-pos": false
+	},
+	"chan9": {
+		"is-displayed": true,
+		"is-instrument": true,
+		"color": [102, 255, 178],
+		"speed": 1.0,
+		"bounciness": 1.0,
+		"size": 0,
+		"min-pos": 10,
+		"max-pos": 700,
+		"use-absolute-pos": false
+	},
+	"chan10": {
+		"is-displayed": true,
+		"is-instrument": false,
+		"color": [102, 255, 255],
+		"speed": 1.25,
+		"bounciness": 0.0,
+		"size": 0,
+		"min-pos": 10,
+		"max-pos": 700,
+		"use-absolute-pos": false,
+		"sprite": {
+			"texture": "ui",
+			"x": 0,
+			"y": 64,
+			"w": 16,
+			"h": 16
+		}
+	},
+	"chan11": {
+		"is-displayed": true,
+		"is-instrument": true,
+		"color": [102, 178, 255],
+		"speed": 1.0,
+		"bounciness": 1.0,
+		"size": 0,
+		"min-pos": 10,
+		"max-pos": 700,
+		"use-absolute-pos": false
+	},
+	"chan12": {
+		"is-displayed": true,
+		"is-instrument": true,
+		"color": [102, 102, 255],
+		"speed": 1.0,
+		"bounciness": 1.0,
+		"size": 0,
+		"min-pos": 10,
+		"max-pos": 700,
+		"use-absolute-pos": false
+	},
+	"chan13": {
+		"is-displayed": true,
+		"is-instrument": true,
+		"color": [255, 178, 178],
+		"speed": 1.0,
+		"bounciness": 1.0,
+		"size": 0,
+		"min-pos": 10,
+		"max-pos": 700,
+		"use-absolute-pos": false
+	},
+	"chan14": {
+		"is-displayed": true,
+		"is-instrument": true,
+		"color": [178, 255, 178],
+		"speed": 1.0,
+		"bounciness": 1.0,
+		"size": 0,
+		"min-pos": 10,
+		"max-pos": 700,
+		"use-absolute-pos": false
+	},
+	"chan15": {
+		"is-displayed": true,
+		"is-instrument": true,
+		"color": [178, 178, 255],
+		"speed": 1.0,
+		"bounciness": 1.0,
+		"size": 0,
+		"min-pos": 10,
+		"max-pos": 700,
+		"use-absolute-pos": false
+	},
+	"chan16": {
+		"is-displayed": true,
+		"is-instrument": true,
+		"color": [178, 102, 178],
+		"speed": 1.0,
+		"bounciness": 1.0,
+		"size": 0,
+		"min-pos": 10,
+		"max-pos": 700,
+		"use-absolute-pos": false
+	}
+}

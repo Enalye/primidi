@@ -1,0 +1,12 @@
+syntax: glob
+
+.hg
+.git
+.dub
+docs.json
+__dummy.html
+*.o
+*.obj
+*.exe
+*.sublime-workspace
+build/primidi/primidi
