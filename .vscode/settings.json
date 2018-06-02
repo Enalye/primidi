@@ -16,6 +16,7 @@
         "**/README*": true,        
         "**/data": true,
         "**/backup": true,
-        "**/build": true
+        "**/build": true,
+        "**/resources": true
     }
 }

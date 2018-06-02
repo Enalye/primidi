@@ -27,6 +27,5 @@ module primidi.midi.all;
 public {
 	import primidi.midi.file;
 	import primidi.midi.sequencer;
-	import primidi.midi.midiout;
-	import primidi.midi.alsa;
+	import primidi.midi.device;
 }

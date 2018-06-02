@@ -30,9 +30,10 @@ import std.algorithm;
 import core.thread;
 
 import derelict.sdl2.sdl;
+import minuit;
 
 import primidi.midi.file;
-import primidi.midi.midiout;
+import primidi.midi.device;
 import primidi.workstation.pianoroll.settings;
 
 struct TempoEvent {
@@ -112,29 +113,12 @@ private class MidiSequencer: Thread {
 
 	private void run() {
 		try {
-			MidiOut midi = getMidiOut();
-
-			/+version(linux) {
-				//Select a valid midi device.
-				string currentDevice;
-				foreach(string dev; devices) {
-					if(exists(dev)) {
-						currentDevice = dev;
-						break;
-					}
-				}
-				if(!currentDevice.length)
-					throw new Exception("No midi device available");
-				midi.open(currentDevice);
-			}
-			version(Windows) {
-				midi.open();
-			}+/
+			auto midi = getMidiOut();
 
 			//Set initial time step (120 BPM).
 			tickAtLastChange = -tickOffset;
-			tickPerMs = (initialBpm * ticksPerQuarter * speedFactor) / 60000f;
-			msPerTick = 60000f / (initialBpm * ticksPerQuarter * speedFactor);
+			tickPerMs = (initialBpm * ticksPerQuarter * speedFactor) / 60_000f;
+			msPerTick = 60_000f / (initialBpm * ticksPerQuarter * speedFactor);
 			timeAtLastChange = SDL_GetTicks();
 
 			isRunning = true;
@@ -164,7 +148,6 @@ private class MidiSequencer: Thread {
 						msPerTick = usPerQuarter / (ticksPerQuarter * 1000f * speedFactor);
 					}
 				}
-
 				//Events handling.
 				checkTick: if(events.length > eventsTop) {
 					uint tickThreshold = events[eventsTop].tick;

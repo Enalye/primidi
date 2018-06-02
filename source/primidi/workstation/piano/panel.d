@@ -1,9 +1,6 @@
 module primidi.workstation.piano.panel;
 
-import primidi.common.all;
-import primidi.core.all;
-import primidi.render.all;
-import primidi.ui.all;
+import grimoire;
 
 import primidi.workstation.piano.pianoview;
 

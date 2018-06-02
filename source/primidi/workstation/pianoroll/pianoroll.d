@@ -30,13 +30,10 @@ import std.random;
 import std.path;
 
 import derelict.sdl2.sdl;
+import grimoire;
 
-import primidi.common.all;
 import primidi.workstation.pianoroll.settings;
 
-import primidi.core.all;
-import primidi.render.all;
-import primidi.ui.all;
 import primidi.midi.all;
 
 import primidi.workstation.pianoroll.channel;
@@ -53,7 +50,7 @@ class PianoRoll: Widget {
 	double totalTicksElapsed, ticksElapsedSinceLastChange, tickPerMs, msPerTick, timeAtLastChange;
 
 	Color barColor = Color.white;
-	IndexedArray!(Particle, 5000u) particles = new IndexedArray!(Particle, 5000u)();
+	IndexedArray!(Spark, 5000u) particles = new IndexedArray!(Spark, 5000u)();
 	Title title;
 
 	bool isPlaying = false, isLoaded = false;
@@ -63,7 +60,7 @@ class PianoRoll: Widget {
 	}
 
 	override void onEvent(Event event) {
-		switch(event.type) with(EventType) {
+		/+switch(event.type) with(EventType) {
 		case RestartMusic:
 		case EndMusic:
 		case Quit:
@@ -74,7 +71,7 @@ class PianoRoll: Widget {
 			break;
 		default:
 			break;
-		}
+		}+/
 	}
 
 	override void update(float deltaTime) {
@@ -82,10 +79,10 @@ class PianoRoll: Widget {
 			isLoaded = false;
 			
 			//Start event.
-			Event startEvent;
+			/+Event startEvent;
 			startEvent.type = EventType.StartMusic;
 			startEvent.str = title.titleLabel.text;
-			sendEvent(startEvent);
+			sendEvent(startEvent);+/
 
 			timeAtLastChange = SDL_GetTicks();
 			isPlaying = true;
@@ -123,7 +120,7 @@ class PianoRoll: Widget {
 		foreach(Channel chan; channels)
 			chan.update(totalTicksElapsed);
 
-		foreach(Particle particle, uint index; particles) {
+		foreach(Spark particle, uint index; particles) {
 			if(particle.update(deltaTime))
 				particles.markInternalForRemoval(index);
 		}
@@ -132,9 +129,9 @@ class PianoRoll: Widget {
 
 		if(isPlaying) {
 			if(totalTicksElapsed > lastTickOfMidi) {
-				Event event;
+				/+Event event;
 				event.type = EventType.EndMusic;
-				sendEvent(event);
+				sendEvent(event);+/
 
 				//Set initial time step (120 BPM).
 				tickPerMs = (initialBpm * ticksPerQuarter * speedFactor) / 60000f;
@@ -155,7 +152,7 @@ class PianoRoll: Widget {
 		foreach(Channel chan; channels)
 			chan.draw();
 
-		foreach(const Particle particle; particles)
+		foreach(const Spark particle; particles)
 			particle.draw();
 
 		if(title !is null)
@@ -177,7 +174,7 @@ class PianoRoll: Widget {
 		if((particles.length + 1) == particles.capacity)
 			return;
 
-		Particle p = new Particle;
+		Spark p = new Spark;
 		p.color = color;
 		p.position = Vec2f(0f, pitch);
 		p.timeToLive = uniform(1f, 15f);

@@ -26,11 +26,9 @@ module primidi.workstation.pianoroll.scene;
 
 import derelict.sdl2.sdl;
 
-import primidi.common.all;
+import grimoire;
+
 import primidi.workstation.pianoroll.settings;
-import primidi.ui.all;
-import primidi.render.all;
-import primidi.core.all;
 import primidi.workstation.pianoroll.pianoroll;
 import primidi.workstation.common.all;
 import primidi.workstation.pianoroll.background;
@@ -73,7 +71,7 @@ class Scene : Widget {
 	}
 
 	override void onEvent(Event event) {
-		if(event.type == EventType.FlushMusic)
+		/+if(event.type == EventType.FlushMusic)
 			_playlist.flush();
 		_backgroundWidget.onEvent(event);
 		_loaderWidget.onEvent(event);
@@ -82,7 +80,7 @@ class Scene : Widget {
 			Event ev;
 			ev.type = EventType.EndMusic;
 			sendEvent(ev);
-		}
+		}+/
 	}
 
 	override void update(float deltaTime) {
@@ -94,10 +92,10 @@ class Scene : Widget {
 
 		if(isKeyDown("lock")) {
 			_isGuiLocked = !_isGuiLocked;
-			Event lockEvent;
+			/+Event lockEvent;
 			lockEvent.type = EventType.LockGUI;
 			lockEvent.b = _isGuiLocked;
-			sendEvent(lockEvent);
+			sendEvent(lockEvent);+/
 			showWindowCursor(!_isGuiLocked);
 		}
 		popView();

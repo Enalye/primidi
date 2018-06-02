@@ -23,12 +23,11 @@ it freely, subject to the following restrictions:
 */
 
 module primidi.workstation.pianoroll.particle;
+import grimoire;
 
-import primidi.core.all;
 import primidi.workstation.pianoroll.settings;
-import primidi.render.window;
 
-class Particle  {
+class Spark  {
 	Color color = Color.white;
 	Vec2f position = Vec2f.zero;
 	float timeToLive = 60f;

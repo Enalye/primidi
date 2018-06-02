@@ -33,9 +33,8 @@ import std.math;
 import std.algorithm.comparison;
 import std.algorithm: canFind;
 
-import primidi.common.all;
-import primidi.core.all;
-import primidi.render.all;
+import grimoire;
+
 import primidi.menu;
 import primidi.workstation.common.all;
 
@@ -68,9 +67,6 @@ void loadSettings(string[] args, Playlist playlist) {
 }
 
 void loadData(string dataDir) {
-	screenSize = Vec2f(screenWidth, screenHeight);
-	centerScreen = screenSize / 2f;
-
 	setWindowIcon(dataDir ~ "icon.bmp");
 
 	string configFile = dataDir ~ "config.json";

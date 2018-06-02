@@ -29,12 +29,9 @@ import std.conv: to;
 import std.stdio: writeln;
 
 import derelict.sdl2.sdl;
+import grimoire;
 
-import primidi.common.all;
 import primidi.workstation.pianoroll.settings;
-import primidi.ui.all;
-import primidi.render.all;
-import primidi.core.all;
 
 import primidi.workstation.pianoroll.pianoroll;
 import primidi.workstation.common.all;
@@ -101,7 +98,7 @@ class Loader : Widget {
 	}
 
 	override void onEvent(Event event) {
-		switch(event.type) with(EventType) {
+		/+switch(event.type) with(EventType) {
 		case RestartMusic:
 			if(_isPlaying) {
 				_isPlaying = false;
@@ -126,7 +123,7 @@ class Loader : Widget {
 			break;
 		default:
 			break;
-		}
+		}+/
 	}
 
 	override void update(float deltaTime) {
@@ -173,7 +170,7 @@ class Loader : Widget {
 				_positionRight = Vec2f(screenWidth * 0.25f, screenHeight / 2f);
 			}
 
-			if(!_isPlaying && _isRestarting) {
+			/+if(!_isPlaying && _isRestarting) {
 				Event event;
 				event.type = EventType.LoadMusic;
 				_isRestarting = false;
@@ -188,7 +185,7 @@ class Loader : Widget {
 				event.str = _lastMusicPlayed;
 				_isPlaying = true;
 				sendEvent(event);
-			}
+			}+/
 			break;
 		}
 	}

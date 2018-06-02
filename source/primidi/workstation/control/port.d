@@ -1,14 +1,14 @@
 module primidi.workstation.control.port;
 
-import primidi.common.all;
-import primidi.core.all;
-import primidi.render.all;
-import primidi.ui.all;
+import grimoire;
+import minuit;
+
 import primidi.midi.all;
 
 class PortSection: VContainer {
 	private {
 		DropDownList _list;
+		MidiOutDevice[] _devices;
 	}
 
 	this() {
@@ -16,7 +16,6 @@ class PortSection: VContainer {
 		_list = new DropDownList(Vec2f(200f, 25f));
 		_list.setCallback("output.select", this);
 		addChild(_list);
-		scanMidiPorts();
 		reload();
 	}
 
@@ -25,7 +24,6 @@ class PortSection: VContainer {
 
 		switch(event.type) with(EventType) {
 		case MouseDown:
-			scanMidiPorts();
 			reload();
 			break;
 		case Quit:
@@ -34,7 +32,7 @@ class PortSection: VContainer {
 		case Callback:
 			switch(event.id) {
 			case "output.select":
-				selectMidiOutDevice(_list.selected);
+				selectMidiOutDevice(_devices[_list.selected]);
 				break;
 			default:
 				break;
@@ -56,7 +54,10 @@ class PortSection: VContainer {
 
 	void reload() {
 		_list.removeChildren();
-		foreach(deviceName; getMidiOutDeviceNames())
-			_list.addChild(new TextButton(deviceName));
+        _devices.length = 0uL;
+        _devices = [null];
+		_devices ~= fetchMidiOutDevices();
+		foreach(device; _devices)
+            _list.addChild(new TextButton(device is null ? "No Output" : device.name));
 	}
 }

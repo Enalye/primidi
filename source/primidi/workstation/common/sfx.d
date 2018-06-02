@@ -1,8 +1,7 @@
 module primidi.workstation.common.sfx;
 
-import primidi.core.all;
-import primidi.common.all;
-import primidi.render.all;
+import grimoire;
+
 
 private View _postEffectView;
 

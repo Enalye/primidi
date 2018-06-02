@@ -27,12 +27,8 @@ module primidi.workstation.pianoroll.background;
 import std.stdio;
 import std.algorithm.comparison;
 
-import derelict.sdl2.sdl;
 
-import primidi.common.all;
-import primidi.core.all;
-import primidi.render.all;
-import primidi.ui.widget;
+import grimoire;
 
 import primidi.workstation.pianoroll.settings;
 import primidi.workstation.pianoroll.pianoroll;

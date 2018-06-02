@@ -27,10 +27,7 @@ module primidi.menu;
 import std.stdio: writeln;
 import std.conv: to;
 
-import primidi.common.all;
-import primidi.core.all;
-import primidi.render.all;
-import primidi.ui.all;
+import grimoire;
 import primidi.midi.all;
 import primidi.workstation.all;
 
@@ -70,9 +67,8 @@ Options:
 
 void setupApplication(string[] args) {
 	enableAudio(false);
-	enableNetwork(false);
 	initializeMidiOut();
-	createApplication("Primidi");
+	createApplication(Vec2u(1280u, 720u), "Primidi");
 	onMainMenu(args);
 	runApplication();
 }
@@ -149,8 +145,8 @@ private class TaskBar: HLayout {
 
 	override void onEvent(Event event) {
 		super.onEvent(event);
-		if(event.type == EventType.LockGUI)
-			hideGui = event.b;
+		//if(event.type == EventType.LockGUI)
+		//	hideGui = event.b;
 	}
 
 	override void update(float deltaTime) {

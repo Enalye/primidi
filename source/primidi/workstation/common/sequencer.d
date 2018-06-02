@@ -2,11 +2,10 @@ module primidi.workstation.common.sequencer;
 
 import std.algorithm;
 import std.stdio;
-
 import derelict.sdl2.sdl;
 
-import primidi.common.all;
-import primidi.core.all;
+import grimoire;
+
 import primidi.midi.all;
 
 import primidi.workstation.pianoroll.settings;
@@ -46,6 +45,12 @@ NotesArray fetchInternalSequencerNotesInRange(ubyte channelId) {
 	return null;
 }
 
+double getInternalSequencerTick() {
+	if(_sequencer)
+        return _sequencer.totalTicksElapsed;
+    return 0uL;
+}
+
 private class Sequencer {
 	struct Channel {
 		Note[] notes;
@@ -61,7 +66,7 @@ private class Sequencer {
 		void process(long tick) {
 			while(notes.length > top) {
 				auto note = notes[top];
-				if((tick + 1000)  > note.tick) {
+				if((tick + 6000)  > note.tick) {
 					notesInRange.push(note);
 					top ++;
 				}
@@ -70,11 +75,8 @@ private class Sequencer {
 
 			int i = 0;
 			foreach(ref note; notesInRange) {
-				note.factor = -1f;//(tick - note.tick) / note.step; 
-				if(tick >= note.tick && tick <= note.tick + note.step) {
-					note.factor = .5f;
-				}
-				if(tick > (note.tick + note.step + 1000))
+				note.factor = cast(float)(cast(int)tick - cast(int)note.tick) / cast(float)note.step;
+				if(tick > (note.tick + note.step + 6000))
 					notesInRange.markInternalForRemoval(i);
 				i ++;
 			}
@@ -96,6 +98,7 @@ private class Sequencer {
 	long tickAtLastChange = -1000;
 	double ticksElapsedSinceLastChange, tickPerMs, msPerTick, timeAtLastChange;
 	float currentBpm = 0f;
+    double totalTicksElapsed;
 
 	this() {
 		foreach(channelId; 0.. 16) {
@@ -184,8 +187,8 @@ private class Sequencer {
 	void start() {
 		//Initialize
 		tickAtLastChange = -tickOffset;
-		tickPerMs = (initialBpm * ticksPerQuarter * speedFactor) / 60000f;
-		msPerTick = 60000f / (initialBpm * ticksPerQuarter * speedFactor);
+		tickPerMs = (initialBpm * ticksPerQuarter * speedFactor) / 60_000f;
+		msPerTick = 60_000f / (initialBpm * ticksPerQuarter * speedFactor);
 		timeAtLastChange = SDL_GetTicks();
 	}
 
@@ -196,7 +199,7 @@ private class Sequencer {
 		double msDeltaTime = currentTime - timeAtLastChange; //The time since last tempo change.
 		ticksElapsedSinceLastChange = msDeltaTime * tickPerMs;
 
-		double totalTicksElapsed = tickAtLastChange + ticksElapsedSinceLastChange;
+		//double totalTicksElapsed = tickAtLastChange + ticksElapsedSinceLastChange;
 
 		totalTicksElapsed = tickAtLastChange + ticksElapsedSinceLastChange;
 		if(tempoEvents.length > tempoEventsTop) {

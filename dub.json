@@ -4,7 +4,8 @@
 	"copyright": "Copyright © 2016, Enalye",
 	"authors": ["Enalye"],
 	"dependencies": {
-		"derelict-sdl2": "~>1.9.7"
+		"grimoire": "~>0.0.2",
+        "minuit": "~>0.0.2"
 	},
 	"targetName": "primidi",
 	"targetPath": "build/primidi",
@@ -13,8 +14,7 @@
 		{
 			"name": "linux-build",
 			"targetType": "executable",
-			"platforms": ["linux"],
-			"libs": ["asound"]
+			"platforms": ["linux"]
 		},
 		{
 			"name": "windows-build",

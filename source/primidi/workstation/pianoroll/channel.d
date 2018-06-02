@@ -30,9 +30,8 @@ import std.math;
 import std.stdio;
 import std.algorithm.comparison;
 
-import primidi.common.all;
-import primidi.core.all;
-import primidi.render.all;
+import grimoire;
+
 
 import primidi.workstation.pianoroll.settings;
 import primidi.workstation.pianoroll.pianoroll;

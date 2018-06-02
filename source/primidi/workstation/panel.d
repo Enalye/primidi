@@ -4,15 +4,14 @@ import std.conv: to;
 import std.path;
 import std.string;
 
-import primidi.common.all;
-import primidi.core.all;
-import primidi.render.all;
-import primidi.ui.all;
+import grimoire;
+
 import primidi.midi.all;
 
 import primidi.workstation.common.all;
 import primidi.workstation.control.all;
 import primidi.workstation.piano.all;
+import primidi.pianoroll.all;
 
 class MainPanel: WidgetGroup {
 	private {
@@ -20,6 +19,7 @@ class MainPanel: WidgetGroup {
 		HContainer _panelBtnContainer;
 		ControlPanel _controlPanel;
 		PianoPanel _pianoPanel;
+        PianoRollPanel _pianoRollPanel;
 		TextButton[] _panelBtns;
 	}
 
@@ -47,6 +47,7 @@ class MainPanel: WidgetGroup {
 		//Panels
 		_controlPanel = new ControlPanel(args);
 		_pianoPanel = new PianoPanel;
+        _pianoRollPanel = new PianoRollPanel;
 
 		_panelBtns[0].isLocked = true;
 		addChild(_controlPanel);
@@ -72,6 +73,7 @@ class MainPanel: WidgetGroup {
 				_panelBtns[1].isLocked = true;
 				removeChildren();
 				addChild(_panelBtnContainer);
+				addChild(_pianoRollPanel);
 				break;
 			case "workstation.btn.panel2":
 				foreach(btn; _panelBtns)

@@ -1,9 +1,6 @@
 module primidi.workstation.screen;
 
-import primidi.common.all;
-import primidi.core.all;
-import primidi.render.all;
-import primidi.ui.all;
+import grimoire;
 
 //Temp
 import primidi.workstation.common.all;
@@ -51,7 +48,7 @@ class MidiScreen: Widget {
 	}
 
 	override void onEvent(Event event) {
-		if(event.type == EventType.FlushMusic)
+		/+if(event.type == EventType.FlushMusic)
 			_playlist.flush();
 		_backgroundWidget.onEvent(event);
 		_loaderWidget.onEvent(event);
@@ -60,7 +57,7 @@ class MidiScreen: Widget {
 			Event ev;
 			ev.type = EventType.EndMusic;
 			sendEvent(ev);
-		}
+		}+/
 	}
 
 	override void update(float deltaTime) {
@@ -72,10 +69,10 @@ class MidiScreen: Widget {
 
 		if(isKeyDown("lock")) {
 			_isGuiLocked = !_isGuiLocked;
-			Event lockEvent;
+			/+Event lockEvent;
 			lockEvent.type = EventType.LockGUI;
 			lockEvent.b = _isGuiLocked;
-			sendEvent(lockEvent);
+			sendEvent(lockEvent);+/
 			showWindowCursor(!_isGuiLocked);
 		}
 		popView();
