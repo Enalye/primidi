@@ -12,6 +12,7 @@ import primidi.workstation.common.all;
 import primidi.workstation.control.all;
 import primidi.workstation.piano.all;
 import primidi.pianoroll.all;
+import primidi.editor.all;
 
 class MainPanel: WidgetGroup {
 	private {
@@ -20,6 +21,7 @@ class MainPanel: WidgetGroup {
 		ControlPanel _controlPanel;
 		PianoPanel _pianoPanel;
         PianoRollPanel _pianoRollPanel;
+        Editor _editorPanel;
 		TextButton[] _panelBtns;
 	}
 
@@ -30,11 +32,14 @@ class MainPanel: WidgetGroup {
 
 		initializeSfx();
 
+        setWidgetDebug(true);
+
 		//Panel buttons
 		_panelBtnContainer = new HContainer;
-		_panelBtnContainer.position = Vec2f(screenWidth / 2f, 50f);
+        _panelBtnContainer.anchor = Vec2f(1f, 0f);
+		_panelBtnContainer.position = Vec2f(screenWidth, 0f);
 		uint i = 0u;
-		foreach(displayName; ["Controler", "P.Roll", "Piano"]) {
+		foreach(displayName; ["Main", "View 1", "View 2", "Editor"]) {
 			auto btn = new TextButton(displayName);
 			btn.size = Vec2f(100f, 25f);
 			btn.setCallback("workstation.btn.panel" ~ to!string(i), this);
@@ -48,6 +53,7 @@ class MainPanel: WidgetGroup {
 		_controlPanel = new ControlPanel(args);
 		_pianoPanel = new PianoPanel;
         _pianoRollPanel = new PianoRollPanel;
+        _editorPanel = new Editor;
 
 		_panelBtns[0].isLocked = true;
 		addChild(_controlPanel);
@@ -82,6 +88,14 @@ class MainPanel: WidgetGroup {
 				removeChildren();
 				addChild(_panelBtnContainer);
 				addChild(_pianoPanel);
+				break;
+            case "workstation.btn.panel3":
+				foreach(btn; _panelBtns)
+					btn.isLocked = false;
+				_panelBtns[3].isLocked = true;
+				removeChildren();
+				addChild(_panelBtnContainer);
+				addChild(_editorPanel);
 				break;
 			default:
 				break;

@@ -4,9 +4,13 @@
 	"copyright": "Copyright © 2016, Enalye",
 	"authors": ["Enalye"],
 	"dependencies": {
-		"grimoire": "~>0.0.2",
-        "minuit": "~>0.0.2"
+		"primidi:minuit": "*",
+		"primidi:grimoire": "*"
 	},
+	"subPackages": [
+		"../minuit/",
+		"../panzer-divas/pzdv/grimoire/"
+	],
 	"targetName": "primidi",
 	"targetPath": "build/primidi",
 	"workingDirectory": "build/primidi",
