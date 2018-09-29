@@ -22,38 +22,38 @@ it freely, subject to the following restrictions:
 	3. This notice may not be removed or altered from any source distribution.
 */
 
-module primidi.editor.plugin;
+module primidi.editor.pluginscript;
 
 import std.stdio;
 import core.thread;
 
+import atelier;
 import grimoire;
 
-
-class Plugin {
+class PluginScript {
     private class TimeoutThread: Thread {
         private {
-            __gshared Plugin _plugin;
+            __gshared PluginScript _script;
         }
         shared bool isRunning = true;
 
-        this(Plugin plugin) {
-            _plugin = plugin;
+        this(PluginScript script) {
+            _script = script;
             super(&run);
         }
 
         void run() {
             try {
                 while(isRunning) {
-                    auto currentCycle = _plugin._cycle;
+                    auto currentCycle = _script._cycle;
                     sleep(dur!("msecs")(1000));
-                    if(currentCycle == _plugin._cycle && _plugin._isLoaded) {
-                        _plugin._vm.isRunning = false;
-                        writeln("Plugin script timeout: ", currentCycle, ", ", _plugin._isLoaded);
+                    if(currentCycle == _script._cycle && _script._isLoaded) {
+                        _script._vm.isRunning = false;
+                        writeln("Plugin script timeout: ", currentCycle, ", ", _script._isLoaded);
                         isRunning = false;
                     }
                     writeln("Thread: ", isRunning, ", prev cycle: ", currentCycle,
-                    ", next cycle: ", _plugin._cycle, ", loaded ? ", _plugin._isLoaded);
+                    ", next cycle: ", _script._cycle, ", loaded ? ", _script._isLoaded);
                 }
             }
             catch(Exception e) {
@@ -63,16 +63,14 @@ class Plugin {
     }
 
     private {
-        Vm _vm;
+        GrVM _vm;
         shared int _cycle;
         shared bool _isLoaded = false;
         TimeoutThread _timeout;
     }
 
-    this(string name) {
+    this() {
         _timeout = new TimeoutThread(this);      
-        _timeout.start();
-        load(name);
     }
 
     void cleanup() {
@@ -83,8 +81,9 @@ class Plugin {
     }
 
     void load(string name) {
-        auto bytecode = compileFile("plugin/pianoroll/pianoroll.gs");
-        _vm = new Vm(bytecode);
+        auto bytecode = grCompiler_compileFile(name);
+        _vm = new GrVM(bytecode);
+        _timeout.start();
     }
 
     void run() {

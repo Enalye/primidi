@@ -24,7 +24,7 @@ it freely, subject to the following restrictions:
 
 module primidi.editor.taskbar;
 
-import grimoire;
+import atelier;
 
 private {
     EditorTaskbar _taskbar;

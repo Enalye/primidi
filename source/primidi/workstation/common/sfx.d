@@ -1,6 +1,6 @@
 module primidi.workstation.common.sfx;
 
-import grimoire;
+import atelier;
 
 
 private View _postEffectView;

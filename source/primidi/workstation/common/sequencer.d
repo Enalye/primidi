@@ -4,7 +4,7 @@ import std.algorithm;
 import std.stdio;
 import derelict.sdl2.sdl;
 
-import grimoire;
+import atelier;
 
 import primidi.midi.all;
 
@@ -23,10 +23,13 @@ alias NotesArray = IndexedArray!(Note, 4096u);
 
 private Sequencer _sequencer;
 
+Note[][16] sequencerNotes;
+
 void setupInternalSequencer(MidiFile midiFile) {
 	_sequencer = new Sequencer;
 	if(_sequencer)
 		_sequencer.play(midiFile);
+    sequencerNotes = new Note[][16];
 }
 
 void startInternalSequencer() {
@@ -37,6 +40,15 @@ void startInternalSequencer() {
 void updateInternalSequencer() {
 	if(_sequencer)
 		_sequencer.update();
+    foreach(ubyte i; 0.. 16) {
+        sequencerNotes[i].length = 0;
+        auto notesInRange = fetchInternalSequencerNotesInRange(i);
+        if(!notesInRange)
+            continue;
+        foreach(note; notesInRange) {
+            sequencerNotes[i] ~= note;
+        }
+    }
 }
 
 NotesArray fetchInternalSequencerNotesInRange(ubyte channelId) {

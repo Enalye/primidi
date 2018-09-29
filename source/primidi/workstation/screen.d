@@ -1,6 +1,6 @@
 module primidi.workstation.screen;
 
-import grimoire;
+import atelier;
 
 //Temp
 import primidi.workstation.common.all;

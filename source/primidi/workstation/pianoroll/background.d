@@ -28,7 +28,7 @@ import std.stdio;
 import std.algorithm.comparison;
 
 
-import grimoire;
+import atelier;
 
 import primidi.workstation.pianoroll.settings;
 import primidi.workstation.pianoroll.pianoroll;

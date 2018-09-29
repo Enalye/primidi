@@ -24,8 +24,9 @@ it freely, subject to the following restrictions:
 
 module primidi.editor.scene;
 
-import grimoire;
-import primidi.editor.element;
+import atelier;
+
+import primidi.plugin.all;
 
 private {
     EditorScene _scene;
@@ -40,6 +41,16 @@ void destroyEditorScene() {
     _scene = null;
 }
 
+void addScene(Plugin plugin) {
+    if(!_scene)
+        throw new Exception("The scene does not exist");
+    _scene.addChild(plugin);
+}
+
+void setSceneList(Plugin[] plugins) {
+    _scene.setList(plugins);
+}
+
 private final class EditorScene: WidgetGroup {
     private {
         View _view;
@@ -51,7 +62,6 @@ private final class EditorScene: WidgetGroup {
         _size = Vec2f(720f, 405f);
         _position = centerScreen;
         _view = new View(_size);
-        addChild(new EditorElement);
     }
 
     override void onEvent(Event event) {
@@ -148,5 +158,12 @@ private final class EditorScene: WidgetGroup {
         }
         popView();
         _view.draw(_position);
+    }
+
+    void setList(Plugin[] plugins) {
+        removeChildren();
+        foreach(plugin; plugins) {
+            addChild(plugin);
+        }
     }
 }

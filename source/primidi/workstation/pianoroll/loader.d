@@ -29,7 +29,7 @@ import std.conv: to;
 import std.stdio: writeln;
 
 import derelict.sdl2.sdl;
-import grimoire;
+import atelier;
 
 import primidi.workstation.pianoroll.settings;
 

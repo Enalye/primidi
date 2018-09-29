@@ -23,7 +23,7 @@ it freely, subject to the following restrictions:
 */
 
 module primidi.workstation.pianoroll.particle;
-import grimoire;
+import atelier;
 
 import primidi.workstation.pianoroll.settings;
 

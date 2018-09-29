@@ -1,11 +1,12 @@
 {
 	"fileVersion": 1,
 	"versions": {
+		"atelier": {"path":"../atelier"},
 		"derelict-sdl2": "2.1.4",
 		"derelict-util": "2.0.6",
 		"ffmpeg-d": "3.1.1",
-		"grimoire": "0.0.2",
+		"grimoire": {"path":"../grimoire"},
 		"medio": "1.0.3",
-		"minuit": "0.0.2"
+		"minuit": {"path":"../minuit"}
 	}
 }

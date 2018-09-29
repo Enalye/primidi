@@ -4,7 +4,7 @@ import std.conv: to;
 import std.path;
 import std.string;
 
-import grimoire;
+import atelier;
 
 import primidi.midi.all;
 
@@ -42,7 +42,7 @@ class MainPanel: WidgetGroup {
 		foreach(displayName; ["Main", "View 1", "View 2", "Editor"]) {
 			auto btn = new TextButton(displayName);
 			btn.size = Vec2f(100f, 25f);
-			btn.setCallback("workstation.btn.panel" ~ to!string(i), this);
+			btn.setCallback(this, "workstation.btn.panel" ~ to!string(i));
 			_panelBtns ~= btn;
 			_panelBtnContainer.addChild(btn);
 			i ++;

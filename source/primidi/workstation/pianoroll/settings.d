@@ -33,7 +33,7 @@ import std.math;
 import std.algorithm.comparison;
 import std.algorithm: canFind;
 
-import grimoire;
+import atelier;
 
 import primidi.menu;
 import primidi.workstation.common.all;

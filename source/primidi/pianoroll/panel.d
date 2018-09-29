@@ -1,7 +1,7 @@
 module primidi.pianoroll.panel;
 
 
-import grimoire;
+import atelier;
 
 import primidi.workstation.common.all;
 import primidi.pianoroll.channel;

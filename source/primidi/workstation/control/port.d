@@ -1,6 +1,6 @@
 module primidi.workstation.control.port;
 
-import grimoire;
+import atelier;
 import minuit;
 
 import primidi.midi.all;
@@ -14,7 +14,7 @@ class PortSection: VContainer {
 	this() {
 		_position = Vec2f(screenWidth - _size.x / 2f - 50f, 200f + _size.y / 2f);
 		_list = new DropDownList(Vec2f(200f, 25f));
-		_list.setCallback("output.select", this);
+		_list.setCallback(this, "output.select");
 		addChild(_list);
 		reload();
 	}

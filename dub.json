@@ -4,13 +4,16 @@
 	"copyright": "Copyright © 2016, Enalye",
 	"authors": ["Enalye"],
 	"dependencies": {
-		"primidi:minuit": "*",
-		"primidi:grimoire": "*"
+		"minuit": {
+			"path": "../minuit"
+		},
+		"atelier": {
+			"path": "../atelier"
+		},
+		"grimoire": {
+			"path": "../grimoire"
+		}
 	},
-	"subPackages": [
-		"../minuit/",
-		"../panzer-divas/pzdv/grimoire/"
-	],
 	"targetName": "primidi",
 	"targetPath": "build/primidi",
 	"workingDirectory": "build/primidi",

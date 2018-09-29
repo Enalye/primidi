@@ -26,7 +26,7 @@ module primidi.workstation.pianoroll.scene;
 
 import derelict.sdl2.sdl;
 
-import grimoire;
+import atelier;
 
 import primidi.workstation.pianoroll.settings;
 import primidi.workstation.pianoroll.pianoroll;

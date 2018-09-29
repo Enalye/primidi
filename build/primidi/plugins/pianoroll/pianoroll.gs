@@ -1,55 +1,25 @@
-module primidi.pianoroll.channel;
+main {
+    print("Script started");
+    bool play = true;
+    int note;
+    while(play) {
+        //print("Current tick: " ~ to_string(midi_getTick()));
 
-import atelier;
+        note = 0;
+        loop(chan_getCount(0)) {
+            float factor = note_getFactor(0, note);
+            if((factor >= 0.0) and (factor <= 1.0)) {
+                int pitch = note_getPitch(0, note);
+                print(pitch);
+            }
+            note ++;
+        }
+        yield
+    }
+}
 
-import primidi.workstation.common.all;
-
-class Channel: Widget {
-	Color color;
-    
-	private {
-		Sprite _rectSprite, _borderSprite, _bloomSprite;
-		ubyte _channelId;
-	}
-
-	this(ubyte channelId) {
-        _channelId = channelId;
-		_bloomSprite = fetch!Sprite("bloom");
-        _rectSprite = fetch!Sprite("note_rect");
-        _borderSprite = fetch!Sprite("note_rect_border");
-
-        color = Color.blue;
-
-    auto tab = [
-        Color.red,
-        Color.lime,
-        Color.blue,
-        Color.yellow,
-        Color.cyan,
-        Color.magenta,
-        Color.silver,
-        Color.gray,
-        Color.maroon,
-        Color.olive,
-        Color.green,
-        Color.purple,
-        Color.teal,
-        Color.navy,
-        Color.pink,
-        Color.pink];
-
-        color = tab[_channelId];
-	}
-
-	override void onEvent(Event event) {
-
-	}
-
-	override void update(float deltaTime) {
-
-	}
-
-    override void draw() {
+/*
+override void draw() {
         auto notesInRange = fetchInternalSequencerNotesInRange(_channelId);
         auto tick = getInternalSequencerTick();
         if(notesInRange) {
@@ -119,5 +89,4 @@ class Channel: Widget {
                 }
             }
         }
-    }
-}
+        */

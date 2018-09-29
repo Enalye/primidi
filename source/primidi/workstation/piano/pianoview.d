@@ -1,6 +1,6 @@
 module primidi.workstation.piano.pianoview;
 
-import grimoire;
+import atelier;
 
 import primidi.workstation.common.all;
 

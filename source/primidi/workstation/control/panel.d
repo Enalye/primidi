@@ -1,6 +1,6 @@
 module primidi.workstation.control.panel;
 
-import grimoire;
+import atelier;
 
 import primidi.midi.all;
 
@@ -25,7 +25,7 @@ class ControlPanel: WidgetGroup {
 		_knob.position = Vec2f(100f, 150f);
 		_knob.step = 100;
 		_knob.setAngles(-225f, 45f);
-		_knob.setCallback("", this);
+		_knob.setCallback(this, "");
 		addChild(_knob);
 
 		_backgroundSprite = fetch!Sprite("gui.background");

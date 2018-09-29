@@ -22,27 +22,9 @@ it freely, subject to the following restrictions:
 	3. This notice may not be removed or altered from any source distribution.
 */
 
-module primidi.editor.elements;
+module primidi.plugin.all;
 
-import grimoire;
-
-private {
-    EditorElements _elements;
-}
-
-EditorElements createEditorElements() {
-    _elements = new EditorElements;
-    return _elements;
-}
-
-void destroyEditorElements() {
-    _elements = null;
-}
-
-private final class EditorElements: VList {
-    this() {
-        super(Vec2f(250f, 500f));
-        anchor = Vec2f(0f, .5f);
-        position = Vec2f(0f, centerScreen.y);
-    }
+public {
+    import primidi.plugin.plugin;
+    import primidi.plugin.primitives;
 }

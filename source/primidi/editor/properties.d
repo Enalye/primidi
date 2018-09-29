@@ -24,7 +24,9 @@ it freely, subject to the following restrictions:
 
 module primidi.editor.properties;
 
-import grimoire;
+import atelier;
+
+import primidi.plugin.all;
 
 private {
     EditorProperties _properties;
@@ -39,10 +41,29 @@ void destroyEditorProperties() {
     _properties = null;
 }
 
+void setEditorProperties(Plugin plugin) {
+    _properties.load(plugin);
+}
+
 private final class EditorProperties: VList {
+    private {
+        Plugin _plugin;
+    }
+
     this() {
         super(Vec2f(250f, 500f));
         anchor = Vec2f(1f, .5f);
         position = Vec2f(screenWidth, centerScreen.y);
+    }
+
+    void load(Plugin plugin) {
+        removeChildren();
+
+        _plugin = plugin;
+        if(!_plugin)
+            return;
+        foreach(widget; _plugin.propertyWidgets) {
+            addChild(widget);
+        }
     }
 }

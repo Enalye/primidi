@@ -30,7 +30,7 @@ import std.math;
 import std.stdio;
 import std.algorithm.comparison;
 
-import grimoire;
+import atelier;
 
 
 import primidi.workstation.pianoroll.settings;

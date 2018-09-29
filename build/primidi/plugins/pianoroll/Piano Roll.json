@@ -1,0 +1,22 @@
+{
+    "script": "plugins/pianoroll/pianoroll.gs",
+    "window": {
+        "width": 1280,
+        "height": 720
+    },
+    "properties": {
+        "test": {
+            "label": "Checkbox",
+            "type": "checkbox",
+            "default": true
+        },
+        "slider_test": {
+            "label": "Test slider",
+            "type": "slider",
+            "min": 0,
+            "max": 80,
+            "default": 50,
+            "step": 80
+        }
+    }
+}

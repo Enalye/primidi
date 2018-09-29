@@ -1,5 +1,5 @@
 module primidi.workstation.options;
-import grimoire;
+import atelier;
 
 
 class OptionsPanel: WidgetGroup {

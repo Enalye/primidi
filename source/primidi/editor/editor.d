@@ -24,11 +24,15 @@ it freely, subject to the following restrictions:
 
 module primidi.editor.editor;
 
-import grimoire;
+import std.file;
+import std.path;
+
+import atelier;
 import primidi.editor.taskbar;
-import primidi.editor.elements;
+import primidi.editor.pluginlist;
 import primidi.editor.properties;
 import primidi.editor.scene;
+import primidi.plugin.all;
 
 private {
     Editor _editor;
@@ -50,20 +54,125 @@ final class Editor: WidgetGroup {
         setWidgetDebug(true);
 
         auto taskbar = createEditorTaskbar();
-        auto elements = createEditorElements();
+        auto pluginList = createEditorPluginList();
         auto properties = createEditorProperties();
         auto scene = createEditorScene();
 
+        auto container = new HContainer;
+        auto addPluginBtn = new TextButton("Add");
+        addPluginBtn.setCallback(this, "plugin.add");
+        auto removePluginBtn = new TextButton("Remove");
+        removePluginBtn.setCallback(this, "plugin.remove");
+        auto reloadPluginBtn = new TextButton("Reload");
+        reloadPluginBtn.setCallback(this, "plugin.reload");
+        auto moveUpPluginBtn = new TextButton("Up");
+        moveUpPluginBtn.setCallback(this, "plugin.up");
+        auto moveDownPluginBtn = new TextButton("Down");
+        moveDownPluginBtn.setCallback(this, "plugin.down");
+        container.addChild(addPluginBtn);
+        container.addChild(removePluginBtn);
+        container.addChild(reloadPluginBtn);
+        container.addChild(moveUpPluginBtn);
+        container.addChild(moveDownPluginBtn);
+        container.position = Vec2f(0f, screenSize.y);
+        container.anchor = Vec2f(0f, 1f);
+
         addChild(taskbar);
-        addChild(elements);
+        addChild(pluginList);
         addChild(properties);
         addChild(scene);
+        addChild(container);
     }
 
     ~this() {
         destroyEditorTaskbar();
-        destroyEditorElements();
+        destroyEditorPluginList();
         destroyEditorProperties();
         destroyEditorScene();
+    }
+
+    override void onEvent(Event event) {
+        super.onEvent(event);
+        switch(event.type) with(EventType) {
+        case Callback:
+            switch(event.id) {
+            case "plugin.add":
+                auto modal = new AddPluginModal;
+                modal.setCallback(this, "modal.add");
+                setModalWindow(modal);
+                break;
+            case "plugin.remove":
+                removePlugin();
+                break;
+            case "plugin.reload":
+                reloadPlugin();
+                break;
+            case "plugin.up":
+                moveUpPlugin();
+                break;
+            case "plugin.down":
+                moveDownPlugin();
+                break;
+            case "modal.add":
+                auto modal = getModal!AddPluginModal;
+                addPlugin(modal.getFilePath());
+                break;
+            default:
+                break;
+            }
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+class AddPluginModal: ModalWindow {
+    private {
+		string[] _files;
+		VList _list;
+        string _file;
+	}
+
+    this() {
+        super("Add Plugin", Vec2f(200f, 300f));
+
+        _list = new VList(layout.size);
+		foreach(file; dirEntries("./plugins", "*.json", SpanMode.depth)) {
+			_files ~= file;
+			string relativeFileName = stripExtension(baseName(file));
+			auto btn = new TextButton(relativeFileName);
+			_list.addChild(btn);
+		}
+		layout.addChild(_list);
+    }
+
+	override void onEvent(Event event) {
+		super.onEvent(event);
+
+        switch(event.type) with(EventType) {
+        case Callback:
+            if(event.id == "apply") {
+                if(_list.selected < _files.length) {
+                    string fileName = _files[_list.selected];
+                    if(!exists(fileName))
+                        throw new Exception("Error loading file: invalid path \'" ~ fileName ~ "\'");
+                    _file = fileName;
+                    triggerCallback();
+                }
+            }
+            break;
+        default:
+            break;
+        }
+	}
+
+	override void update(float deltaTime) {
+		super.update(deltaTime);
+		applyBtn.isLocked = (_files.length == 0L);
+	}
+
+    string getFilePath() {
+        return _file;
     }
 }

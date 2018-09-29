@@ -27,9 +27,10 @@ module primidi.menu;
 import std.stdio: writeln;
 import std.conv: to;
 
-import grimoire;
+import atelier;
 import primidi.midi.all;
 import primidi.workstation.all;
+import primidi.plugin.all;
 
 bool processArguments(string[] args) {
 	if(args.length == 1)
@@ -69,6 +70,7 @@ void setupApplication(string[] args) {
 	enableAudio(false);
 	initializeMidiOut();
 	createApplication(Vec2u(1280u, 720u), "Primidi");
+	loadPluginPrimitives();
 	onMainMenu(args);
 	runApplication();
 }
