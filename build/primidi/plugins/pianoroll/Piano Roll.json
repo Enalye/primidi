@@ -1,5 +1,5 @@
 {
-    "script": "plugins/pianoroll/pianoroll.gs",
+    "script": "plugins/pianoroll/pianoroll.gr",
     "window": {
         "width": 1280,
         "height": 720

@@ -1,0 +1,130 @@
+main {
+    print("Script started");
+ /*   bool play = true;
+    int channel = 0;
+    int eventId;
+    let screenSize = Vec2(1280.0, 720.0);
+*/
+    ui();
+/*
+    while(play) {
+        eventId = 0;
+        loop(chan_getCount(channel)) {
+            let event = getEvent(channel, eventId);
+
+            let pitch = (1.0 - (event.value as float / 128.0)) * screenSize.y;
+            let position = Vec2((event.tick - seq_getTick()) as float / 6.0 + screenSize.x / 2.0, pitch);
+            let size = Vec2(event.step as float / 6.0, screenSize.y / 128.0);
+            let orig = position;// - (size / 2.0);
+
+            //print(note_getPitch(channel, note) as string);
+
+            //print("rect: " ~ position as string ~ ", " ~ size as string);
+
+            draw_rect(orig, size);
+            if((event.factor >= 0.0) and (event.factor <= 1.0)) {
+                //orig.x = position.x - size.x / 2.0;
+            // orig.y = position.y - size.y / 2.0;
+                //print("Pos: " ~ orig.x as string ~ ", " ~ orig.y as string);
+                //print("Size: " ~ size as string);
+            }
+            eventId ++;
+        }
+        yield
+    }*/
+}
+
+
+task ui() {
+    Texture tex = fetchTexture("data/ui");
+    Sprite sprite = tex as Sprite;
+    loop {
+        drawSprite(sprite, Vec2(160.0, 150.0));
+        yield
+    }
+}
+/*
+func operator/(vec2 v, float s) {
+    return vec2(v.x / s, v.y / s);
+}
+
+func operator-(vec2 v, vec2 w) {
+    return vec2(v.x - w.x, v.y - w.y);
+}
+
+func operator!=(vec2 v, vec2 w) {
+    return vec2(v.x - w.x, v.y - w.y);
+}*/
+
+/*
+override void draw() {
+        auto notesInRange = fetchInternalSequencerNotesInRange(_channelId);
+        auto tick = getInternalSequencerTick();
+        if(notesInRange) {
+            foreach(note; notesInRange) {
+                float pitch = (1f - (note.note / 128f)) * screenHeight;
+               // float pitch = lerp(screenHeight / 128f, screenHeight - screenHeight / 128f, note.note);
+
+                Vec2f position = Vec2f((note.tick - tick) / 6f + screenWidth / 2f, pitch);
+                Vec2f size = Vec2f(note.step / 6f, screenHeight / 128f);
+
+                Color noteColor;
+                bool isPlayed = false;
+
+                if(note.factor > 1f) {
+                    noteColor = color;
+                }
+                else if(note.factor < 0f) {
+                    noteColor = color;
+                }
+                else {
+				    noteColor = lerp(Color.white, color, note.factor);
+                    isPlayed = true;               
+                }
+
+                _borderSprite.texture.setColorMod(noteColor);
+                _rectSprite.texture.setColorMod(noteColor);
+                _borderSprite.fit(size);
+
+                if(size.x < _borderSprite.size.x * 2f) {
+                   /+ _borderSprite.anchor = Vec2f(.75f, 0f);
+                    _borderSprite.flip = Flip.HorizontalFlip;
+                    _borderSprite.draw(position);
+
+                    _borderSprite.anchor = Vec2f(.25f, 0f);
+                    _borderSprite.fit(size);
+                    _borderSprite.flip = Flip.NoFlip;
+                    _borderSprite.draw(position);+/
+
+                    _rectSprite.anchor = Vec2f.half;
+                    _rectSprite.size = size;
+                    _rectSprite.draw(position + size / 2f);
+                }
+                else {
+                    _borderSprite.anchor = Vec2f.zero;
+                    _borderSprite.flip = Flip.HorizontalFlip;
+                    _borderSprite.draw(position + Vec2f(_borderSprite.size.x / 2f, 0f));
+
+                    _borderSprite.anchor = Vec2f(1f, 0f);
+                    _borderSprite.fit(Vec2f.one * size.y);
+                    _borderSprite.flip = Flip.NoFlip;        
+                    _borderSprite.draw(position + Vec2f(size.x - _borderSprite.size.x / 2f, 0f));
+                    
+                    _rectSprite.anchor = Vec2f.half;
+                    _rectSprite.size = size - Vec2f(_borderSprite.size.x + 4f, 0f);
+                    _rectSprite.draw(position + size / 2f);
+                }
+
+                //Bloom
+                if(isPlayed) {
+                    _bloomSprite.size = size + 10f;
+                    Color bloomColor = Color.white;
+                    bloomColor.a = lerp(1f, 0f, note.factor);
+                    _bloomSprite.texture.setColorMod(bloomColor);
+                    pushSfx();
+                    _bloomSprite.draw(position + size / 2f);
+                    popView();
+                }
+            }
+        }
+        */

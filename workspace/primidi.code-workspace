@@ -1,0 +1,17 @@
+{
+    "folders": [
+        {
+            "path": "../primidi"
+        },
+        {
+            "path": "../minuit"
+        },
+        {
+            "path": "../atelier"
+        },
+        {
+            "path": "../grimoire"
+        }
+    ],
+    "settings": {}
+}

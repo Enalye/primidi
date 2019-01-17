@@ -1,0 +1,32 @@
+main {
+    loop {
+        let a = vec2f(5.0, 5.0);
+        let b = vec2f(1270.0, 710.0);
+        drawFilledRect(a, b);
+        yield
+    }
+}
+/*
+event onBpmChange(int bpm) {
+    print("BPM: ", bpm);
+}
+
+event onNoteInRange(Note note) {
+    let pitch = (1.0 - (note.value as float / 128.0)) * screenSize.y;
+    let position = Vec2((note.tick - seq_getTick()) as float / 6.0 + screenSize.x / 2.0, pitch);
+    let size = Vec2(note.step as float / 6.0, screenSize.y / 128.0);
+    drawFilledRect(position, size);
+}
+*/
+/*
+func operator/(vec2f v, float s) {
+    return vec2f(v.x / s, v.y / s);
+}
+
+func operator-(vec2f v, vec2f w) {
+    return vec2f(v.x - w.x, v.y - w.y);
+}
+
+func operator!=(vec2f v, vec2f w) {
+    return vec2f(v.x - w.x, v.y - w.y);
+}*/
