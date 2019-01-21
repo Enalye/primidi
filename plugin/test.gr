@@ -1,16 +1,4 @@
 
-def Vec2f {
-    float x;
-    float y;
-}
-
-func Vec2f(float x, float y) Vec2f {
-    Vec2f v;
-    v.x = x;
-    v.y = y;
-    return v;
-}
-
 main {
     /*loop {
         let a = vec2f(5.0, 5.0);
@@ -28,6 +16,8 @@ event onNote(Note note) {
 
     let pitch = (1.0 - (value as float / 128.0)) * screenSize.y;
     let size = Vec2f(step as float / 6.0, screenSize.y / 128.0);
+
+    print("onNote: " ~ (value as string));
     
     loop {
         let position = Vec2f((tick - seq_getTick()) as float / 6.0 + screenSize.x / 2.0, pitch);
@@ -37,7 +27,7 @@ event onNote(Note note) {
 
         //print("rect: " ~ position as string ~ ", " ~ size as string);
 
-        drawFilledRect(orig, size);
+        fillRect(orig, size, Color(1f, 0f, 0f));
         let factor = note_getFactor(note);
         if((factor >= 0.0) and (factor <= 1.0)) {
             //orig.x = position.x - size.x / 2.0;
@@ -48,19 +38,6 @@ event onNote(Note note) {
         yield
     }
 }
-
-func operator/(Vec2f v, float s) {
-    return Vec2f(v.x / s, v.y / s);
-}
-
-func operator-(Vec2f v, Vec2f w) {
-    return Vec2f(v.x - w.x, v.y - w.y);
-}
-
-func operator!=(Vec2f v, Vec2f w) {
-    return Vec2f(v.x - w.x, v.y - w.y);
-}
-
 
 
 /*

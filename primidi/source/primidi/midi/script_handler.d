@@ -76,11 +76,16 @@ private {
     ScriptHandler _handler;
 }
 
+dstring onNoteEventName;
 void initializeScript() {
     _handler = new ScriptHandler;
     _handler.load("plugin/test.gr");
 
-    if(_handler._engine.hasEvent("onNote")) {
+    onNoteEventName = grMangleNamedFunction("onNote", [grGetUserType("Note")]);
+
+    writeln("HASEVENT: ", _handler._engine.hasEvent(onNoteEventName));
+    if(_handler._engine.hasEvent(onNoteEventName)) {
+        writeln("ONNOTE");
         setSequencerNoteCallback(&onNote);
     }
 }
@@ -90,6 +95,6 @@ void runScript() {
 }
 
 void onNote(Note note) {
-    auto context = _handler._engine.spawnEvent("onNote");
+    auto context = _handler._engine.spawnEvent(onNoteEventName);
     context.setUserData(note);
 }

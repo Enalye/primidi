@@ -7,10 +7,13 @@
             "path": "../minuit"
         },
         {
-            "path": "../atelier"
+            "path": "../grimoire2d"
         },
         {
-            "path": "../grimoire"
+            "path": "../grimoire2d/atelier"
+        },
+        {
+            "path": "../grimoire2d/grimoire"
         }
     ],
     "settings": {}
