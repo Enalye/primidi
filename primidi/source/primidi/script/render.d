@@ -2,7 +2,7 @@ module primidi.script.render;
 
 import atelier, grimoire;
 
-void loadRenderPrimitives() {
+void loadRenderDefinitions() {
     auto defVec2f = grGetStructureType("vec2f");
     grAddPrimitive(&_drawFilledRect, "drawFilledRect", ["pos", "size"], [defVec2f, defVec2f]);
 }

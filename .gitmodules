@@ -7,3 +7,6 @@
 [submodule "minuit"]
 	path = minuit
 	url = https://github.com/Enalye/minuit
+[submodule "grimoire2d"]
+	path = grimoire2d
+	url = https://github.com/Enalye/grimoire2d

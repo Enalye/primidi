@@ -29,4 +29,5 @@ public {
 	import primidi.midi.sequencer;
 	import primidi.midi.internal_sequencer;
 	import primidi.midi.device;
+	import primidi.midi.script_handler;
 }

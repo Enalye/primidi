@@ -4,13 +4,9 @@
 	"copyright": "Copyright © 2016, Enalye",
 	"authors": ["Enalye"],
 	"dependencies": {
-		"atelier": {
-			"version": "~master",
-			"path": "../atelier"
-		},
-		"grimoire": {
-			"version": "~master",
-			"path": "../grimoire"
+		"grimoire2d": {
+            "version": "~master",
+            "path": "../grimoire2d"
 		},
         "minuit": {
 			"version": "~master",

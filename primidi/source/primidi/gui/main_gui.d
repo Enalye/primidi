@@ -23,6 +23,10 @@ final class MainGui: GuiElement {
         addChildGui(_taskbarGui);
     }
 
+    override void update(float deltaTime) {
+        updateMidi();
+    }
+
     override void onEvent(Event event) {
         super.onEvent(event);
 
@@ -34,11 +38,12 @@ final class MainGui: GuiElement {
                 //Modal window
             }
             break;
-        case Quit:
-            stopMidi();
-			break;
         default:
             break;
         }
+    }
+
+    override void onQuit() {
+        stopMidi();
     }
 }

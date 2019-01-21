@@ -19,3 +19,7 @@ void stopMidi() {
 void pauseMidi() {
 
 }
+
+void updateMidi() {
+    updateInternalSequencer();
+}

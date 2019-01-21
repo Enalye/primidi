@@ -1,16 +1,69 @@
+
+def Vec2f {
+    float x;
+    float y;
+}
+
+func Vec2f(float x, float y) Vec2f {
+    Vec2f v;
+    v.x = x;
+    v.y = y;
+    return v;
+}
+
 main {
-    loop {
+    /*loop {
         let a = vec2f(5.0, 5.0);
         let b = vec2f(1270.0, 710.0);
         drawFilledRect(a, b);
         yield
-    }
-}
-/*
-event onBpmChange(int bpm) {
-    print("BPM: ", bpm);
+    }*/
 }
 
+event onNote(Note note) {
+    Vec2f screenSize = Vec2f(1280.0, 720.0);
+    let value = note_getPitch(note);
+    let step = note_getStep(note);
+    let tick = note_getTick(note);
+
+    let pitch = (1.0 - (value as float / 128.0)) * screenSize.y;
+    let size = Vec2f(step as float / 6.0, screenSize.y / 128.0);
+    
+    loop {
+        let position = Vec2f((tick - seq_getTick()) as float / 6.0 + screenSize.x / 2.0, pitch);
+        let orig = position;// - (size / 2.0);
+
+        //print(note_getPitch(channel, note) as string);
+
+        //print("rect: " ~ position as string ~ ", " ~ size as string);
+
+        drawFilledRect(orig, size);
+        let factor = note_getFactor(note);
+        if((factor >= 0.0) and (factor <= 1.0)) {
+            //orig.x = position.x - size.x / 2.0;
+        // orig.y = position.y - size.y / 2.0;
+            //print("Pos: " ~ orig.x as string ~ ", " ~ orig.y as string);
+            //print("Size: " ~ size as string);
+        }
+        yield
+    }
+}
+
+func operator/(Vec2f v, float s) {
+    return Vec2f(v.x / s, v.y / s);
+}
+
+func operator-(Vec2f v, Vec2f w) {
+    return Vec2f(v.x - w.x, v.y - w.y);
+}
+
+func operator!=(Vec2f v, Vec2f w) {
+    return Vec2f(v.x - w.x, v.y - w.y);
+}
+
+
+
+/*
 event onNoteInRange(Note note) {
     let pitch = (1.0 - (note.value as float / 128.0)) * screenSize.y;
     let position = Vec2((note.tick - seq_getTick()) as float / 6.0 + screenSize.x / 2.0, pitch);

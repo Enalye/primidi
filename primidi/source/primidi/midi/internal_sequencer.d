@@ -7,7 +7,7 @@ import derelict.sdl2.sdl;
 import atelier;
 import primidi.midi;
 
-struct Note {
+class Note {
 	uint tick;
 	uint step;
 
@@ -60,6 +60,12 @@ double getInternalSequencerTick() {
     return 0uL;
 }
 
+alias NoteCallback = void function(Note);
+NoteCallback noteCallback;
+void setSequencerNoteCallback(NoteCallback callback) {
+    noteCallback = callback;
+}
+
 private class Sequencer {
 	struct Channel {
 		Note[] notes;
@@ -77,6 +83,8 @@ private class Sequencer {
 				auto note = notes[top];
 				if((tick + 6000)  > note.tick) {
 					notesInRange.push(note);
+                    if(noteCallback !is null)
+                        noteCallback(note);
 					top ++;
 				}
 				else break;
@@ -134,7 +142,7 @@ private class Sequencer {
 			foreach(MidiEvent event; midiFile.tracks[t]) {
 				switch(event.type) with(MidiEventType) {
 					case NoteOn:
-						Note note;
+						Note note = new Note;
 						note.tick = event.tick;
 						note.note = event.note.note;
 						note.velocity = event.note.velocity;
@@ -150,7 +158,7 @@ private class Sequencer {
 							minNote = event.note.note;//Temp
 						break;
 					case NoteOff:
-						Note note;
+						Note note = new Note;
 						note.tick = event.tick;
 						note.note = event.note.note;
 						note.velocity = event.note.velocity;

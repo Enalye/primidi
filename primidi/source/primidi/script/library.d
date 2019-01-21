@@ -1,7 +1,9 @@
 module primidi.script.library;
 
 import primidi.script.render;
+import primidi.script.midi;
 
-void loadPluginPrimitives() {
-    loadRenderPrimitives();
+void loadScriptDefinitions() {
+    loadMidiDefinitions();
+    loadRenderDefinitions();
 }
