@@ -83,9 +83,7 @@ void initializeScript() {
 
     onNoteEventName = grMangleNamedFunction("onNote", [grGetUserType("Note")]);
 
-    writeln("HASEVENT: ", _handler._engine.hasEvent(onNoteEventName));
     if(_handler._engine.hasEvent(onNoteEventName)) {
-        writeln("ONNOTE");
         setSequencerNoteCallback(&onNote);
     }
 }
@@ -98,3 +96,4 @@ void onNote(Note note) {
     auto context = _handler._engine.spawnEvent(onNoteEventName);
     context.setUserData(note);
 }
+

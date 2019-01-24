@@ -13,7 +13,8 @@ class Note {
 
 	uint note;
 	uint velocity;
-	float factor;
+	float playTime, time, duration;
+    bool isAlive;
 }
 
 alias NotesArray = IndexedArray!(Note, 4096u);
@@ -81,7 +82,9 @@ private class Sequencer {
 		void process(long tick) {
 			while(notes.length > top) {
 				auto note = notes[top];
-				if((tick + 6000)  > note.tick) {
+				if((tick + 6000) > note.tick) {
+                    note.isAlive = true;
+                    note.duration = rlerp(0, 12_000, note.step);
 					notesInRange.push(note);
                     if(noteCallback !is null)
                         noteCallback(note);
@@ -92,9 +95,13 @@ private class Sequencer {
 
 			int i = 0;
 			foreach(ref note; notesInRange) {
-				note.factor = cast(float)(cast(int)tick - cast(int)note.tick) / cast(float)note.step;
-				if(tick > (note.tick + note.step + 6000))
+				note.playTime = cast(float)(cast(int)tick - cast(int)note.tick) / cast(float)note.step;
+                note.time = rlerp(tick - 6000, tick + 6000, note.tick);
+
+				if(tick > (note.tick + note.step + 6000)) {
+                    note.isAlive = false;
 					notesInRange.markInternalForRemoval(i);
+                }
 				i ++;
 			}
 			notesInRange.sweepMarkedData();
@@ -112,7 +119,7 @@ private class Sequencer {
 	uint tempoEventsTop;
 
 	long ticksPerQuarter;
-	long tickAtLastChange = -1000;
+	long tickAtLastChange;
 	double ticksElapsedSinceLastChange, tickPerMs, msPerTick, timeAtLastChange;
 	float currentBpm = 0f;
     double totalTicksElapsed;
@@ -203,22 +210,21 @@ private class Sequencer {
 
 	void start() {
 		//Initialize
-		tickAtLastChange = -tickOffset;
+		tickAtLastChange = 0;
 		tickPerMs = (initialBpm * ticksPerQuarter * speedFactor) / 60_000f;
 		msPerTick = 60_000f / (initialBpm * ticksPerQuarter * speedFactor);
-		timeAtLastChange = SDL_GetTicks();
+		timeAtLastChange = getMidiTime();
 	}
 
 	void update() {
 		//Just copied from pianoroll for now
 
-		double currentTime = SDL_GetTicks();
+		double currentTime = getMidiTime();
 		double msDeltaTime = currentTime - timeAtLastChange; //The time since last tempo change.
 		ticksElapsedSinceLastChange = msDeltaTime * tickPerMs;
 
-		//double totalTicksElapsed = tickAtLastChange + ticksElapsedSinceLastChange;
-
 		totalTicksElapsed = tickAtLastChange + ticksElapsedSinceLastChange;
+
 		if(tempoEvents.length > tempoEventsTop) {
 			long tickThreshold = tempoEvents[tempoEventsTop].tick;
 			if(totalTicksElapsed > tickThreshold) {
@@ -233,7 +239,7 @@ private class Sequencer {
 				timeAtLastChange += finalDeltaTime;
 				tickPerMs = (1000f * ticksPerQuarter * speedFactor) / usPerQuarter;
 				msPerTick = usPerQuarter / (ticksPerQuarter * 1000f * speedFactor);
-				currentBpm = tickPerMs * 60000f / ticksPerQuarter;
+				currentBpm = tickPerMs * 60_000f / ticksPerQuarter;
 			}
 		}
 		

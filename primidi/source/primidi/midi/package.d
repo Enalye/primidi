@@ -30,4 +30,5 @@ public {
 	import primidi.midi.internal_sequencer;
 	import primidi.midi.device;
 	import primidi.midi.script_handler;
+    import primidi.midi.clock;
 }

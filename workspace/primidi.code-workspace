@@ -2,18 +2,6 @@
     "folders": [
         {
             "path": "../primidi"
-        },
-        {
-            "path": "../minuit"
-        },
-        {
-            "path": "../grimoire2d"
-        },
-        {
-            "path": "../grimoire2d/atelier"
-        },
-        {
-            "path": "../grimoire2d/grimoire"
         }
     ],
     "settings": {}

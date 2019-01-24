@@ -34,6 +34,7 @@ import minuit;
 
 import primidi.midi.file;
 import primidi.midi.device;
+import primidi.midi.clock;
 
 auto speedFactor = 1f;
 auto initialBpm = 120;
@@ -119,17 +120,17 @@ private class MidiSequencer: Thread {
 			auto midi = getMidiOut();
 
 			//Set initial time step (120 BPM).
-			tickAtLastChange = -tickOffset;
+			tickAtLastChange = 0;
 			tickPerMs = (initialBpm * ticksPerQuarter * speedFactor) / 60_000f;
 			msPerTick = 60_000f / (initialBpm * ticksPerQuarter * speedFactor);
-			timeAtLastChange = SDL_GetTicks();
+			timeAtLastChange = getMidiTime();
 
 			isRunning = true;
 					writeln("tempo: ", tempoEvents.length, ", ", tempoEventsTop);
 
 			while(isRunning) {
 				//Time handling.
-				double currentTime = SDL_GetTicks();
+				double currentTime = getMidiTime();
 				double msDeltaTime = currentTime - timeAtLastChange; //The time since last tempo change.
 				ticksElapsedSinceLastChange = msDeltaTime * tickPerMs;
 
@@ -181,6 +182,7 @@ private class MidiSequencer: Thread {
 							goto checkTick;
 					}
 				}
+                Thread.sleep(dur!("msecs")(1));
 			}
 
 			//All notes off.
