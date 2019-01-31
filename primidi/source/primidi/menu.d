@@ -82,6 +82,7 @@ void setupApplication(string[] args) {
 }
 
 void onLoadComplete() {
+    setDefaultFont(fetch!Font("VeraMono"));
 	onMainMenu();
 }
 

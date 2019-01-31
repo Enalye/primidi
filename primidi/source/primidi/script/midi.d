@@ -9,6 +9,8 @@ void loadMidiDefinitions() {
 
     auto grNote = grAddUserType("Note");
     grAddPrimitive(&seq_getTick, "seq_tick", [], [], grInt);
+    grAddPrimitive(&seq_setInterval, "seq_setInterval", ["start", "end"], [grInt, grInt]);
+
     grAddPrimitive(&note_getTick, "note_tick", ["note"], [grNote], grInt);
     grAddPrimitive(&note_getPitch, "note_pitch", ["note"], [grNote], grInt);
     grAddPrimitive(&note_getStep, "note_step", ["note"], [grNote], grInt);
@@ -24,6 +26,10 @@ void loadMidiDefinitions() {
 
 private void seq_getTick(GrCall call) {
     call.setInt(to!int(getInternalSequencerTick()));//Fix NaN on startup
+}
+
+private void seq_setInterval(GrCall call) {
+    setInternalSequencerInterval(call.getInt("start"), call.getInt("end"));
 }
 
 private void note_getPitch(GrCall call) {

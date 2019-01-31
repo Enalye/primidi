@@ -1,17 +1,54 @@
+Canvas canvas;
 
 main {
+    seq_setInterval(500, 500);
+    canvas = Canvas(screenWidth(), screenHeight());
+    canvas_setColorMod(canvas, Color(1f, 1f, 1f), 3);
+
+    loop {
+        yield
+        //canvas_render(canvas, screenCenter() / 2f);
+        //canvas_clear(canvas);
+        //fillRect(Vec2f(0.0, 0.0), screenSize(), Color(0f, 0f, 1f));
+    }
 }
 
 event onNote(Note note) {
-    Vec2f screenSize = Vec2f(1280.0, 720.0);
+    let sz = screenSize();
 
+    loop {
+        unless(note_isAlive(note)) { kill }
+
+        float time = easeInOutSine(note_time(note));
+        let size = Vec2f(1.0 / 128.0, note_duration(note)) * sz;
+        let pos = Vec2f((note_pitch(note) as float / 128.0),
+            time) * sz - Vec2f(0f, size.y);
+        //canvas_push(canvas);
+
+        if(note_isPlaying(note)) {
+            let factor = note_playTime(note);
+            fillRect(pos, size, Color(1f, 1f - factor, 1f - factor));
+        }
+        else {
+            fillRect(pos, size, Color(1f, 0f, 0f));
+        }
+
+        //canvas_pop();
+        yield
+    }
+}
+
+/*
+event onNote(Note note) {
+    Vec2f s = screenSize();
+    
     let pitch = (1.0 - (note_pitch(note) as float / 128.0));
-    let size = Vec2f(note_duration(note), 1.0 / 128.0) * screenSize;
+    let size = Vec2f(note_duration(note), 1.0 / 128.0) * s;
 
     loop {
         unless(note_isAlive(note)) { kill }
         
-        let position = Vec2f(note_time(note), pitch) * screenSize;
+        let position = Vec2f(note_time(note), pitch) * s;
 
         if(note_isPlaying(note)) {
             let factor = note_playTime(note);
@@ -23,7 +60,7 @@ event onNote(Note note) {
         yield
     }
 }
-
+*/
 
 /*
 let value = note_pitch(note);

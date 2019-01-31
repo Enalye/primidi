@@ -19,7 +19,10 @@ class Note {
 
 alias NotesArray = IndexedArray!(Note, 4096u);
 
-private Sequencer _sequencer;
+private {
+    Sequencer _sequencer;
+    int _startInterval = 6_000, _endInterval = 6_000;
+}
 
 Note[][16] sequencerNotes;
 
@@ -28,6 +31,11 @@ void setupInternalSequencer(MidiFile midiFile) {
 	if(_sequencer)
 		_sequencer.play(midiFile);
     sequencerNotes = new Note[][16];
+}
+
+void setInternalSequencerInterval(int startInterval, int endInterval) {
+    _startInterval = startInterval;
+    _endInterval = endInterval;
 }
 
 void startInternalSequencer() {
@@ -82,9 +90,9 @@ private class Sequencer {
 		void process(long tick) {
 			while(notes.length > top) {
 				auto note = notes[top];
-				if((tick + 6000) > note.tick) {
+				if((tick + _startInterval) > note.tick) {
                     note.isAlive = true;
-                    note.duration = rlerp(0, 12_000, note.step);
+                    note.duration = rlerp(0, _startInterval + _endInterval, note.step);
 					notesInRange.push(note);
                     if(noteCallback !is null)
                         noteCallback(note);
@@ -96,9 +104,9 @@ private class Sequencer {
 			int i = 0;
 			foreach(ref note; notesInRange) {
 				note.playTime = cast(float)(cast(int)tick - cast(int)note.tick) / cast(float)note.step;
-                note.time = rlerp(tick - 6000, tick + 6000, note.tick);
+                note.time = rlerp(tick + _startInterval, tick - _endInterval, note.tick);
 
-				if(tick > (note.tick + note.step + 6000)) {
+				if(tick > (note.tick + note.step + _endInterval)) {
                     note.isAlive = false;
 					notesInRange.markInternalForRemoval(i);
                 }

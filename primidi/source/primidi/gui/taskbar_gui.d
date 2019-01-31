@@ -17,11 +17,12 @@ final class TaskbarGui: GuiElement {
         box.spacing = Vec2f(15f, 5f);
         addChildGui(box);
         {
-            auto playBtn = new TextButton("play");
+            auto font = fetch!Font("VeraMono");
+            auto playBtn = new TextButton(font, "play");
             box.addChildGui(playBtn);
-            auto pauseBtn = new TextButton("pause");
+            auto pauseBtn = new TextButton(font, "pause");
             box.addChildGui(pauseBtn);
-            auto stopBtn = new TextButton("stop");
+            auto stopBtn = new TextButton(font, "stop");
             box.addChildGui(stopBtn);
         }
 
