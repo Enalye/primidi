@@ -1,11 +1,10 @@
 {
 	"fileVersion": 1,
 	"versions": {
-		"atelier": {"path":"../../grimoire2d/atelier"},
+		"atelier": {"path":"../atelier"},
 		"derelict-sdl2": "2.1.4",
 		"derelict-util": "2.0.6",
-		"grimoire": {"path":"../../grimoire2d/grimoire"},
-		"grimoire2d": {"path":"../grimoire2d"},
+		"grimoire": {"path":"../grimoire"},
 		"minuit": {"path":"../minuit"}
 	}
 }

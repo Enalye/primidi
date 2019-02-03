@@ -25,7 +25,7 @@ it freely, subject to the following restrictions:
 module primidi.menu;
 
 import std.stdio, std.conv;
-import atelier, grimoire, grimoire2d, minuit;
+import atelier, grimoire, minuit;
 import primidi.loader, primidi.midi, primidi.gui, primidi.script;
 
 enum versionNumber = 0;
@@ -70,7 +70,6 @@ void setupApplication(string[] args) {
 
     windowClearColor = Color(0.111f, 0.1125f, 0.123f);
 
-    loadGrimoire2d();
 	loadScriptDefinitions();
 
     if(processArguments(args))

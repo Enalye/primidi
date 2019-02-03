@@ -4,7 +4,7 @@ import std.conv;
 import grimoire, atelier;
 import primidi.midi;
 
-void loadMidiDefinitions() {
+package void loadMidi() {
     auto defVec2 = grGetStructureType("Vec2f");
 
     auto grNote = grAddUserType("Note");
