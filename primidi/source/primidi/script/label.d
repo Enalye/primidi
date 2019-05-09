@@ -8,7 +8,7 @@ package void loadLabel() {
     const defFont = grGetUserType("Font");
     const defVec2f = grGetStructureType("Vec2f");
 
-    grAddPrimitive(&_makeLabel, "Label", ["font", "text"], [defFont, grString], defLabel); 
+    grAddPrimitive(&_makeLabel, "Label", ["font", "text"], [defFont, grString], [defLabel]); 
     grAddPrimitive(&_setText, "label_setText", ["label", "text"], [defLabel, grString]); 
     grAddPrimitive(&_setFont, "label_setFont", ["label", "font"], [defLabel, defFont]); 
     grAddPrimitive(&_setPosition, "label_setPosition", ["label", "pos"], [defLabel, defVec2f]); 

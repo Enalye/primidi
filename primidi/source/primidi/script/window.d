@@ -5,19 +5,18 @@ import grimoire, atelier;
 
 package void loadWindow() {
     auto defColor = grGetStructureType("Color");
-    auto defVec2f = grGetStructureType("Vec2f");
 
     grAddPrimitive(&_setRenderColor, "setRenderColor", ["color"], [defColor]);
-    grAddPrimitive(&_drawPoint, "drawPoint", ["pos", "color"], [defVec2f, defColor]);
-    grAddPrimitive(&_drawLine, "drawLine", ["startPos", "endPos", "color"], [defVec2f, defVec2f, defColor]);
-    grAddPrimitive(&_drawRect, "drawRect", ["pos", "size", "color"], [defVec2f, defVec2f, defColor]);
-    grAddPrimitive(&_drawFilledRect, "fillRect", ["pos", "size", "color"], [defVec2f, defVec2f, defColor]);
-    grAddPrimitive(&_drawPixel, "drawPixel", ["pos", "color"], [defVec2f, defColor]);
+    grAddPrimitive(&_drawPoint, "drawPoint", ["x", "y", "color"], [grFloat, grFloat, defColor]);
+    grAddPrimitive(&_drawLine, "drawLine", ["x1", "y1", "x2", "y2", "color"], [grFloat, grFloat, grFloat, grFloat, defColor]);
+    grAddPrimitive(&_drawRect, "drawRect", ["x", "y", "w", "h", "color"], [grFloat, grFloat, grFloat, grFloat, defColor]);
+    grAddPrimitive(&_drawFilledRect, "fillRect", ["x", "y", "w", "h", "color"], [grFloat, grFloat, grFloat, grFloat, defColor]);
+    grAddPrimitive(&_drawPixel, "drawPixel", ["x", "y", "color"], [grFloat, grFloat, defColor]);
     
-    grAddPrimitive(&_screenWidth, "screenWidth", [], [], grInt);
-    grAddPrimitive(&_screenHeight, "screenHeight", [], [], grInt);
-    grAddPrimitive(&_screenSize, "screenSize", [], [], defVec2f);
-    grAddPrimitive(&_screenCenter, "screenCenter", [], [], defVec2f);
+    grAddPrimitive(&_screenWidth, "screenWidth", [], [], [grFloat]);
+    grAddPrimitive(&_screenHeight, "screenHeight", [], [], [grFloat]);
+    grAddPrimitive(&_screenSize, "screenSize", [], [], [grFloat, grFloat]);
+    grAddPrimitive(&_screenCenter, "screenCenter", [], [], [grFloat, grFloat]);
 }
 
 private void _setRenderColor(GrCall call) {
@@ -30,7 +29,7 @@ private void _setRenderColor(GrCall call) {
 }
 
 private void _drawPoint(GrCall call) {
-    Vec2f pos = Vec2f(call.getFloat("pos.x"), call.getFloat("pos.y"));
+    Vec2f pos = Vec2f(call.getFloat("x"), call.getFloat("y"));
     Color color = Color(
         call.getFloat("color.r"),
         call.getFloat("color.g"),
@@ -40,8 +39,8 @@ private void _drawPoint(GrCall call) {
 }
 
 private void _drawLine(GrCall call) {
-    Vec2f startPos = Vec2f(call.getFloat("startPos.x"), call.getFloat("startPos.y"));
-    Vec2f endPos = Vec2f(call.getFloat("endPos.x"), call.getFloat("endPos.y"));
+    Vec2f startPos = Vec2f(call.getFloat("x1"), call.getFloat("y1"));
+    Vec2f endPos = Vec2f(call.getFloat("x2"), call.getFloat("y2"));
     Color color = Color(
         call.getFloat("color.r"),
         call.getFloat("color.g"),
@@ -51,8 +50,8 @@ private void _drawLine(GrCall call) {
 }
 
 private void _drawRect(GrCall call) {
-    Vec2f pos = Vec2f(call.getFloat("pos.x"), call.getFloat("pos.y"));
-    Vec2f size = Vec2f(call.getFloat("size.x"), call.getFloat("size.y"));
+    Vec2f pos = Vec2f(call.getFloat("x"), call.getFloat("y"));
+    Vec2f size = Vec2f(call.getFloat("w"), call.getFloat("h"));
     Color color = Color(
         call.getFloat("color.r"),
         call.getFloat("color.g"),
@@ -62,8 +61,8 @@ private void _drawRect(GrCall call) {
 }
 
 private void _drawFilledRect(GrCall call) {
-    Vec2f pos = Vec2f(call.getFloat("pos.x"), call.getFloat("pos.y"));
-    Vec2f size = Vec2f(call.getFloat("size.x"), call.getFloat("size.y"));
+    Vec2f pos = Vec2f(call.getFloat("x"), call.getFloat("y"));
+    Vec2f size = Vec2f(call.getFloat("w"), call.getFloat("h"));
     Color color = Color(
         call.getFloat("color.r"),
         call.getFloat("color.g"),
@@ -73,7 +72,7 @@ private void _drawFilledRect(GrCall call) {
 }
 
 private void _drawPixel(GrCall call) {
-    Vec2f pos = Vec2f(call.getFloat("pos.x"), call.getFloat("pos.y"));
+    Vec2f pos = Vec2f(call.getFloat("x"), call.getFloat("y"));
     Color color = Color(
         call.getFloat("color.r"),
         call.getFloat("color.g"),
@@ -83,21 +82,20 @@ private void _drawPixel(GrCall call) {
 }
 
 private void _screenWidth(GrCall call) {
-    call.setInt(screenWidth());
+    call.setFloat(screenWidth());
 }
 
 private void _screenHeight(GrCall call) {
-    call.setInt(screenHeight());
+    call.setFloat(screenHeight());
 }
 
 private void _screenSize(GrCall call) {
-    const size = screenSize();
-    call.setFloat(size.x);
-    call.setFloat(size.y);
+    call.setFloat(screenWidth());
+    call.setFloat(screenHeight());
 }
 
 private void _screenCenter(GrCall call) {
     const center = centerScreen();
-    call.setFloat(center.x);
-    call.setFloat(center.y);
+    call.setFloat(cast(int)center.x);
+    call.setFloat(cast(int)center.y);
 }

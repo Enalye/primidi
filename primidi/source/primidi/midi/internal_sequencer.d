@@ -12,6 +12,7 @@ class Note {
 	uint step;
 
 	uint note;
+    uint channel;
 	uint velocity;
 	float playTime, time, duration;
     bool isAlive;
@@ -27,6 +28,8 @@ private {
 Note[][16] sequencerNotes;
 
 void setupInternalSequencer(MidiFile midiFile) {
+    if(_sequencer)
+        _sequencer.cleanUp();
 	_sequencer = new Sequencer;
 	if(_sequencer)
 		_sequencer.play(midiFile);
@@ -158,6 +161,7 @@ private class Sequencer {
 				switch(event.type) with(MidiEventType) {
 					case NoteOn:
 						Note note = new Note;
+                        note.channel = event.note.channel;
 						note.tick = event.tick;
 						note.note = event.note.note;
 						note.velocity = event.note.velocity;
@@ -174,6 +178,7 @@ private class Sequencer {
 						break;
 					case NoteOff:
 						Note note = new Note;
+                        note.channel = event.note.channel;
 						note.tick = event.tick;
 						note.note = event.note.note;
 						note.velocity = event.note.velocity;
@@ -256,4 +261,13 @@ private class Sequencer {
 			channels[channelId].process(cast(long)totalTicksElapsed);
 		}
 	}
+
+    void cleanUp() {
+        foreach(channelId; 0.. 16) {
+			channels[channelId].notes.length = 0uL;
+            foreach(ref note; channels[channelId].notesInRange) {
+                note.isAlive = false;
+            }
+        }
+    }
 }

@@ -56,6 +56,7 @@ private final class ScriptHandler {
 
     void load(string name) {
         auto bytecode = grCompileFile(name);
+        writeln(grDump(bytecode));
         _engine = new GrEngine;
         _engine.load(bytecode);
         _engine.spawn();

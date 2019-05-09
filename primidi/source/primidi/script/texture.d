@@ -7,7 +7,7 @@ package void loadTexture() {
     auto defTexture = grAddUserType("Texture");
     auto defSprite = grGetUserType("Sprite");
 
-    grAddPrimitive(&_makeTexture, "Texture", ["path"], [grString], defTexture);
+    grAddPrimitive(&_makeTexture, "Texture", ["path"], [grString], [defTexture]);
 
     grAddCast(&_castTextureToSprite, "tex", defTexture, defSprite, true);
 }

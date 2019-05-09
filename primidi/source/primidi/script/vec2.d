@@ -5,7 +5,7 @@ import grimoire, atelier;
 package void loadVec2() {
     auto defVec2f = grAddStructure("Vec2f", ["x", "y"], [grFloat, grFloat]);
 
-	grAddPrimitive(&_makeVec2f, "Vec2f", ["x", "y"], [grFloat, grFloat], defVec2f);
+	grAddPrimitive(&_makeVec2f, "Vec2f", ["x", "y"], [grFloat, grFloat], [defVec2f]);
 
     static foreach(op; ["+", "-", "*", "/", "%"]) {
         grAddOperator(&_opBinaryVec2f!op, op, ["v1", "v2"], [defVec2f, defVec2f], defVec2f);

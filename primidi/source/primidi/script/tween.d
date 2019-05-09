@@ -35,7 +35,7 @@ package void loadTween() {
         "InBounce",
         "OutBounce",
         "InOutBounce"]) {
-        mixin("grAddPrimitive(&_ease!(\"" ~ value ~ "\"), \"ease" ~ value ~ "\", [\"t\"], [grFloat], grFloat);");
+        mixin("grAddPrimitive(&_ease!(\"" ~ value ~ "\"), \"ease" ~ value ~ "\", [\"t\"], [grFloat], [grFloat]);");
     }
 }
 

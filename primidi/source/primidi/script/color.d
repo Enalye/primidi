@@ -6,11 +6,11 @@ import grimoire, atelier;
 package void loadColor() {
     auto defColor = grAddStructure("Color", ["r", "g", "b", "a"], [grFloat, grFloat, grFloat, grFloat]);
 
-	grAddPrimitive(&_makeColor3, "Color", ["r", "g", "b"], [grFloat, grFloat, grFloat], defColor);
-	grAddPrimitive(&_makeColor4, "Color", ["r", "g", "b", "a"], [grFloat, grFloat, grFloat, grFloat], defColor);
+	grAddPrimitive(&_makeColor3, "Color", ["r", "g", "b"], [grFloat, grFloat, grFloat], [defColor]);
+	grAddPrimitive(&_makeColor4, "Color", ["r", "g", "b", "a"], [grFloat, grFloat, grFloat, grFloat], [defColor]);
 
-    grAddPrimitive(&_makeColor3i, "Color", ["r", "g", "b"], [grInt, grInt, grInt], defColor);
-	grAddPrimitive(&_makeColor4i, "Color", ["r", "g", "b", "a"], [grInt, grInt, grInt, grInt], defColor);
+    grAddPrimitive(&_makeColor3i, "Color", ["r", "g", "b"], [grInt, grInt, grInt], [defColor]);
+	grAddPrimitive(&_makeColor4i, "Color", ["r", "g", "b", "a"], [grInt, grInt, grInt, grInt], [defColor]);
 
     static foreach(op; ["+", "-", "*", "/", "%"]) {
         grAddOperator(&_opBinaryColor!op, op, ["c1", "c2"], [defColor, defColor], defColor);
@@ -18,7 +18,7 @@ package void loadColor() {
         grAddOperator(&_opBinaryScalarRightColor!op, op, ["s", "c"], [grFloat, defColor], defColor);
     }
 
-	grAddPrimitive(&_mixColor, "mix", ["c1", "c2"], [defColor, defColor], defColor);
+	grAddPrimitive(&_mixColor, "mix", ["c1", "c2"], [defColor, defColor], [defColor]);
 
     grAddPrimitive(&_printColor, "print", ["c"], [defColor]);
     grAddCast(&_castArrayToColor, "ary", grArray, defColor);

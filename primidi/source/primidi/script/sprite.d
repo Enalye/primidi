@@ -8,7 +8,7 @@ package void loadSprite() {
     auto defVec2f = grGetStructureType("Vec2f");
     auto defColor = grGetStructureType("Color");
 
-    grAddPrimitive(&_makeSprite, "Sprite", ["tex"], [defTex], defSprite);
+    grAddPrimitive(&_makeSprite, "Sprite", ["tex"], [defTex], [defSprite]);
     grAddPrimitive(&_setSpriteClip, "sprite_setClip", ["sprite", "x", "y", "w", "h"], [defSprite, grInt, grInt, grInt, grInt]);
     grAddPrimitive(&_setSpriteAngle, "sprite_setAngle", ["sprite", "angle"], [defSprite, grFloat]);
     grAddPrimitive(&_setSpriteAngle, "sprite_setColor", ["sprite", "color"], [defSprite, defColor]);
