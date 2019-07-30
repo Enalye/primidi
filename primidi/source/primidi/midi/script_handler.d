@@ -23,11 +23,11 @@ private final class ScriptHandler {
                     sleep(dur!("msecs")(1000));
                     if(currentCycle == _script._cycle && _script._isLoaded) {
                         _script._engine.isRunning = false;
-                        writeln("Plugin script timeout: ", currentCycle, ", ", _script._isLoaded);
+                        //writeln("Plugin script timeout: ", currentCycle, ", ", _script._isLoaded);
                         isRunning = false;
                     }
-                    writeln("Thread: ", isRunning, ", prev cycle: ", currentCycle,
-                    ", next cycle: ", _script._cycle, ", loaded ? ", _script._isLoaded);
+                    //writeln("Thread: ", isRunning, ", prev cycle: ", currentCycle,
+                    //", next cycle: ", _script._cycle, ", loaded ? ", _script._isLoaded);
                 }
             }
             catch(Exception e) {
@@ -55,20 +55,43 @@ private final class ScriptHandler {
     }
 
     void load(string name) {
-        auto bytecode = grCompileFile(name);
-        writeln(grDump(bytecode));
-        _engine = new GrEngine;
-        _engine.load(bytecode);
-        _engine.spawn();
-        _timeout.start();
+        try {
+            auto bytecode = grCompileFile(name);
+            _engine = new GrEngine;
+            _engine.load(bytecode);
+            _engine.spawn();
+            _timeout.start();
+        }
+        catch(Exception e) {
+            writeln("ScriptHandler caught an exception:\n" ~ e.msg);
+            cleanup();
+        }
+        catch(Error e) {
+            writeln("ScriptHandler caught an unrecoverable error:\n" ~ e.msg);
+            //We need to atleast kill the hanging thread.
+            cleanup();
+            throw e;
+        }
     }
 
     void run() {
-        _isLoaded = true;
-        _engine.process();
-        _cycle = _cycle + 1;
-        if(!_engine.hasCoroutines) {
-            _timeout.isRunning = false;
+        try {
+            _isLoaded = true;
+            _engine.process();
+            _cycle = _cycle + 1;
+            if(!_engine.hasCoroutines) {
+                _timeout.isRunning = false;
+            }
+        }
+        catch(Exception e) {
+            writeln("ScriptHandler caught an exception:\n" ~ e.msg);
+            cleanup();
+        }
+        catch(Error e) {
+            writeln("ScriptHandler caught an unrecoverable error:\n" ~ e.msg);
+            //We need to atleast kill the hanging thread.
+            cleanup();
+            throw e;
         }
     }
 } 

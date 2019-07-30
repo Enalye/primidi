@@ -5,23 +5,23 @@ import grimoire, atelier;
 import primidi.midi;
 
 package void loadMidi() {
-    auto defVec2 = grGetStructureType("Vec2f");
+    auto defVec2 = grGetTupleType("Vec2f");
 
     auto grNote = grAddUserType("Note");
     grAddPrimitive(&seq_getTick, "seq_tick", [], [], [grInt]);
     grAddPrimitive(&seq_setInterval, "seq_setInterval", ["start", "end"], [grInt, grInt]);
 
-    grAddPrimitive(&note_getChannel, "note_channel", ["note"], [grNote], [grInt]);
-    grAddPrimitive(&note_getTick, "note_tick", ["note"], [grNote], [grInt]);
-    grAddPrimitive(&note_getPitch, "note_pitch", ["note"], [grNote], [grInt]);
-    grAddPrimitive(&note_getStep, "note_step", ["note"], [grNote], [grInt]);
-    grAddPrimitive(&note_getVelocity, "note_velocity", ["note"], [grNote], [grInt]);
-    grAddPrimitive(&note_getPlayTime, "note_playTime", ["note"], [grNote], [grFloat]);
-    grAddPrimitive(&note_getTime, "note_time", ["note"], [grNote], [grFloat]);
-    grAddPrimitive(&note_getDuration, "note_duration", ["note"], [grNote], [grFloat]);
+    grAddPrimitive(&note_getChannel, "getChannel", ["note"], [grNote], [grInt]);
+    grAddPrimitive(&note_getTick, "getTick", ["note"], [grNote], [grInt]);
+    grAddPrimitive(&note_getPitch, "getPitch", ["note"], [grNote], [grInt]);
+    grAddPrimitive(&note_getStep, "getStep", ["note"], [grNote], [grInt]);
+    grAddPrimitive(&note_getVelocity, "getVelocity", ["note"], [grNote], [grInt]);
+    grAddPrimitive(&note_getPlayTime, "getPlayTime", ["note"], [grNote], [grFloat]);
+    grAddPrimitive(&note_getTime, "getTime", ["note"], [grNote], [grFloat]);
+    grAddPrimitive(&note_getDuration, "getDuration", ["note"], [grNote], [grFloat]);
 
-    grAddPrimitive(&note_isPlaying, "note_isPlaying", ["note"], [grNote], [grBool]);
-    grAddPrimitive(&note_isAlive, "note_isAlive", ["note"], [grNote], [grBool]);
+    grAddPrimitive(&note_isPlaying, "isPlaying", ["note"], [grNote], [grBool]);
+    grAddPrimitive(&note_isAlive, "isAlive", ["note"], [grNote], [grBool]);
 }
 //note_isPlaying() note_isAlive() note_getProgress() note_setTickRange()
 

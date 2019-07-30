@@ -3,7 +3,7 @@ module primidi.script.vec2;
 import grimoire, atelier;
 
 package void loadVec2() {
-    auto defVec2f = grAddStructure("Vec2f", ["x", "y"], [grFloat, grFloat]);
+    auto defVec2f = grAddTuple("Vec2f", ["x", "y"], [grFloat, grFloat]);
 
 	grAddPrimitive(&_makeVec2f, "Vec2f", ["x", "y"], [grFloat, grFloat], [defVec2f]);
 

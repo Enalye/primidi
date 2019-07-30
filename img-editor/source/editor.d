@@ -52,9 +52,9 @@ final class GraphicEditorGui: GuiElement {
     PreviewerGui previewerGui;
     BrushGui brushSelectGui, brushMoveGui, brushResizeGui;
 
-    string jsonPath, srcPath;
+    string jsonPath, srcPath, _projectRootPath;
 
-    this() {
+    this(string[] args) {
         setAlign(GuiAlignX.Left, GuiAlignY.Top);
         size = screenSize;
 
@@ -98,6 +98,10 @@ final class GraphicEditorGui: GuiElement {
             box.setChildAlign(GuiAlignX.Right);
             {
                 auto btns = new HContainer;
+
+                auto prjBtn = new TaskbarButtonGui("Set Project");
+                prjBtn.setCallback(this, "project");
+                btns.addChildGui(prjBtn);
 
                 auto saveBtn = new TaskbarButtonGui("Save");
                 saveBtn.setCallback(this, "save");
@@ -190,6 +194,13 @@ final class GraphicEditorGui: GuiElement {
             }
             addChildGui(box);
         }
+
+        if(args.length > 1) {
+            _projectRootPath = buildNormalizedPath(args[1]);
+        }
+        else {
+            _projectRootPath = buildNormalizedPath("..");
+        }
     }
 
     override void update(float deltaTime) {
@@ -254,6 +265,16 @@ final class GraphicEditorGui: GuiElement {
 
     override void onCallback(string id) {
         switch(id) {
+        case "project":
+            auto gui = new SetProjectGui(_projectRootPath);
+            gui.setCallback(this, "project.modal");
+            setModalGui(gui);
+            break;
+        case "project.modal":
+            auto gui = getModalGui!SetProjectGui;
+            stopModalGui();
+            
+            break;
         case "save":
             save();
             break;
@@ -270,9 +291,9 @@ final class GraphicEditorGui: GuiElement {
             stopModalGui();
             auto saveGui = getModalGui!SaveJsonGui;
             if(saveGui.hasPath()) {
-                jsonPath = stripExtension(relativePath(absolutePath(saveGui.getPath()), absolutePath("data/images/")));                
+                jsonPath = stripExtension(relativePath(absolutePath(saveGui.getPath()), absolutePath(buildNormalizedPath(_projectRootPath, "/data/images/"))));
                 listGui.save(saveGui.getPath(), srcPath);
-                setWindowTitle("Image Editor - " ~ jsonPath);
+                setWindowTitle("Sprite Sheet Editor - " ~ jsonPath);
             }
             break;
         case "load_gui":
@@ -375,7 +396,7 @@ final class GraphicEditorGui: GuiElement {
     Texture texture;
     void load(string path) {
         jsonPath = "";
-        srcPath = path;
+        srcPath = buildNormalizedPath(path);
         texture = new Texture(srcPath);
         viewerGui.setTexture(texture);
         previewerGui.setTexture(texture);
@@ -402,17 +423,17 @@ final class GraphicEditorGui: GuiElement {
 
         propertiesGui.load();
 
-        setWindowTitle("Image Editor - *");
+        setWindowTitle("Sprite Sheet Editor - *");
     }
     
     void loadJson(string path) {
         jsonPath = stripExtension(relativePath(absolutePath(path), absolutePath("data/images/")));
-        srcPath = listGui.load(path);
+        srcPath = buildNormalizedPath(listGui.load(path));
         texture = new Texture(srcPath);
         viewerGui.setTexture(texture);
         previewerGui.setTexture(texture);
 
-        setWindowTitle("Image Editor - " ~ jsonPath);
+        setWindowTitle("Sprite Sheet Editor - " ~ jsonPath);
     }
 
     void save() {
@@ -432,7 +453,7 @@ final class GraphicEditorGui: GuiElement {
             return;
         }
         listGui.save(path, srcPath);
-        setWindowTitle("Image Editor - " ~ jsonPath);
+        setWindowTitle("Sprite Sheet Editor - " ~ jsonPath);
     }
 
     void saveAs() {
@@ -449,12 +470,12 @@ final class GraphicEditorGui: GuiElement {
             return;
 
         auto path = buildPath("data/images/", setExtension(jsonPath, ".json"));
-        srcPath = listGui.load(path);
+        srcPath = buildNormalizedPath(listGui.load(path));
         texture = new Texture(srcPath);
         viewerGui.setTexture(texture);
         previewerGui.setTexture(texture);
 
-        setWindowTitle("Image Editor - " ~ jsonPath);
+        setWindowTitle("Sprite Sheet Editor - " ~ jsonPath);
     }
 
     void load() {
@@ -469,8 +490,10 @@ private final class RemoveLayerGui: GuiElement {
         size(Vec2f(400f, 100f));
         setAlign(GuiAlignX.Center, GuiAlignY.Center);
 
+        Font font = getDefaultFont();
+
         { //Title
-            auto title = new Label("Do you want to delete this layer ?");
+            auto title = new Label(font, "Do you want to remove this element ?");
             title.setAlign(GuiAlignX.Left, GuiAlignY.Top);
             title.position = Vec2f(20f, 10f);
             addChildGui(title);
@@ -482,12 +505,12 @@ private final class RemoveLayerGui: GuiElement {
             box.spacing = Vec2f(25f, 15f);
             addChildGui(box);
 
-            auto applyBtn = new TextButton("Remove");
+            auto applyBtn = new TextButton(font, "Remove");
             applyBtn.size = Vec2f(100f, 35f);
             applyBtn.setCallback(this, "apply");
             box.addChildGui(applyBtn);
 
-            auto cancelBtn = new TextButton("Cancel");
+            auto cancelBtn = new TextButton(font, "Cancel");
             cancelBtn.size = Vec2f(100f, 35f);
             cancelBtn.setCallback(this, "cancel");
             box.addChildGui(cancelBtn);
@@ -520,6 +543,167 @@ private final class RemoveLayerGui: GuiElement {
             break;
         default:
             break;
+        }
+    }
+
+    override void draw() {
+        drawFilledRect(origin, size, Color(.11f, .08f, .15f));
+    }
+
+    override void drawOverlay() {
+        drawRect(origin, size, Color.gray);
+    }
+}
+
+private final class SetProjectGui: GuiElement {
+    final class DirListGui: VList {
+        private {
+            string[] _subDirs;
+        }
+
+        this() {
+            super(Vec2f(400f, 300f));
+        }
+
+        override void onCallback(string id) {
+            super.onCallback(id);
+            if(id == "list") {
+                triggerCallback();
+            }
+        }
+
+        override void draw() {
+            drawFilledRect(origin, size, Color(.08f, .09f, .11f));
+        }
+
+        void add(string subDir) {
+            addChildGui(new TextButton(getDefaultFont(), subDir));
+            _subDirs ~= subDir;
+        }
+
+        string getSubDir() {
+            if(selected() >= _subDirs.length)
+                throw new Exception("Subdirectory index out of range");
+            return _subDirs[selected()];
+        }
+
+        void reset() {
+            removeChildrenGuis();
+            _subDirs.length = 0;
+        }
+    }
+
+    private {
+        Label _pathLabel;
+        DirListGui _list;
+        string _projectRootPath;
+    }
+
+    this(string path) {
+        _projectRootPath = path;
+
+        size(Vec2f(500f, 500f));
+        setAlign(GuiAlignX.Center, GuiAlignY.Center);
+
+        Font font = getDefaultFont();
+
+        { //Title
+            auto title = new Label(font, "Set the project root");
+            title.setAlign(GuiAlignX.Left, GuiAlignY.Top);
+            title.position = Vec2f(20f, 10f);
+            addChildGui(title);
+        }
+
+        { //Validation
+            auto box = new HContainer;
+            box.setAlign(GuiAlignX.Right, GuiAlignY.Bottom);
+            box.spacing = Vec2f(25f, 15f);
+            addChildGui(box);
+
+            auto applyBtn = new TextButton(font, "Apply");
+            applyBtn.size = Vec2f(100f, 35f);
+            applyBtn.setCallback(this, "apply");
+            box.addChildGui(applyBtn);
+
+            auto cancelBtn = new TextButton(font, "Cancel");
+            cancelBtn.size = Vec2f(100f, 35f);
+            cancelBtn.setCallback(this, "cancel");
+            box.addChildGui(cancelBtn);
+        }
+
+        { //List
+            auto vbox = new VContainer;
+            vbox.setAlign(GuiAlignX.Center, GuiAlignY.Center);
+            addChildGui(vbox);
+
+            {
+                _pathLabel = new Label(_projectRootPath);
+                vbox.addChildGui(_pathLabel);
+            }
+            {
+                auto hbox = new HContainer;
+                vbox.addChildGui(hbox);
+
+                auto parentBtn = new TextButton(getDefaultFont(), "Parent");
+                parentBtn.setCallback(this, "parent_folder");
+                hbox.addChildGui(parentBtn);
+            }
+            {
+                _list = new DirListGui;
+                _list.setCallback(this, "sub_folder");
+                vbox.addChildGui(_list);
+            }
+        }
+
+        _projectRootPath = dirName(thisExePath());
+        reloadList();
+
+        //States
+        GuiState hiddenState = {
+            offset: Vec2f(0f, -50f),
+            color: Color.clear
+        };
+        addState("hidden", hiddenState);
+
+        GuiState defaultState = {
+            time: .5f,
+            easingFunction: getEasingFunction("sine-out")
+        };
+        addState("default", defaultState);
+
+        setState("hidden");
+        doTransitionState("default");
+    }
+
+    override void onCallback(string id) {
+        switch(id) {
+        case "sub_folder":
+            _projectRootPath = buildNormalizedPath(_projectRootPath, _list.getSubDir());
+            reloadList();
+            break;
+        case "parent_folder":
+            _projectRootPath = dirName(_projectRootPath);
+            reloadList();
+            break;
+        case "apply":
+            triggerCallback();
+            break;
+        case "cancel":
+            stopModalGui();
+            break;
+        default:
+            break;
+        }
+    }
+
+    void reloadList() {
+        _pathLabel.text = _projectRootPath;
+        _list.reset();
+        auto files = dirEntries(_projectRootPath, SpanMode.shallow);
+        foreach(file; files) {
+            if(!file.isDir())
+                continue;
+            _list.add(baseName(file));
         }
     }
 

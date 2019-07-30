@@ -1,125 +1,83 @@
-Canvas canvas;
-/*
-array colors = [
-    Color(109, 247, 193),
-    Color(17, 173, 193),
-    Color(96, 108, 129),
-    Color(57, 52, 87),
-    Color(30, 136, 117),
-    Color(91, 179, 97),
-    Color(161, 229, 90),
-    Color(247, 228, 118),
-    Color(249, 146, 82),
-    Color(203, 77, 104),
-    Color(106, 55, 113),
-    Color(201, 36, 100),
-    Color(244, 140, 182),
-    Color(247, 182, 158),
-    Color(155, 156, 130),
-    Color(49, 122, 215)
-];*/
+array(Canvas) canvases;
+Texture spriteSheet;
+
+let colors = [
+    [109, 247, 193],
+    [17, 173, 193],
+    [96, 108, 129],
+    [57, 52, 87],
+    [30, 136, 117],
+    [91, 179, 97],
+    [161, 229, 90],
+    [247, 228, 118],
+    [249, 146, 82],
+    [203, 77, 104],
+    [106, 55, 113],
+    [201, 36, 100],
+    [244, 140, 182],
+    [247, 182, 158],
+    [155, 156, 130],
+    [49, 122, 215]
+];
 
 main {
     seq_setInterval(5000, 5000);
-    canvas = Canvas(screenSize());
-    canvas_setColorMod(canvas, Color(1f, 1f, 1f), 3);
-
+    canvases = array(Canvas)[];
+    loop(16) {
+        let canvas = Canvas(screenSize());
+        setPosition(canvas, screenCenter());
+        setColorMod(canvas, Color(1f, 1f, 1f), 3);
+        canvases ~= canvas;
+    }
+    spriteSheet = Texture("test.png");
+    
     loop {
-        yield
-        /*canvas_render(canvas, screenCenter());
-        canvas_clear(canvas);
-        fillRect(0f, 0f, screenSize(), Color(0f, 0f, 1f));*/
+        fillRect(1280f / 2f - 1f, 0f, 2f, 720f, Color(1f, 1f, 1f, 0.2f));
+        for(canvas, canvases) {
+            draw(canvas, screenCenter());
+            clear(canvas);
+        }
+        yield;
     }
 }
 
 event onNote(Note note) {
+    let centerSprite = spriteSheet as Sprite;
+    setClip(centerSprite, 16, 0, 1, 1);
+    setAnchor(centerSprite, 0f, 0f);
+
     let width, height = screenSize();
+    Color color = colors[getChannel(note)];
 
-    Color color = Color(109, 247, 193);
-    let chan = note_channel(note);
-    if(chan == 0)
-        color = Color(109, 247, 193);
-    else if(chan == 1)
-        color = Color(17, 173, 193);
-    else if(chan == 2)
-        color = Color(96, 108, 129);
-    else if(chan == 3)
-        color = Color(57, 52, 87);
-    else if(chan == 4)
-        color = Color(30, 136, 117);
-    else if(chan == 5)
-        color = Color(91, 179, 97);
-    else if(chan == 6)
-        color = Color(161, 229, 90);
-    else if(chan == 7)
-        color = Color(247, 228, 118);
-    else if(chan == 8)
-        color = Color(249, 146, 82);
-    else if(chan == 9)
-        color = Color(203, 77, 104);
-    else if(chan == 10)
-        color = Color(106, 55, 113);
-    else if(chan == 11)
-        color = Color(201, 36, 100);
-    else if(chan == 12)
-        color = Color(244, 140, 182);
-    else if(chan == 13)
-        color = Color(247, 182, 158);
-    else if(chan == 14)
-        color = Color(155, 156, 130);
-    else if(chan == 15)
-        color = Color(49, 122, 215);
-
-    let pitch = 1f - (note_pitch(note) as float / 128f);
+    let pitch = 1f - (getPitch(note) as float / 128f);
     let w, h =
-        width * note_duration(note),
+        width * getDuration(note),
         height / 128f;
 
+    if(w < 4f)
+        w = 4f;
+
+    setSize(centerSprite, w, h);
+
     loop {
-        unless(note_isAlive(note))
+        unless(isAlive(note))
             kill;
         
+        pushCanvas(canvases[getChannel(note)]);
         let x, y =
-            width * (1f - note_time(note)),
+            width * (1f - getTime(note)),
             height * pitch;
 
-        if(note_isPlaying(note)) {
-            let factor = note_playTime(note);
-            fillRect(x, y, w, h, Color(1f - color.r, 1f - color.g, 1f - color.b));
+        if(isPlaying(note)) {
+            let factor = getPlayTime(note);
+            let c = lerp(Color(1f, 1f, 1f), color, factor);
+            setColor(centerSprite, c);
         }
         else {
-            fillRect(x, y, w, h, color);
+            setColor(centerSprite, color);
         }
-        yield
+        draw(centerSprite, x, y);
+        popCanvas();
+        yield;
     }
 }
-
-/*
-event onNote(Note note) {
-    Vec2f s = screenSize();
-    
-    let pitch = (1.0 - (note_pitch(note) as float / 128.0));
-    let size = Vec2f(note_duration(note), 1.0 / 128.0) * s;
-
-    loop {
-        unless(note_isAlive(note)) { kill }
-        
-        let position = Vec2f(note_time(note), pitch) * s;
-
-        if(note_isPlaying(note)) {
-            let factor = note_playTime(note);
-            fillRect(position, size, Color(1f, 1f - factor, 1f - factor));
-        }
-        else {
-            fillRect(position, size, Color(1f, 0f, 0f));
-        }
-        yield
-    }
-}
-*/
-
-/*
-let value = note_pitch(note);
-    let step = note_step(note);
-    let tick = note_tick(note);
-*/

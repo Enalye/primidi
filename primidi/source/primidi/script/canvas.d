@@ -4,17 +4,18 @@ import grimoire, atelier;
 
 package void loadCanvas() {
     const defCanvas = grAddUserType("Canvas");
-    const defColor = grGetStructureType("Color");
+    const defColor = grGetTupleType("Color");
 
     grAddPrimitive(&_makeCanvasf, "Canvas", ["w", "h"], [grFloat, grFloat], [defCanvas]);
     grAddPrimitive(&_makeCanvasi, "Canvas", ["w", "h"], [grInt, grInt], [defCanvas]);
-    grAddPrimitive(&_pushCanvas, "canvas_push", ["canvas"], [defCanvas]);
-    grAddPrimitive(&_popCanvas, "canvas_pop", [], []);
-    grAddPrimitive(&_clearCanvas, "canvas_clear", ["canvas"], [defCanvas]);
-    grAddPrimitive(&_renderCanvas, "canvas_render", ["canvas", "x", "y"], [defCanvas, grFloat, grFloat]);
+    grAddPrimitive(&_pushCanvas, "pushCanvas", ["canvas"], [defCanvas]);
+    grAddPrimitive(&_popCanvas, "popCanvas", [], []);
+    grAddPrimitive(&_clearCanvas, "clear", ["canvas"], [defCanvas]);
+    grAddPrimitive(&_renderCanvas, "draw", ["canvas", "x", "y"], [defCanvas, grFloat, grFloat]);
     
-    grAddPrimitive(&_setColorMod, "canvas_setColorMod", ["canvas", "color", "blend"], [defCanvas, defColor, grInt]);
-    grAddPrimitive(&_setAlpha, "canvas_setAlpha", ["canvas", "pos"], [defCanvas, grFloat]);
+    grAddPrimitive(&_setColorMod, "setColorMod", ["canvas", "color", "blend"], [defCanvas, defColor, grInt]);
+    grAddPrimitive(&_setAlpha, "setAlpha", ["canvas", "alpha"], [defCanvas, grInt]);
+    grAddPrimitive(&_setPosition, "setPosition", ["canvas", "x", "y"], [defCanvas, grFloat, grFloat]);
 }
 
 private void _makeCanvasf(GrCall call) {
@@ -46,17 +47,21 @@ private void _renderCanvas(GrCall call) {
 private void _setColorMod(GrCall call) {
     Canvas canvas = call.getUserData!Canvas("canvas");
     Color color = Color(
-        call.getFloat("color.r"),
-        call.getFloat("color.g"),
-        call.getFloat("color.b"),
-        call.getFloat("color.a"));
+        call.getFloat("color:r"),
+        call.getFloat("color:g"),
+        call.getFloat("color:b"),
+        call.getFloat("color:a"));
     const Blend blend = cast(Blend)call.getInt("blend");
     canvas.setColorMod(color, blend);
-
 }
 
 private void _setAlpha(GrCall call) {
     Canvas canvas = call.getUserData!Canvas("canvas");
     const float alpha = call.getInt("alpha");
     canvas.setAlpha(alpha);
+}
+
+private void _setPosition(GrCall call) {
+    Canvas canvas = call.getUserData!Canvas("canvas");
+    canvas.position = Vec2f(call.getFloat("x"), call.getFloat("y"));
 }

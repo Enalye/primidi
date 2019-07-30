@@ -4,7 +4,7 @@ import std.conv;
 import grimoire, atelier;
 
 package void loadWindow() {
-    auto defColor = grGetStructureType("Color");
+    auto defColor = grGetTupleType("Color");
 
     grAddPrimitive(&_setRenderColor, "setRenderColor", ["color"], [defColor]);
     grAddPrimitive(&_drawPoint, "drawPoint", ["x", "y", "color"], [grFloat, grFloat, defColor]);
@@ -21,20 +21,20 @@ package void loadWindow() {
 
 private void _setRenderColor(GrCall call) {
     Color color = Color(
-        call.getFloat("color.r"),
-        call.getFloat("color.g"),
-        call.getFloat("color.b"),
-        call.getFloat("color.a"));
+        call.getFloat("color:r"),
+        call.getFloat("color:g"),
+        call.getFloat("color:b"),
+        call.getFloat("color:a"));
     setRenderColor(color);
 }
 
 private void _drawPoint(GrCall call) {
     Vec2f pos = Vec2f(call.getFloat("x"), call.getFloat("y"));
     Color color = Color(
-        call.getFloat("color.r"),
-        call.getFloat("color.g"),
-        call.getFloat("color.b"),
-        call.getFloat("color.a"));
+        call.getFloat("color:r"),
+        call.getFloat("color:g"),
+        call.getFloat("color:b"),
+        call.getFloat("color:a"));
     drawPoint(pos, color);
 }
 
@@ -42,10 +42,10 @@ private void _drawLine(GrCall call) {
     Vec2f startPos = Vec2f(call.getFloat("x1"), call.getFloat("y1"));
     Vec2f endPos = Vec2f(call.getFloat("x2"), call.getFloat("y2"));
     Color color = Color(
-        call.getFloat("color.r"),
-        call.getFloat("color.g"),
-        call.getFloat("color.b"),
-        call.getFloat("color.a"));
+        call.getFloat("color:r"),
+        call.getFloat("color:g"),
+        call.getFloat("color:b"),
+        call.getFloat("color:a"));
     drawLine(startPos, endPos, color);
 }
 
@@ -53,10 +53,10 @@ private void _drawRect(GrCall call) {
     Vec2f pos = Vec2f(call.getFloat("x"), call.getFloat("y"));
     Vec2f size = Vec2f(call.getFloat("w"), call.getFloat("h"));
     Color color = Color(
-        call.getFloat("color.r"),
-        call.getFloat("color.g"),
-        call.getFloat("color.b"),
-        call.getFloat("color.a"));
+        call.getFloat("color:r"),
+        call.getFloat("color:g"),
+        call.getFloat("color:b"),
+        call.getFloat("color:a"));
     drawRect(pos, size, color);
 }
 
@@ -64,20 +64,20 @@ private void _drawFilledRect(GrCall call) {
     Vec2f pos = Vec2f(call.getFloat("x"), call.getFloat("y"));
     Vec2f size = Vec2f(call.getFloat("w"), call.getFloat("h"));
     Color color = Color(
-        call.getFloat("color.r"),
-        call.getFloat("color.g"),
-        call.getFloat("color.b"),
-        call.getFloat("color.a"));
+        call.getFloat("color:r"),
+        call.getFloat("color:g"),
+        call.getFloat("color:b"),
+        call.getFloat("color:a"));
     drawFilledRect(pos, size, color);
 }
 
 private void _drawPixel(GrCall call) {
     Vec2f pos = Vec2f(call.getFloat("x"), call.getFloat("y"));
     Color color = Color(
-        call.getFloat("color.r"),
-        call.getFloat("color.g"),
-        call.getFloat("color.b"),
-        call.getFloat("color.a"));
+        call.getFloat("color:r"),
+        call.getFloat("color:g"),
+        call.getFloat("color:b"),
+        call.getFloat("color:a"));
     drawPixel(pos, color);
 }
 

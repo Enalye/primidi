@@ -70,6 +70,9 @@ void setupApplication(string[] args) {
 
     windowClearColor = Color(0.111f, 0.1125f, 0.123f);
 
+    grInitPrimitivesDatabase();
+    grInitTypesDatabase();
+    grLoadStdLibrary();
 	loadScriptDefinitions();
 
     if(processArguments(args))
@@ -78,6 +81,8 @@ void setupApplication(string[] args) {
 
 	runApplication();
     destroyApplication();
+    grCloseTypesDatabase();
+    grClosePrimitivesDatabase();
 }
 
 void onLoadComplete() {

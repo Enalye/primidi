@@ -6,7 +6,7 @@ import atelier, grimoire;
 package void loadLabel() {
     const defLabel = grAddUserType("Label");
     const defFont = grGetUserType("Font");
-    const defVec2f = grGetStructureType("Vec2f");
+    const defVec2f = grGetTupleType("Vec2f");
 
     grAddPrimitive(&_makeLabel, "Label", ["font", "text"], [defFont, grString], [defLabel]); 
     grAddPrimitive(&_setText, "label_setText", ["label", "text"], [defLabel, grString]); 

@@ -1,6 +1,6 @@
 module primidi.script.texture;
 
-import std.conv;
+import std.conv, std.file, std.path;
 import grimoire, atelier;
 
 package void loadTexture() {
@@ -13,7 +13,7 @@ package void loadTexture() {
 }
 
 private void _makeTexture(GrCall call) {
-    auto tex = new Texture(to!string(call.getString("path")));
+    auto tex = new Texture(buildNormalizedPath(buildPath(getcwd(), "plugin",  to!string(call.getString("path")))));
     call.setUserData(tex);
 }
 

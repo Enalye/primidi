@@ -24,7 +24,7 @@ it freely, subject to the following restrictions:
 
 import std.stdio;
 
-import primidi.menu;
+import primidi.menu, primidi.midi;
 
 void main(string[] args) {
 	try {
@@ -33,4 +33,10 @@ void main(string[] args) {
 	catch(Exception e) {
 		writeln(e.msg);
 	}
+    catch(Error e) {
+        //We need to clean up the remaining threads.
+        stopMidiClock();
+        stopMidiOutSequencer();
+        throw e;
+    }
 }
