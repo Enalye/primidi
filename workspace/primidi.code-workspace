@@ -2,6 +2,15 @@
     "folders": [
         {
             "path": "../primidi"
+        },
+	{
+            "path": "../minuit"
+        },
+	{
+            "path": "../grimoire"
+        },
+	{
+            "path": "../atelier"
         }
     ],
     "settings": {}

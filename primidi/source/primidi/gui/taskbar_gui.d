@@ -1,14 +1,15 @@
 module primidi.gui.taskbar_gui;
 
 import atelier;
-import primidi.gui.port;
+import primidi.gui.port, primidi.gui.options_gui;
 
 final class TaskbarGui: GuiElement {
     private {
-        PortGui _portGui;
+        OptionsGui _optionsGui;
     }
 
-    this() {
+    this(OptionsGui optionsGui) {
+        _optionsGui = optionsGui;
         position(Vec2f.zero);
         size(Vec2f(screenWidth, 50f));
         setAlign(GuiAlignX.Left, GuiAlignY.Top);
@@ -24,8 +25,16 @@ final class TaskbarGui: GuiElement {
             box.addChildGui(pauseBtn);
             auto stopBtn = new TextButton(font, "stop");
             box.addChildGui(stopBtn);
+            auto optionsBtn = new TextButton(font, "options");
+            optionsBtn.setCallback(this, "options");
+            box.addChildGui(optionsBtn);
         }
+    }
 
-        box.addChildGui(new PortGui);
+    override void onCallback(string id) {
+        super.onCallback(id);
+        if(id == "options") {
+            _optionsGui.doTransitionState("active");
+        }
     }
 }

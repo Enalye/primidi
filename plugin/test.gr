@@ -21,7 +21,7 @@ let colors = [
 ];
 
 main {
-    seq_setInterval(5000, 5000);
+    seq_setInterval(2000, 2000);
     canvases = array(Canvas)[];
     loop(16) {
         let canvas = Canvas(screenSize());
@@ -50,18 +50,19 @@ event onNote(Note note) {
     Color color = colors[getChannel(note)];
 
     let pitch = 1f - (getPitch(note) as float / 128f);
-    let w, h =
-        width * getDuration(note),
-        height / 128f;
-
-    if(w < 4f)
-        w = 4f;
-
-    setSize(centerSprite, w, h);
 
     loop {
         unless(isAlive(note))
             kill;
+
+        let w, h =
+            width * getDuration(note),
+            height / 128f;
+
+        if(w < 4f)
+            w = 4f;
+        
+        setSize(centerSprite, w, h);
         
         pushCanvas(canvases[getChannel(note)]);
         let x, y =

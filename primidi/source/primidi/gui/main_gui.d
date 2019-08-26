@@ -2,13 +2,14 @@ module primidi.gui.main_gui;
 
 import std.path, std.string;
 import atelier;
-import primidi.gui.taskbar_gui, primidi.gui.plugin;
+import primidi.gui.taskbar_gui, primidi.gui.plugin, primidi.gui.options_gui;
 import primidi.player;
 
 final class MainGui: GuiElement {
     private {
         TaskbarGui _taskbarGui;
         PluginGui _pluginGui;
+        OptionsGui _optionsGui;
     }
 
     this() {
@@ -16,11 +17,17 @@ final class MainGui: GuiElement {
         size(screenSize);
         setAlign(GuiAlignX.Left, GuiAlignY.Top);
 
+        _optionsGui = new OptionsGui;
+
         _pluginGui = new PluginGui;
         addChildGui(_pluginGui);
 
-        _taskbarGui = new TaskbarGui;
+        _taskbarGui = new TaskbarGui(_optionsGui);
         addChildGui(_taskbarGui);
+
+        addChildGui(_optionsGui);
+
+        startMidi();
     }
 
     override void update(float deltaTime) {

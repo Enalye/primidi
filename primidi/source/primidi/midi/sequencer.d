@@ -38,7 +38,6 @@ import primidi.midi.clock;
 
 auto speedFactor = 1f;
 auto initialBpm = 120;
-auto tickOffset = 0;
 
 struct TempoEvent {
 	uint tick, usPerQuarter;
@@ -60,7 +59,7 @@ void stopMidiOutSequencer() {
 		_midiSequencer.isRunning = false;
 }
 
-private class MidiSequencer: Thread {
+private final class MidiSequencer: Thread {
 	MidiEvent[] events;
 	uint eventsTop;
 
@@ -74,9 +73,8 @@ private class MidiSequencer: Thread {
 	shared bool isRunning;
 
 	this(MidiFile midiFile) {
-		tickOffset = 1000; //Temp
-			speedFactor = 1f;
-			initialBpm = 120;
+		speedFactor = 1f;
+		initialBpm = 120;
 
 		ticksPerQuarter = midiFile.ticksPerBeat;
 
@@ -117,7 +115,7 @@ private class MidiSequencer: Thread {
 
 	private void run() {
 		try {
-			auto midi = getMidiOut();
+			auto midiOut = getMidiOut();
 
 			//Set initial time step (120 BPM).
 			tickAtLastChange = 0;
@@ -152,6 +150,7 @@ private class MidiSequencer: Thread {
 						msPerTick = usPerQuarter / (ticksPerQuarter * 1000f * speedFactor);
 					}
 				}
+				
 				//Events handling.
 				checkTick: if(events.length > eventsTop) {
 					uint tickThreshold = events[eventsTop].tick;
@@ -159,18 +158,18 @@ private class MidiSequencer: Thread {
 						MidiEvent ev = events[eventsTop];
 						switch(ev.type) with(MidiEventType) {
 							case SystemExclusive:
-								midi.send(ev.data);
+								midiOut.send(ev.data);
 								break;
 							case ProgramChange:
 							case ChannelAfterTouch:
-								midi.send(cast(ubyte)ev.type | cast(ubyte)ev.note.channel, cast(ubyte)ev.note.note);
+								midiOut.send(cast(ubyte)ev.type | cast(ubyte)ev.note.channel, cast(ubyte)ev.note.note);
 								break;
 							case PitchWheel:
 							case ControlChange:
 							case KeyAfterTouch:
 							case NoteOn:
 							case NoteOff:
-								midi.send(cast(ubyte)ev.type | cast(ubyte)ev.note.channel, cast(ubyte)ev.note.note, cast(ubyte)ev.note.velocity);
+								midiOut.send(cast(ubyte)ev.type | cast(ubyte)ev.note.channel, cast(ubyte)ev.note.note, cast(ubyte)ev.note.velocity);
 								break;
 							default:
 								break;
@@ -187,7 +186,7 @@ private class MidiSequencer: Thread {
 
 			//All notes off.
 			foreach(ubyte c; 0 .. 16) {
-				midi.send(0xB0 | c, 0x7B, 0x0);
+				midiOut.send(0xB0 | c, 0x7B, 0x0);
 			}
 		}
 		catch(Exception e) {

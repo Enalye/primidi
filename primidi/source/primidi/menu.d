@@ -65,7 +65,7 @@ Options:
 
 void setupApplication(string[] args) {
 	enableAudio(false);
-	initializeMidiOut();
+	initializeMidiDevices();
 	createApplication(Vec2u(1280u, 720u), "Primidi");
 
     windowClearColor = Color(0.111f, 0.1125f, 0.123f);
@@ -85,11 +85,14 @@ void setupApplication(string[] args) {
     grClosePrimitivesDatabase();
 }
 
+private MainGui _mainGui;
 void onLoadComplete() {
     setDefaultFont(fetch!Font("VeraMono"));
+	_mainGui = new MainGui;
 	onMainMenu();
 }
 
 void onMainMenu() {
-	addRootGui(new MainGui);
+	removeRootGuis();
+	addRootGui(_mainGui);
 }

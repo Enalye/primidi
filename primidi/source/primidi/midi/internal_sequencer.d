@@ -27,13 +27,17 @@ private {
 
 Note[][16] sequencerNotes;
 
-void setupInternalSequencer(MidiFile midiFile) {
-    if(_sequencer)
-        _sequencer.cleanUp();
+void setupInternalSequencer() {
 	_sequencer = new Sequencer;
-	if(_sequencer)
-		_sequencer.play(midiFile);
     sequencerNotes = new Note[][16];
+	startInternalSequencer();
+}
+
+void playInternalSequencer(MidiFile midiFile) {
+	if(!_sequencer)
+		return;
+    //_sequencer.cleanUp();	
+	_sequencer.play(midiFile);
 }
 
 void setInternalSequencerInterval(int startInterval, int endInterval) {
@@ -47,6 +51,43 @@ void startInternalSequencer() {
 }
 
 void updateInternalSequencer() {
+	auto midiOut = getMidiOut();
+	auto midiIn = getMidiIn();
+	while(midiIn.canReceive()) {
+		const ubyte[] bytes = midiIn.receive();
+		switch(bytes[0] & 0xF0) with(MidiEventType) {
+		case NoteOn:
+			midiOut.send(bytes[0.. 3]);
+			ubyte channelId = bytes[0] & 0x0F;
+			if(_sequencer) {
+				Note note = new Note;
+				note.channel = channelId;
+				note.note = bytes[1];
+				note.tick = cast(int)getInternalSequencerTick();
+				note.step = 0;
+				note.duration = 0f;
+				note.playTime = 0f;
+				note.time = 0f;
+				note.isAlive = true;
+				note.velocity = bytes[2];
+				_sequencer.channels[channelId].midiNoteOnEvents.push(note);
+				_sequencer.channels[channelId].notesInRange.push(note);
+				if(noteCallback !is null)
+					noteCallback(note);
+			}
+			break;
+		case NoteOff:
+			midiOut.send(bytes[0.. 3]);
+			ubyte channelId = bytes[0] & 0x0F;
+			if(_sequencer) {
+				_sequencer.channels[channelId].midiNoteOffEvents.push(bytes[1]);
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
 	if(_sequencer)
 		_sequencer.update();
     foreach(ubyte i; 0.. 16) {
@@ -78,12 +119,14 @@ void setSequencerNoteCallback(NoteCallback callback) {
     noteCallback = callback;
 }
 
-private class Sequencer {
+private final class Sequencer {
 	struct Channel {
 		Note[] notes;
 		uint top;
 
 		NotesArray notesInRange;
+		IndexedArray!(Note, 128) midiNoteOnEvents;
+		IndexedArray!(ubyte, 128) midiNoteOffEvents;
 		long lastTickProcessed = -1;
 		
 		Note getTop() {
@@ -104,8 +147,28 @@ private class Sequencer {
 				else break;
 			}
 
+			foreach(ubyte pitch; midiNoteOffEvents) {
+				uint index;
+				foreach(ref note; midiNoteOnEvents) {
+					if(note.note == pitch) {
+						midiNoteOnEvents.markInternalForRemoval(index);
+					}
+					index ++;
+				}
+				midiNoteOnEvents.sweepMarkedData();
+			}
+			midiNoteOffEvents.reset();
+
+			foreach(ref note; midiNoteOnEvents) {
+				note.step = cast(int)getInternalSequencerTick() - note.tick;
+                note.duration = rlerp(0, _startInterval + _endInterval, note.step);
+				note.playTime = 0f;
+                note.time = rlerp(tick + _startInterval, tick - _endInterval, note.tick);
+			}
+
 			int i = 0;
 			foreach(ref note; notesInRange) {
+				//writeln(note);
 				note.playTime = cast(float)(cast(int)tick - cast(int)note.tick) / cast(float)note.step;
                 note.time = rlerp(tick + _startInterval, tick - _endInterval, note.tick);
 
@@ -116,6 +179,7 @@ private class Sequencer {
 				i ++;
 			}
 			notesInRange.sweepMarkedData();
+			//writeln(notesInRange.length);
 			lastTickProcessed = tick;
 		}
 	}
@@ -129,20 +193,21 @@ private class Sequencer {
 	TempoEvent[] tempoEvents;
 	uint tempoEventsTop;
 
-	long ticksPerQuarter;
+	long ticksPerQuarter = 960;
 	long tickAtLastChange;
 	double ticksElapsedSinceLastChange, tickPerMs, msPerTick, timeAtLastChange;
 	float currentBpm = 0f;
-    double totalTicksElapsed;
+    double totalTicksElapsed = .0;
 
 	this() {
 		foreach(channelId; 0.. 16) {
 			channels[channelId].notesInRange = new NotesArray;
+			channels[channelId].midiNoteOnEvents = new IndexedArray!(Note, 128);
+			channels[channelId].midiNoteOffEvents = new IndexedArray!(ubyte, 128);
 		}
 	}
 
 	void play(MidiFile midiFile) {
-		tickOffset = 1000; //Temp
 		speedFactor = 1f;
 		initialBpm = 120;
 
