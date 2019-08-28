@@ -5,7 +5,7 @@ import primidi.midi;
 
 final class OutPortGui: DropDownList {
 	private {
-		MnOutDevice[] _devices;
+		MnOutputPort[] _ports;
 	}
 
 	this() {
@@ -17,23 +17,23 @@ final class OutPortGui: DropDownList {
     override void onCallback(string id) {
         super.onCallback(id);
         if(id == "select") {
-            selectMidiOutDevice(_devices[selected()]);
+            selectMidiOutDevice(_ports[selected()]);
         }
     }
 
 	private void reload() {
 		removeChildrenGuis();
-        _devices.length = 0uL;
-        _devices = [null];
-		_devices ~= mnFetchOutDevices();
-		foreach(device; _devices)
+        _ports.length = 0uL;
+        _ports = [null];
+		_ports ~= mnFetchOutputs();
+		foreach(device; _ports)
             add(device is null ? "No Output" : device.name);
 	}
 }
 
 final class InPortGui: DropDownList {
 	private {
-		MnInDevice[] _devices;
+		MnInputPort[] _ports;
 	}
 
 	this() {
@@ -45,16 +45,16 @@ final class InPortGui: DropDownList {
     override void onCallback(string id) {
         super.onCallback(id);
         if(id == "select") {
-            selectMidiInDevice(_devices[selected()]);
+            selectMidiInDevice(_ports[selected()]);
         }
     }
 
 	private void reload() {
 		removeChildrenGuis();
-        _devices.length = 0uL;
-        _devices = [null];
-		_devices ~= mnFetchInDevices();
-		foreach(device; _devices)
+        _ports.length = 0uL;
+        _ports = [null];
+		_ports ~= mnFetchInputs();
+		foreach(device; _ports)
             add(device is null ? "No Input" : device.name);
 	}
 }

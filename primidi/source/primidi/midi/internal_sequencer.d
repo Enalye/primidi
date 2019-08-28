@@ -168,7 +168,6 @@ private final class Sequencer {
 
 			int i = 0;
 			foreach(ref note; notesInRange) {
-				//writeln(note);
 				note.playTime = cast(float)(cast(int)tick - cast(int)note.tick) / cast(float)note.step;
                 note.time = rlerp(tick + _startInterval, tick - _endInterval, note.tick);
 
@@ -179,7 +178,6 @@ private final class Sequencer {
 				i ++;
 			}
 			notesInRange.sweepMarkedData();
-			//writeln(notesInRange.length);
 			lastTickProcessed = tick;
 		}
 	}

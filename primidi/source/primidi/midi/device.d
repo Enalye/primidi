@@ -3,14 +3,14 @@ module primidi.midi.device;
 import minuit;
 
 private {
-	__gshared MnMidiOut _midiOut;
-	__gshared MnMidiIn _midiIn;
+	__gshared MnOutput _midiOut;
+	__gshared MnInput _midiIn;
 }
 import std.stdio;
 
 void initializeMidiDevices() {
-	_midiOut = new MnMidiOut;
-	_midiIn = new MnMidiIn;
+	_midiOut = new MnOutput;
+	_midiIn = new MnInput;
 }
 
 void closeMidiDevices() {
@@ -23,28 +23,25 @@ void closeMidiDevices() {
 	_midiIn = null;
 }
 
-void selectMidiOutDevice(MnOutDevice device) {
+void selectMidiOutDevice(MnOutputPort port) {
     if(!_midiOut)
         return;
-    _midiOut.close();
-    _midiOut.device = device;
-    if(device)
-        _midiOut.open();
+    _midiOut.open(port);
 }
 
-void selectMidiInDevice(MnInDevice device) {
+void selectMidiInDevice(MnInputPort port) {
     if(!_midiIn)
         return;
     _midiIn.close();
-    _midiIn.device = device;
-    if(device)
+    _midiIn.port = port;
+    if(port)
         _midiIn.open();
 }
 
-MnMidiOut getMidiOut() {
+MnOutput getMidiOut() {
 	return _midiOut;
 }
 
-MnMidiIn getMidiIn() {
+MnInput getMidiIn() {
 	return _midiIn;
 }
