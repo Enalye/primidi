@@ -22,9 +22,11 @@ private final class ScriptHandler {
                     auto currentCycle = _script._cycle;
                     sleep(dur!("msecs")(1000));
                     if(currentCycle == _script._cycle && _script._isLoaded) {
-                        _script._engine.isRunning = false;
-                        //writeln("Plugin script timeout: ", currentCycle, ", ", _script._isLoaded);
-                        isRunning = false;
+                        if(_script._isProcessing) {
+                            _script._engine.isRunning = false;
+                            //writeln("Plugin script timeout: ", currentCycle, ", ", _script._isLoaded);
+                            isRunning = false;
+                        }
                     }
                     //writeln("Thread: ", isRunning, ", prev cycle: ", currentCycle,
                     //", next cycle: ", _script._cycle, ", loaded ? ", _script._isLoaded);
@@ -40,6 +42,7 @@ private final class ScriptHandler {
         GrEngine _engine;
         shared int _cycle;
         shared bool _isLoaded = false;
+        shared bool _isProcessing = false;
         TimeoutThread _timeout;
     }
 
@@ -48,6 +51,7 @@ private final class ScriptHandler {
     }
 
     void cleanup() {
+        _isProcessing = false;
         _engine.isRunning = false;
         _isLoaded = false;
         _timeout.isRunning = false;
@@ -77,7 +81,9 @@ private final class ScriptHandler {
     void run() {
         try {
             _isLoaded = true;
+            _isProcessing = true;
             _engine.process();
+            _isProcessing = false;
             _cycle = _cycle + 1;
             if(!_engine.hasCoroutines) {
                 _timeout.isRunning = false;
@@ -94,30 +100,42 @@ private final class ScriptHandler {
             throw e;
         }
     }
+
+    void kill() {
+        cleanup();
+    }
 } 
 
 private {
     ScriptHandler _handler;
+    dstring _onNoteEventName;
 }
 
-dstring onNoteEventName;
+///Compile and load the script.
 void initializeScript() {
     _handler = new ScriptHandler;
     _handler.load("plugin/test.gr");
 
-    onNoteEventName = grMangleNamedFunction("onNote", [grGetUserType("Note")]);
+    _onNoteEventName = grMangleNamedFunction("onNote", [grGetUserType("Note")]);
 
-    if(_handler._engine.hasEvent(onNoteEventName)) {
+    if(_handler._engine.hasEvent(_onNoteEventName)) {
         setSequencerNoteCallback(&onNote);
     }
 }
 
+///Process a single pass of the VM.
 void runScript() {
     _handler.run();
 }
 
-void onNote(Note note) {
-    auto context = _handler._engine.spawnEvent(onNoteEventName);
+///Call upon quitting the program.
+void killScript() {
+    _handler.kill();
+}
+
+///Event callback when a note appears in the tick window.
+private void onNote(Note note) {
+    auto context = _handler._engine.spawnEvent(_onNoteEventName);
     context.setUserData(note);
 }
 

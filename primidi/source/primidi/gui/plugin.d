@@ -32,4 +32,8 @@ final class PluginGui: GuiElement {
         drawFilledRect(origin, size, Color.black);
         _fullscreenCanvas.draw(center);
     }
+
+    override void onQuit() {
+        killScript();
+    }
 }

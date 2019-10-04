@@ -25,8 +25,8 @@ main {
     canvases = array(Canvas)[];
     loop(16) {
         let canvas = Canvas(screenSize());
-        setPosition(canvas, screenCenter());
-        setColorMod(canvas, Color(1f, 1f, 1f), 3);
+        canvas::setPosition(screenCenter());
+        canvas::setColorMod(Color(1f, 1f, 1f), 3);
         canvases ~= canvas;
     }
     spriteSheet = Texture("test.png");
@@ -34,8 +34,8 @@ main {
     loop {
         fillRect(1280f / 2f - 1f, 0f, 2f, 720f, Color(1f, 1f, 1f, 0.2f));
         for(canvas, canvases) {
-            draw(canvas, screenCenter());
-            clear(canvas);
+            canvas::draw(screenCenter());
+            canvas::clear;
         }
         yield
     }
@@ -43,42 +43,42 @@ main {
 
 event onNote(Note note) {
     let centerSprite = spriteSheet as Sprite;
-    setClip(centerSprite, 16, 0, 1, 1);
-    setAnchor(centerSprite, 0f, 0f);
+    centerSprite::setClip(16, 0, 1, 1);
+    centerSprite::setAnchor(0f, 0f);
 
     let width, height = screenSize();
-    Color color = colors[getChannel(note)];
+    Color color = colors[note::getChannel];
 
-    let pitch = 1f - (getPitch(note) as float / 128f);
+    let pitch = 1f - (note::getPitch as float / 128f);
 
     loop {
-        unless(isAlive(note))
-            kill;
+        unless(note::isAlive)
+            kill
 
         let w, h =
-            width * getDuration(note),
+            width * note::getDuration,
             height / 128f;
 
         if(w < 4f)
             w = 4f;
         
-        setSize(centerSprite, w, h);
+        centerSprite::setSize(w, h);
         
-        pushCanvas(canvases[getChannel(note)]);
+        pushCanvas(canvases[note::getChannel]);
         let x, y =
-            width * (1f - getTime(note)),
+            width * (1f - note::getTime),
             height * pitch;
 
-        if(isPlaying(note)) {
-            let factor = getPlayTime(note);
+        if(note::isPlaying) {
+            let factor = note::getPlayTime;
             let c = lerp(Color(1f, 1f, 1f), color, factor);
-            setColor(centerSprite, c);
+            centerSprite::setColor(c);
         }
         else {
-            setColor(centerSprite, color);
+            centerSprite::setColor(color);
         }
-        draw(centerSprite, x, y);
+        centerSprite::draw(x, y);
         popCanvas();
-        yield;
+        yield
     }
 }
