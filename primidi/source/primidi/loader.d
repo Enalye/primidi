@@ -24,7 +24,7 @@ class LoaderGui: GuiElement {
         _callback = callback;
         auto startTime = MonoTime.currTime();
         loadTextures();
-        loadFont();
+        loadFonts();
         auto deltaTime = MonoTime.currTime() - startTime;
         writeln(deltaTime);
         //Load completed
@@ -57,10 +57,10 @@ void loadTextures() {
     foreach(file; files) {
         JSONValue json = parseJSON(readText(file));
 
-        if(getJsonStr(json, "DOCTYPE") != "IMAGE")
+        if(getJsonStr(json, "type") != "spritesheet")
             continue;
 
-        auto srcImage = getJsonStr(json, "texture");
+        auto srcImage = buildNormalizedPath(dirName(file), convertPathToImport(getJsonStr(json, "texture")));
         auto texture = new Texture(srcImage);
         textureCache.set(texture, srcImage);
 
@@ -116,7 +116,7 @@ void loadTextures() {
     }
 }
 
-void loadFont() {
+void loadFonts() {
     auto fontCache = new ResourceCache!Font;
 	setResourceCache!Font(fontCache);
 

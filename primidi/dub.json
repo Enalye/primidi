@@ -37,7 +37,7 @@
 			"platforms": ["linux"],
 			"targetPath": "../bin",
 			"postBuildCommands": [
-				"cp ../lib/*.dll ../bin"
+				"cp ../lib$ARCH/*.dll ../bin"
 			]
 		},
 		{
@@ -45,7 +45,7 @@
 			"platforms": ["windows"],
 			"targetPath": "../bin",
 			"postBuildCommands": [
-				"copy ..\\lib\\*.dll ..\\bin"
+				"copy ..\\lib$ARCH\\*.dll ..\\bin"
 			]
 		}
 	]

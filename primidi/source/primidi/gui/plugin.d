@@ -6,28 +6,30 @@ import primidi.midi;
 /// Load and run the plugin's script
 final class PluginGui: GuiElement {
     private {
-        Canvas _canvas;
+        Canvas _fullscreenCanvas;
     }
 
     this() {
-        position(Vec2f.zero);
         size(screenSize);
-        setAlign(GuiAlignX.Left, GuiAlignY.Top);
+        setAlign(GuiAlignX.Center, GuiAlignY.Center);
 
-        _canvas = new Canvas(screenSize);
-        _canvas.position = screenSize / 2f;
+        _fullscreenCanvas = new Canvas(screenSize);
+        _fullscreenCanvas.position = centerScreen;
         initializeScript();
     }
 
     void reload() {}
 
+    void setFullscreen() {}
+
     override void update(float deltaTime) {
-        pushCanvas(_canvas);
+        pushCanvas(_fullscreenCanvas);
         runScript();
         popCanvas();
     }
 
     override void draw() {
-        _canvas.draw(center);
+        drawFilledRect(origin, size, Color.black);
+        _fullscreenCanvas.draw(center);
     }
 }

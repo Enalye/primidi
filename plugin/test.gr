@@ -37,7 +37,7 @@ main {
             draw(canvas, screenCenter());
             clear(canvas);
         }
-        yield;
+        yield
     }
 }
 

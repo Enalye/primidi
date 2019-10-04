@@ -2,14 +2,15 @@ module primidi.gui.main_gui;
 
 import std.path, std.string;
 import atelier;
-import primidi.gui.taskbar_gui, primidi.gui.plugin, primidi.gui.options_gui;
+import primidi.gui.taskbar_gui, primidi.gui.plugin, primidi.gui.ports_section, primidi.gui.logger;
 import primidi.player;
 
 final class MainGui: GuiElement {
     private {
         TaskbarGui _taskbarGui;
         PluginGui _pluginGui;
-        OptionsGui _optionsGui;
+        PortsSectionGui _portsSectionGui;
+        LoggerGui _loggerGui;
     }
 
     this() {
@@ -17,15 +18,18 @@ final class MainGui: GuiElement {
         size(screenSize);
         setAlign(GuiAlignX.Left, GuiAlignY.Top);
 
-        _optionsGui = new OptionsGui;
+        _portsSectionGui = new PortsSectionGui;
 
         _pluginGui = new PluginGui;
         addChildGui(_pluginGui);
 
-        _taskbarGui = new TaskbarGui(_optionsGui);
+        _loggerGui = new LoggerGui;
+        addChildGui(_loggerGui);
+
+        _taskbarGui = new TaskbarGui;
         addChildGui(_taskbarGui);
 
-        addChildGui(_optionsGui);
+        addChildGui(_portsSectionGui);
 
         startMidi();
     }

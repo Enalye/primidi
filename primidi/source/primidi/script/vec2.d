@@ -47,9 +47,9 @@ private void _opBinaryScalarRightVec2f(string op)(GrCall call) {
 }
 
 private void _opBinaryCompare(string op)(GrCall call) {
-    auto v1x = call.getFloat("v1.x");
-    auto v1y = call.getFloat("v1.y");
-    auto v2x = call.getFloat("v2.x");
-    auto v2y = call.getFloat("v1.y");
-    mixin("call.setBool(v1x" ~ op ~ "v2x && v2x" ~ op ~ "v2y);");
+    const auto v1x = call.getFloat("v1.x");
+    const auto v1y = call.getFloat("v1.y");
+    const auto v2x = call.getFloat("v2.x");
+    const auto v2y = call.getFloat("v1.y");
+    mixin("call.setBool(v1x" ~ op ~ "v2x && v1y" ~ op ~ "v2y);");
 }
