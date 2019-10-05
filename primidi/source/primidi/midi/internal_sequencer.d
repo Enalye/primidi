@@ -57,7 +57,7 @@ void updateInternalSequencer() {
 		const ubyte[] bytes = midiIn.receive();
 		switch(bytes[0] & 0xF0) with(MidiEventType) {
 		case NoteOn:
-			midiOut.send(bytes[0.. 3]);
+			midiOut.send(bytes);
 			ubyte channelId = bytes[0] & 0x0F;
 			if(_sequencer) {
 				Note note = new Note;
@@ -77,7 +77,7 @@ void updateInternalSequencer() {
 			}
 			break;
 		case NoteOff:
-			midiOut.send(bytes[0.. 3]);
+			midiOut.send(bytes);
 			ubyte channelId = bytes[0] & 0x0F;
 			if(_sequencer) {
 				_sequencer.channels[channelId].midiNoteOffEvents.push(bytes[1]);
