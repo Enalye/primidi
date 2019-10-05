@@ -26,7 +26,10 @@ void closeMidiDevices() {
 void selectMidiOutDevice(MnOutputPort port) {
     if(!_midiOut)
         return;
-    _midiOut.open(port);
+    _midiOut.close();
+    _midiOut.port = port;
+    if(port)
+        _midiOut.open(port);
 }
 
 void selectMidiInDevice(MnInputPort port) {
