@@ -33,10 +33,16 @@ void setupInternalSequencer() {
 	startInternalSequencer();
 }
 
+void stopInternalSequencer() {
+	if(!_sequencer)
+		return;
+    _sequencer.cleanUp();
+	_sequencer = null;	
+}
+
 void playInternalSequencer(MidiFile midiFile) {
 	if(!_sequencer)
 		return;
-    //_sequencer.cleanUp();	
 	_sequencer.play(midiFile);
 }
 

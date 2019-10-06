@@ -13,6 +13,8 @@ void startMidi() {
 void playMidi(string path) {
     auto midiFile = new MidiFile(path);
     stopMidiOutSequencer();
+    stopInternalSequencer();
+    setupInternalSequencer();
     playInternalSequencer(midiFile);
     setupMidiOutSequencer(midiFile);
     startMidiOutSequencer();
