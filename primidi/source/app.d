@@ -37,6 +37,7 @@ void main(string[] args) {
         //We need to clean up the remaining threads.
         stopMidiClock();
         stopMidiOutSequencer();
+		closeMidiDevices();
         throw e;
     }
 }

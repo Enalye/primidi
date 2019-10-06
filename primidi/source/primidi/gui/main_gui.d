@@ -3,7 +3,7 @@ module primidi.gui.main_gui;
 import std.path, std.string;
 import atelier;
 import primidi.gui.taskbar_gui, primidi.gui.plugin, primidi.gui.ports_section, primidi.gui.logger;
-import primidi.player;
+import primidi.player, primidi.midi;
 
 final class MainGui: GuiElement {
     private {
@@ -56,5 +56,6 @@ final class MainGui: GuiElement {
 
     override void onQuit() {
         stopMidi();
+		closeMidiDevices();
     }
 }
