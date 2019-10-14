@@ -16,7 +16,7 @@ final class MainGui: GuiElement {
     this() {
         position(Vec2f.zero);
         size(screenSize);
-        setAlign(GuiAlignX.Left, GuiAlignY.Top);
+        setAlign(GuiAlignX.left, GuiAlignY.top);
 
         _portsSectionGui = new PortsSectionGui;
 
@@ -42,7 +42,7 @@ final class MainGui: GuiElement {
         super.onEvent(event);
 
 		switch(event.type) with(EventType) {
-        case DropFile:
+        case dropFile:
             if(extension(event.str).toLower == ".mid")
                 playMidi(event.str);
             else {

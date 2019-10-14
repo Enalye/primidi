@@ -10,6 +10,6 @@ final class TaskbarGui: GuiElement {
     this() {
         position(Vec2f.zero);
         size(Vec2f(screenWidth, 50f));
-        setAlign(GuiAlignX.Left, GuiAlignY.Top);
+        setAlign(GuiAlignX.left, GuiAlignY.top);
     }
 }

@@ -10,6 +10,6 @@ package void loadFont() {
 }
 
 private void _makeFont(GrCall call) {
-    Font font = new Font(to!string(call.getString("path")), call.getInt("size"));
+    Font font = new TrueTypeFont(to!string(call.getString("path")), call.getInt("size"));
     call.setUserData!Font(font);
 }

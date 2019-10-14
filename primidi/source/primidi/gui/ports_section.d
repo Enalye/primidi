@@ -12,7 +12,7 @@ final class PortsSectionGui: GuiElement {
     this() {
         position(Vec2f(25f, 100f));
         size(screenSize);
-        setAlign(GuiAlignX.Left, GuiAlignY.Top);
+        setAlign(GuiAlignX.left, GuiAlignY.top);
 
         auto box = new VContainer;
         box.spacing = Vec2f(5f, 15f);

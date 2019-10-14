@@ -11,7 +11,7 @@ final class PluginGui: GuiElement {
 
     this() {
         size(screenSize);
-        setAlign(GuiAlignX.Center, GuiAlignY.Center);
+        setAlign(GuiAlignX.center, GuiAlignY.center);
 
         _fullscreenCanvas = new Canvas(screenSize);
         _fullscreenCanvas.position = centerScreen;
