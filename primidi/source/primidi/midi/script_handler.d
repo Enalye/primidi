@@ -3,6 +3,7 @@ module primidi.midi.script_handler;
 import std.stdio, core.thread;
 import minuit, grimoire, atelier;
 import primidi.midi.internal_sequencer;
+import primidi.script;
 
 private final class ScriptHandler {
     private final class TimeoutThread: Thread {
@@ -60,9 +61,12 @@ private final class ScriptHandler {
 
     void load(string name) {
         try {
-            auto bytecode = grCompileFile(name);
+            GrData data = new GrData;
+            grLoadStdLibrary(data);
+            loadScriptDefinitions(data);
+            auto bytecode = grCompileFile(data, name);
             _engine = new GrEngine;
-            _engine.load(bytecode);
+            _engine.load(data, bytecode);
             _engine.spawn();
             _timeout.start();
         }

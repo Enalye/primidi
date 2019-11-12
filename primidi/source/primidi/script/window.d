@@ -3,20 +3,20 @@ module primidi.script.window;
 import std.conv;
 import grimoire, atelier;
 
-package void loadWindow() {
+package void loadWindow(GrData data) {
     auto defColor = grGetTupleType("Color");
 
-    grAddPrimitive(&_setRenderColor, "setRenderColor", ["color"], [defColor]);
-    grAddPrimitive(&_drawPoint, "drawPoint", ["x", "y", "color"], [grFloat, grFloat, defColor]);
-    grAddPrimitive(&_drawLine, "drawLine", ["x1", "y1", "x2", "y2", "color"], [grFloat, grFloat, grFloat, grFloat, defColor]);
-    grAddPrimitive(&_drawRect, "drawRect", ["x", "y", "w", "h", "color"], [grFloat, grFloat, grFloat, grFloat, defColor]);
-    grAddPrimitive(&_drawFilledRect, "fillRect", ["x", "y", "w", "h", "color"], [grFloat, grFloat, grFloat, grFloat, defColor]);
-    grAddPrimitive(&_drawPixel, "drawPixel", ["x", "y", "color"], [grFloat, grFloat, defColor]);
+    data.addPrimitive(&_setRenderColor, "setRenderColor", ["color"], [defColor]);
+    data.addPrimitive(&_drawPoint, "drawPoint", ["x", "y", "color"], [grFloat, grFloat, defColor]);
+    data.addPrimitive(&_drawLine, "drawLine", ["x1", "y1", "x2", "y2", "color"], [grFloat, grFloat, grFloat, grFloat, defColor]);
+    data.addPrimitive(&_drawRect, "drawRect", ["x", "y", "w", "h", "color"], [grFloat, grFloat, grFloat, grFloat, defColor]);
+    data.addPrimitive(&_drawFilledRect, "fillRect", ["x", "y", "w", "h", "color"], [grFloat, grFloat, grFloat, grFloat, defColor]);
+    data.addPrimitive(&_drawPixel, "drawPixel", ["x", "y", "color"], [grFloat, grFloat, defColor]);
     
-    grAddPrimitive(&_screenWidth, "screenWidth", [], [], [grFloat]);
-    grAddPrimitive(&_screenHeight, "screenHeight", [], [], [grFloat]);
-    grAddPrimitive(&_screenSize, "screenSize", [], [], [grFloat, grFloat]);
-    grAddPrimitive(&_screenCenter, "screenCenter", [], [], [grFloat, grFloat]);
+    data.addPrimitive(&_screenWidth, "screenWidth", [], [], [grFloat]);
+    data.addPrimitive(&_screenHeight, "screenHeight", [], [], [grFloat]);
+    data.addPrimitive(&_screenSize, "screenSize", [], [], [grFloat, grFloat]);
+    data.addPrimitive(&_screenCenter, "screenCenter", [], [], [grFloat, grFloat]);
 }
 
 private void _setRenderColor(GrCall call) {

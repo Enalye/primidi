@@ -4,24 +4,24 @@ import std.conv;
 import grimoire, atelier;
 import primidi.midi;
 
-package void loadMidi() {
+package void loadMidi(GrData data) {
     auto defVec2 = grGetTupleType("Vec2f");
 
-    auto grNote = grAddUserType("Note");
-    grAddPrimitive(&seq_getTick, "seq_tick", [], [], [grInt]);
-    grAddPrimitive(&seq_setInterval, "seq_setInterval", ["start", "end"], [grInt, grInt]);
+    auto grNote = data.addUserType("Note");
+    data.addPrimitive(&seq_getTick, "seq_tick", [], [], [grInt]);
+    data.addPrimitive(&seq_setInterval, "seq_setInterval", ["start", "end"], [grInt, grInt]);
 
-    grAddPrimitive(&note_getChannel, "getChannel", ["note"], [grNote], [grInt]);
-    grAddPrimitive(&note_getTick, "getTick", ["note"], [grNote], [grInt]);
-    grAddPrimitive(&note_getPitch, "getPitch", ["note"], [grNote], [grInt]);
-    grAddPrimitive(&note_getStep, "getStep", ["note"], [grNote], [grInt]);
-    grAddPrimitive(&note_getVelocity, "getVelocity", ["note"], [grNote], [grInt]);
-    grAddPrimitive(&note_getPlayTime, "getPlayTime", ["note"], [grNote], [grFloat]);
-    grAddPrimitive(&note_getTime, "getTime", ["note"], [grNote], [grFloat]);
-    grAddPrimitive(&note_getDuration, "getDuration", ["note"], [grNote], [grFloat]);
+    data.addPrimitive(&note_getChannel, "getChannel", ["note"], [grNote], [grInt]);
+    data.addPrimitive(&note_getTick, "getTick", ["note"], [grNote], [grInt]);
+    data.addPrimitive(&note_getPitch, "getPitch", ["note"], [grNote], [grInt]);
+    data.addPrimitive(&note_getStep, "getStep", ["note"], [grNote], [grInt]);
+    data.addPrimitive(&note_getVelocity, "getVelocity", ["note"], [grNote], [grInt]);
+    data.addPrimitive(&note_getPlayTime, "getPlayTime", ["note"], [grNote], [grFloat]);
+    data.addPrimitive(&note_getTime, "getTime", ["note"], [grNote], [grFloat]);
+    data.addPrimitive(&note_getDuration, "getDuration", ["note"], [grNote], [grFloat]);
 
-    grAddPrimitive(&note_isPlaying, "isPlaying", ["note"], [grNote], [grBool]);
-    grAddPrimitive(&note_isAlive, "isAlive", ["note"], [grNote], [grBool]);
+    data.addPrimitive(&note_isPlaying, "isPlaying", ["note"], [grNote], [grBool]);
+    data.addPrimitive(&note_isAlive, "isAlive", ["note"], [grNote], [grBool]);
 }
 //note_isPlaying() note_isAlive() note_getProgress() note_setTickRange()
 

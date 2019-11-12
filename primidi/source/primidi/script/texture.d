@@ -3,13 +3,13 @@ module primidi.script.texture;
 import std.conv, std.file, std.path;
 import grimoire, atelier;
 
-package void loadTexture() {
-    auto defTexture = grAddUserType("Texture");
+package void loadTexture(GrData data) {
+    auto defTexture = data.addUserType("Texture");
     auto defSprite = grGetUserType("Sprite");
 
-    grAddPrimitive(&_makeTexture, "Texture", ["path"], [grString], [defTexture]);
+    data.addPrimitive(&_makeTexture, "Texture", ["path"], [grString], [defTexture]);
 
-    grAddCast(&_castTextureToSprite, "tex", defTexture, defSprite, true);
+    data.addCast(&_castTextureToSprite, "tex", defTexture, defSprite, true);
 }
 
 private void _makeTexture(GrCall call) {

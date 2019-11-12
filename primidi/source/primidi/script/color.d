@@ -3,27 +3,27 @@ module primidi.script.color;
 import std.stdio, std.conv;
 import grimoire, atelier;
 
-package void loadColor() {
-    auto defColor = grAddTuple("Color", ["r", "g", "b", "a"], [grFloat, grFloat, grFloat, grFloat]);
+package void loadColor(GrData data) {
+    auto defColor = data.addTuple("Color", ["r", "g", "b", "a"], [grFloat, grFloat, grFloat, grFloat]);
 
-	grAddPrimitive(&_makeColor3, "Color", ["r", "g", "b"], [grFloat, grFloat, grFloat], [defColor]);
-	grAddPrimitive(&_makeColor4, "Color", ["r", "g", "b", "a"], [grFloat, grFloat, grFloat, grFloat], [defColor]);
+	data.addPrimitive(&_makeColor3, "Color", ["r", "g", "b"], [grFloat, grFloat, grFloat], [defColor]);
+	data.addPrimitive(&_makeColor4, "Color", ["r", "g", "b", "a"], [grFloat, grFloat, grFloat, grFloat], [defColor]);
 
-    grAddPrimitive(&_makeColor3i, "Color", ["r", "g", "b"], [grInt, grInt, grInt], [defColor]);
-	grAddPrimitive(&_makeColor4i, "Color", ["r", "g", "b", "a"], [grInt, grInt, grInt, grInt], [defColor]);
+    data.addPrimitive(&_makeColor3i, "Color", ["r", "g", "b"], [grInt, grInt, grInt], [defColor]);
+	data.addPrimitive(&_makeColor4i, "Color", ["r", "g", "b", "a"], [grInt, grInt, grInt, grInt], [defColor]);
 
     static foreach(op; ["+", "-", "*", "/", "%"]) {
-        grAddOperator(&_opBinaryColor!op, op, ["c1", "c2"], [defColor, defColor], defColor);
-        grAddOperator(&_opBinaryScalarColor!op, op, ["c", "s"], [defColor, grFloat], defColor);
-        grAddOperator(&_opBinaryScalarRightColor!op, op, ["s", "c"], [grFloat, defColor], defColor);
+        data.addOperator(&_opBinaryColor!op, op, ["c1", "c2"], [defColor, defColor], defColor);
+        data.addOperator(&_opBinaryScalarColor!op, op, ["c", "s"], [defColor, grFloat], defColor);
+        data.addOperator(&_opBinaryScalarRightColor!op, op, ["s", "c"], [grFloat, defColor], defColor);
     }
 
-	grAddPrimitive(&_mixColor, "mix", ["c1", "c2"], [defColor, defColor], [defColor]);
-	grAddPrimitive(&_lerpColor, "lerp", ["c1", "c2", "t"], [defColor, defColor, grFloat], [defColor]);
+	data.addPrimitive(&_mixColor, "mix", ["c1", "c2"], [defColor, defColor], [defColor]);
+	data.addPrimitive(&_lerpColor, "lerp", ["c1", "c2", "t"], [defColor, defColor, grFloat], [defColor]);
 
-    grAddPrimitive(&_printColor, "print", ["c"], [defColor]);
-    grAddCast(&_castArrayToColor, "ary", grIntArray, defColor);
-    grAddCast(&_castColorToString, "c", defColor, grString);
+    data.addPrimitive(&_printColor, "print", ["c"], [defColor]);
+    data.addCast(&_castArrayToColor, "ary", grIntArray, defColor);
+    data.addCast(&_castColorToString, "c", defColor, grString);
 }
 
 private void _makeColor3(GrCall call) {

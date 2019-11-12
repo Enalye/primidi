@@ -2,20 +2,20 @@ module primidi.script.ninepatch;
 
 import grimoire, atelier;
 
-package void loadNinePatch() {
-    auto defNinePatch = grAddUserType("NinePatch");
+package void loadNinePatch(GrData data) {
+    auto defNinePatch = data.addUserType("NinePatch");
     auto defTex = grGetUserType("Texture");
     auto defColor = grGetTupleType("Color");
 
-    grAddPrimitive(&_makeNinePatch, "NinePatch",
+    data.addPrimitive(&_makeNinePatch, "NinePatch",
         ["tex", "x", "y", "w", "h", "top", "bottom", "left", "right"],
         [defTex, grInt, grInt, grInt, grInt, grInt, grInt, grInt, grInt], [defNinePatch]);
-    grAddPrimitive(&_setNinePatchClip, "setClip", ["ninePatch", "x", "y", "w", "h"], [defNinePatch, grInt, grInt, grInt, grInt]);
-    grAddPrimitive(&_setNinePatchBounds, "setBounds", ["ninePatch", "top", "bottom", "left", "right"], [defNinePatch, grInt, grInt, grInt, grInt]);
-    grAddPrimitive(&_setNinePatchAngle, "setAngle", ["ninePatch", "angle"], [defNinePatch, grFloat]);
-    grAddPrimitive(&_setNinePatchColor, "setColor", ["ninePatch", "color"], [defNinePatch, defColor]);
-    grAddPrimitive(&_setNinePatchSize, "setSize", ["ninePatch", "w", "h"], [defNinePatch, grFloat, grFloat]);
-    grAddPrimitive(&_drawNinePatch, "draw", ["ninePatch", "x", "y"], [defNinePatch, grFloat, grFloat]);
+    data.addPrimitive(&_setNinePatchClip, "setClip", ["ninePatch", "x", "y", "w", "h"], [defNinePatch, grInt, grInt, grInt, grInt]);
+    data.addPrimitive(&_setNinePatchBounds, "setBounds", ["ninePatch", "top", "bottom", "left", "right"], [defNinePatch, grInt, grInt, grInt, grInt]);
+    data.addPrimitive(&_setNinePatchAngle, "setAngle", ["ninePatch", "angle"], [defNinePatch, grFloat]);
+    data.addPrimitive(&_setNinePatchColor, "setColor", ["ninePatch", "color"], [defNinePatch, defColor]);
+    data.addPrimitive(&_setNinePatchSize, "setSize", ["ninePatch", "w", "h"], [defNinePatch, grFloat, grFloat]);
+    data.addPrimitive(&_drawNinePatch, "draw", ["ninePatch", "x", "y"], [defNinePatch, grFloat, grFloat]);
 }
 
 private void _makeNinePatch(GrCall call) {

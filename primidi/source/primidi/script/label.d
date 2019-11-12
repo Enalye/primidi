@@ -3,16 +3,16 @@ module primidi.script.label;
 import std.conv;
 import atelier, grimoire;
 
-package void loadLabel() {
-    const defLabel = grAddUserType("Label");
+package void loadLabel(GrData data) {
+    const defLabel = data.addUserType("Label");
     const defFont = grGetUserType("Font");
     const defVec2f = grGetTupleType("Vec2f");
 
-    grAddPrimitive(&_makeLabel, "Label", ["font", "text"], [defFont, grString], [defLabel]); 
-    grAddPrimitive(&_setText, "label_setText", ["label", "text"], [defLabel, grString]); 
-    grAddPrimitive(&_setFont, "label_setFont", ["label", "font"], [defLabel, defFont]); 
-    grAddPrimitive(&_setPosition, "label_setPosition", ["label", "pos"], [defLabel, defVec2f]); 
-    grAddPrimitive(&_draw, "label_draw", ["label"], [defLabel]); 
+    data.addPrimitive(&_makeLabel, "Label", ["font", "text"], [defFont, grString], [defLabel]); 
+    data.addPrimitive(&_setText, "label_setText", ["label", "text"], [defLabel, grString]); 
+    data.addPrimitive(&_setFont, "label_setFont", ["label", "font"], [defLabel, defFont]); 
+    data.addPrimitive(&_setPosition, "label_setPosition", ["label", "pos"], [defLabel, defVec2f]); 
+    data.addPrimitive(&_draw, "label_draw", ["label"], [defLabel]); 
 }
 
 private void _makeLabel(GrCall call) {

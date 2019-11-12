@@ -3,10 +3,10 @@ module primidi.script.font;
 import std.conv;
 import atelier, grimoire;
 
-package void loadFont() {
-    const defFont = grAddUserType("Font");
+package void loadFont(GrData data) {
+    const defFont = data.addUserType("Font");
 
-    grAddPrimitive(&_makeFont, "Font", ["path", "size"], [grString, grInt], [defFont]);
+    data.addPrimitive(&_makeFont, "Font", ["path", "size"], [grString, grInt], [defFont]);
 }
 
 private void _makeFont(GrCall call) {

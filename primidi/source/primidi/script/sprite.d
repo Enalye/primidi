@@ -2,21 +2,21 @@ module primidi.script.sprite;
 
 import grimoire, atelier;
 
-package void loadSprite() {
-    auto defSprite = grAddUserType("Sprite");
+package void loadSprite(GrData data) {
+    auto defSprite = data.addUserType("Sprite");
     auto defTex = grGetUserType("Texture");
     auto defColor = grGetTupleType("Color");
 
-    grAddPrimitive(&_makeSpriteT, "Sprite", ["tex"], [defTex], [defSprite]);
-    grAddPrimitive(&_makeSpriteS, "Sprite", ["sprite"], [defSprite], [defSprite]);
-    grAddPrimitive(&_setSpriteClip, "setClip", ["sprite", "x", "y", "w", "h"], [defSprite, grInt, grInt, grInt, grInt]);
-    grAddPrimitive(&_setSpriteAngle, "setAngle", ["sprite", "angle"], [defSprite, grFloat]);
-    grAddPrimitive(&_setSpriteAnchor, "setAnchor", ["sprite", "x", "y"], [defSprite, grFloat, grFloat]);
-    grAddPrimitive(&_setSpriteColor, "setColor", ["sprite", "color"], [defSprite, defColor]);
-    grAddPrimitive(&_setSpriteSize, "setSize", ["sprite", "w", "h"], [defSprite, grFloat, grFloat]);
-    grAddPrimitive(&_setSpriteFlip, "setFlip", ["sprite", "flip"], [defSprite, grInt]);
-    grAddPrimitive(&_spriteFit, "fit", ["sprite", "w", "h"], [defSprite, grFloat, grFloat]);
-    grAddPrimitive(&_drawSprite, "draw", ["sprite", "x", "y"], [defSprite, grFloat, grFloat]);
+    data.addPrimitive(&_makeSpriteT, "Sprite", ["tex"], [defTex], [defSprite]);
+    data.addPrimitive(&_makeSpriteS, "Sprite", ["sprite"], [defSprite], [defSprite]);
+    data.addPrimitive(&_setSpriteClip, "setClip", ["sprite", "x", "y", "w", "h"], [defSprite, grInt, grInt, grInt, grInt]);
+    data.addPrimitive(&_setSpriteAngle, "setAngle", ["sprite", "angle"], [defSprite, grFloat]);
+    data.addPrimitive(&_setSpriteAnchor, "setAnchor", ["sprite", "x", "y"], [defSprite, grFloat, grFloat]);
+    data.addPrimitive(&_setSpriteColor, "setColor", ["sprite", "color"], [defSprite, defColor]);
+    data.addPrimitive(&_setSpriteSize, "setSize", ["sprite", "w", "h"], [defSprite, grFloat, grFloat]);
+    data.addPrimitive(&_setSpriteFlip, "setFlip", ["sprite", "flip"], [defSprite, grInt]);
+    data.addPrimitive(&_spriteFit, "fit", ["sprite", "w", "h"], [defSprite, grFloat, grFloat]);
+    data.addPrimitive(&_drawSprite, "draw", ["sprite", "x", "y"], [defSprite, grFloat, grFloat]);
 }
 
 private void _makeSpriteT(GrCall call) {

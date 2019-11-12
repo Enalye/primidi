@@ -70,19 +70,12 @@ void setupApplication(string[] args) {
 
     //windowClearColor = Color(0.111f, 0.1125f, 0.123f);
 
-    grInitPrimitivesDatabase();
-    grInitTypesDatabase();
-    grLoadStdLibrary();
-	loadScriptDefinitions();
-
     if(processArguments(args))
 		return;
     onStartupLoad(&onLoadComplete);
 
 	runApplication();
     destroyApplication();
-    grCloseTypesDatabase();
-    grClosePrimitivesDatabase();
 }
 
 private MainGui _mainGui;

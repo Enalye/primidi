@@ -2,19 +2,19 @@ module primidi.script.vec2;
 
 import grimoire, atelier;
 
-package void loadVec2() {
-    auto defVec2f = grAddTuple("Vec2f", ["x", "y"], [grFloat, grFloat]);
+package void loadVec2(GrData data) {
+    auto defVec2f = data.addTuple("Vec2f", ["x", "y"], [grFloat, grFloat]);
 
-	grAddPrimitive(&_makeVec2f, "Vec2f", ["x", "y"], [grFloat, grFloat], [defVec2f]);
+	data.addPrimitive(&_makeVec2f, "Vec2f", ["x", "y"], [grFloat, grFloat], [defVec2f]);
 
     static foreach(op; ["+", "-", "*", "/", "%"]) {
-        grAddOperator(&_opBinaryVec2f!op, op, ["v1", "v2"], [defVec2f, defVec2f], defVec2f);
-        grAddOperator(&_opBinaryScalarVec2f!op, op, ["v", "s"], [defVec2f, grFloat], defVec2f);
-        grAddOperator(&_opBinaryScalarRightVec2f!op, op, ["s", "v"], [grFloat, defVec2f], defVec2f);
+        data.addOperator(&_opBinaryVec2f!op, op, ["v1", "v2"], [defVec2f, defVec2f], defVec2f);
+        data.addOperator(&_opBinaryScalarVec2f!op, op, ["v", "s"], [defVec2f, grFloat], defVec2f);
+        data.addOperator(&_opBinaryScalarRightVec2f!op, op, ["s", "v"], [grFloat, defVec2f], defVec2f);
     }
 
     static foreach(op; ["==", "!=", ">=", "<=", ">", "<"]) {
-        grAddOperator(&_opBinaryVec2f!op, op, ["v1", "v2"], [defVec2f, defVec2f], grBool);
+        data.addOperator(&_opBinaryVec2f!op, op, ["v1", "v2"], [defVec2f, defVec2f], grBool);
     }
 }
 

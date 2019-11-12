@@ -2,20 +2,20 @@ module primidi.script.canvas;
 
 import grimoire, atelier;
 
-package void loadCanvas() {
-    const defCanvas = grAddUserType("Canvas");
+package void loadCanvas(GrData data) {
+    const defCanvas = data.addUserType("Canvas");
     const defColor = grGetTupleType("Color");
 
-    grAddPrimitive(&_makeCanvasf, "Canvas", ["w", "h"], [grFloat, grFloat], [defCanvas]);
-    grAddPrimitive(&_makeCanvasi, "Canvas", ["w", "h"], [grInt, grInt], [defCanvas]);
-    grAddPrimitive(&_pushCanvas, "pushCanvas", ["canvas"], [defCanvas]);
-    grAddPrimitive(&_popCanvas, "popCanvas", [], []);
-    grAddPrimitive(&_clearCanvas, "clear", ["canvas"], [defCanvas]);
-    grAddPrimitive(&_renderCanvas, "draw", ["canvas", "x", "y"], [defCanvas, grFloat, grFloat]);
+    data.addPrimitive(&_makeCanvasf, "Canvas", ["w", "h"], [grFloat, grFloat], [defCanvas]);
+    data.addPrimitive(&_makeCanvasi, "Canvas", ["w", "h"], [grInt, grInt], [defCanvas]);
+    data.addPrimitive(&_pushCanvas, "pushCanvas", ["canvas"], [defCanvas]);
+    data.addPrimitive(&_popCanvas, "popCanvas", [], []);
+    data.addPrimitive(&_clearCanvas, "clear", ["canvas"], [defCanvas]);
+    data.addPrimitive(&_renderCanvas, "draw", ["canvas", "x", "y"], [defCanvas, grFloat, grFloat]);
     
-    grAddPrimitive(&_setColorMod, "setColorMod", ["canvas", "color", "blend"], [defCanvas, defColor, grInt]);
-    grAddPrimitive(&_setAlpha, "setAlpha", ["canvas", "alpha"], [defCanvas, grInt]);
-    grAddPrimitive(&_setPosition, "setPosition", ["canvas", "x", "y"], [defCanvas, grFloat, grFloat]);
+    data.addPrimitive(&_setColorMod, "setColorMod", ["canvas", "color", "blend"], [defCanvas, defColor, grInt]);
+    data.addPrimitive(&_setAlpha, "setAlpha", ["canvas", "alpha"], [defCanvas, grInt]);
+    data.addPrimitive(&_setPosition, "setPosition", ["canvas", "x", "y"], [defCanvas, grFloat, grFloat]);
 }
 
 private void _makeCanvasf(GrCall call) {

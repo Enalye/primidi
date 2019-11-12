@@ -2,7 +2,7 @@ module primidi.script.tween;
 
 import grimoire, atelier;
 
-package void loadTween() {
+package void loadTween(GrData data) {
     static foreach(value; 
         [
         "InSine",
@@ -35,7 +35,7 @@ package void loadTween() {
         "InBounce",
         "OutBounce",
         "InOutBounce"]) {
-        mixin("grAddPrimitive(&_ease!(\"" ~ value ~ "\"), \"ease" ~ value ~ "\", [\"t\"], [grFloat], [grFloat]);");
+        mixin("data.addPrimitive(&_ease!(\"" ~ value ~ "\"), \"ease" ~ value ~ "\", [\"t\"], [grFloat], [grFloat]);");
     }
 }
 
