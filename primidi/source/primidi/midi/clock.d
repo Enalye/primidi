@@ -13,9 +13,19 @@ void startMidiClock() {
     midiClock.start();
 }
 
+void pauseMidiClock() {
+    if(midiClock.running())
+        midiClock.stop();
+}
+
 void stopMidiClock() {
-    midiClock.stop();
+    if(midiClock.running())
+        midiClock.stop();
     midiClock.reset();
+}
+
+bool isMidiClockRunning() {
+    return midiClock.running();
 }
 
 long getMidiTime() {
