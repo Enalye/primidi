@@ -2,16 +2,18 @@ module primidi.gui.taskbar_gui;
 
 import atelier;
 import primidi.gui.port;
-import primidi.player;
+import primidi.player, primidi.midi;
 
-final class TaskbarGui: GuiElement {
+final class TaskbarGui: VContainer {
     private {
     }
 
     this() {
-        position(Vec2f.zero);
-        size(Vec2f(screenWidth, 50f));
-        setAlign(GuiAlignX.left, GuiAlignY.top);
+        position(Vec2f(0f, 50f));
+        size(Vec2f(100f, 100f));
+        setAlign(GuiAlignX.center, GuiAlignY.bottom);
+
+        addChildGui(new ProgressBar);
 
         auto hbox = new HContainer;
         addChildGui(hbox);
@@ -26,6 +28,7 @@ final class TaskbarGui: GuiElement {
     }
 
     override void onCallback(string id) {
+        super.onCallback(id);
         switch(id) {
         case "play":
             pauseMidi();
@@ -36,5 +39,32 @@ final class TaskbarGui: GuiElement {
         default:
             break;
         }
+    }
+}
+
+final class ProgressBar: GuiElement {
+    private {
+        float _factor;
+    }
+
+    this() {
+        size(Vec2f(800f, 15f));
+    }
+
+    override void update(float deltaTime) {
+        auto currentTime = getMidiTime();
+        auto totalTime = getMidiDuration();
+        if(totalTime <= 0) {
+            _factor = 1f;
+            return;
+        }
+        else {
+            _factor = clamp(currentTime / totalTime, 0f, 1f);
+        }
+    }
+
+    override void draw() {
+        drawFilledRect(origin, size, isHovered ? Color.yellow : Color.grey);
+        drawFilledRect(origin, size * Vec2f(_factor, 1f), Color.cyan);
     }
 }

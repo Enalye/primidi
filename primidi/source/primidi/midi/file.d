@@ -108,8 +108,8 @@ As getFrontAs(As, R)(ref R range)
 	return r;
 }
 
-class MidiFile
-{
+class MidiFile {
+
 	this(const(char)[] filename)
 	{
 		void[] file = enforce(read(filename), "Couldn't load .midi file!");
@@ -153,6 +153,9 @@ class MidiFile
 
 					if(track.empty)
 						break;
+
+					if(tick > lastTick)
+						lastTick = tick;
 
 					ubyte status = track.getFront();
 
@@ -258,12 +261,37 @@ class MidiFile
 			}
 			buffer.popFrontN(pTh.length);
 		}
+
+		//Duration
+		const long ticksPerQuarter = ticksPerBeat;
+		long tickAtLastChange = 0;
+		double msPerTick = 60_000f / (120f * ticksPerQuarter);
+		duration = .0;
+		foreach(uint t; 0 .. cast(uint)tracks.length) {
+			foreach(MidiEvent event; tracks[t]) {
+				if(event.subType == MidiEvents.Tempo) {
+				//event.tempo.microsecondsPerBeat;
+					const long tickDelta = event.tick - tickAtLastChange;
+					duration += tickDelta * msPerTick;
+					tickAtLastChange = event.tick;
+					msPerTick = event.tempo.microsecondsPerBeat / (ticksPerQuarter * 1000f);
+				}
+			}
+		}
+		const long tickDelta = lastTick - tickAtLastChange;
+		duration += tickDelta * msPerTick;
+		import std.stdio;
+		writeln("Midi duration: ", duration);
 	}
 
 	int format;
 	int ticksPerBeat;
 
 	MidiEvent[][] tracks;
+
+	double duration;
+
+	ulong lastTick = 0;
 }
 
 struct MidiEvent {

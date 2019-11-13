@@ -60,3 +60,9 @@ void pauseMidi() {
 void updateMidi() {
     updateInternalSequencer();
 }
+
+double getMidiDuration() {
+    if(!_midiFile)
+        return 0;
+    return _midiFile.duration;
+}

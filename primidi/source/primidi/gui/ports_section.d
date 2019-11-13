@@ -3,7 +3,7 @@ module primidi.gui.ports_section;
 import atelier;
 import primidi.gui.port, primidi.menu;
 
-final class PortsSectionGui: GuiElement {
+final class PortsSectionGui: VContainer {
     private {
         OutPortGui _outPortGui;
         InPortGui _inPortGui;
@@ -11,7 +11,7 @@ final class PortsSectionGui: GuiElement {
 
     this() {
         position(Vec2f(25f, 100f));
-        size(screenSize);
+        spacing(Vec2f(0f, 50f));
         setAlign(GuiAlignX.left, GuiAlignY.top);
 
         auto box = new VContainer;
