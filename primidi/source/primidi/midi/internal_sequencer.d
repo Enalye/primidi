@@ -203,6 +203,10 @@ private final class Sequencer {
 	float currentBpm = 0f;
     double totalTicksElapsed = .0;
 
+	private {
+		MidiFile _midiFile;
+	}
+
 	this() {
 		foreach(channelId; 0.. 16) {
 			channels[channelId].notesInRange = new NotesArray;
@@ -212,6 +216,7 @@ private final class Sequencer {
 	}
 
 	void play(MidiFile midiFile) {
+		_midiFile = midiFile;
 		speedFactor = 1f;
 		initialBpm = 120;
 
@@ -295,7 +300,7 @@ private final class Sequencer {
 		tickAtLastChange = 0;
 		tickPerMs = (initialBpm * ticksPerQuarter * speedFactor) / 60_000f;
 		msPerTick = 60_000f / (initialBpm * ticksPerQuarter * speedFactor);
-		timeAtLastChange = getMidiTime();
+		timeAtLastChange = 0;
 	}
 
 	void update() {

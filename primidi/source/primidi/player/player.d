@@ -3,6 +3,10 @@ module primidi.player.player;
 import atelier, minuit;
 import primidi.midi;
 
+private {
+    MidiFile _midiFile;
+}
+
 void startMidi() {
     initMidiClock();
     startMidiClock();
@@ -11,15 +15,16 @@ void startMidi() {
 }
 
 void playMidi(string path) {
-    auto midiFile = new MidiFile(path);
+    stopMidiClock();
+    _midiFile = new MidiFile(path);
     stopMidiOutSequencer();
     stopInternalSequencer();
     setupInternalSequencer();
-    playInternalSequencer(midiFile);
-    setupMidiOutSequencer(midiFile);
+    playInternalSequencer(_midiFile);
+    setupMidiOutSequencer(_midiFile);
     startMidiOutSequencer();
     startInternalSequencer();
-
+    startMidiClock();
 }
 
 void stopMidi() {
@@ -27,8 +32,29 @@ void stopMidi() {
 	stopMidiOutSequencer();    
 }
 
-void pauseMidi() {
+void setMidiPosition() {
+    rewindMidi();
+}
 
+void rewindMidi() {
+    if(!_midiFile)
+        return;
+    stopMidiClock();
+    stopMidiOutSequencer();
+    stopInternalSequencer();
+    setupInternalSequencer();
+    playInternalSequencer(_midiFile);
+    setupMidiOutSequencer(_midiFile);
+    startMidiOutSequencer();
+    startInternalSequencer();
+    startMidiClock();
+}
+
+void pauseMidi() {
+    if(isMidiClockRunning())
+        pauseMidiClock();
+    else
+        startMidiClock();
 }
 
 void updateMidi() {

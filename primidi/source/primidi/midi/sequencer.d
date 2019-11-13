@@ -107,8 +107,8 @@ private final class MidiSequencer: Thread {
 			)(events);
 
 		//Set initial time step (120 BPM).
-		tickPerMs = (initialBpm * ticksPerQuarter * speedFactor) / 60000f;
-		msPerTick = 60000f / (initialBpm * ticksPerQuarter * speedFactor);
+		tickPerMs = (initialBpm * ticksPerQuarter * speedFactor) / 60_000f;
+		msPerTick = 60_000f / (initialBpm * ticksPerQuarter * speedFactor);
 
 		super(&run);
 	}
@@ -121,7 +121,7 @@ private final class MidiSequencer: Thread {
 			tickAtLastChange = 0;
 			tickPerMs = (initialBpm * ticksPerQuarter * speedFactor) / 60_000f;
 			msPerTick = 60_000f / (initialBpm * ticksPerQuarter * speedFactor);
-			timeAtLastChange = getMidiTime();
+			timeAtLastChange = 0;
 
 			isRunning = true;
 					writeln("tempo: ", tempoEvents.length, ", ", tempoEventsTop);
