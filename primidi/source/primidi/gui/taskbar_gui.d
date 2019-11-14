@@ -48,16 +48,13 @@ final class ProgressBar: GuiElement {
     }
 
     this() {
-        size(Vec2f(800f, 15f));
+        size(Vec2f(screenWidth, 10f));
     }
 
     override void onEvent(Event event) {
         switch(event.type) with(EventType) {
         case mouseDown:
-        import std.stdio;
-        writeln(origin.x, ", ", origin.x + size.x, ", ", event.position.x);
             _factor = clamp(rlerp(origin.x, origin.x + size.x, event.position.x), 0f, 1f);
-            writeln(_factor, ", ", cast(long) (getMidiDuration() * _factor));
             setMidiPosition(cast(long) (getMidiDuration() * _factor));
             break;
         case mouseUp:
@@ -80,7 +77,7 @@ final class ProgressBar: GuiElement {
     }
 
     override void draw() {
-        drawFilledRect(origin, size, isHovered ? Color.yellow : Color.grey);
+        drawFilledRect(origin, size, Color.grey * .5f);
         drawFilledRect(origin, size * Vec2f(_factor, 1f), Color.cyan);
     }
 }

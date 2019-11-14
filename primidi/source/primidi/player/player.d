@@ -33,6 +33,11 @@ void stopMidi() {
 }
 
 void setMidiPosition(long position) {
+    //All notes off.
+    MnOutput midiOut = getMidiOut();
+    foreach(ubyte c; 0 .. 16) {
+        midiOut.send(0xB0 | c, 0x7B, 0x0);
+    }
     if(position < getMidiTime())
         rewindMidi();
     setMidiTime(position);

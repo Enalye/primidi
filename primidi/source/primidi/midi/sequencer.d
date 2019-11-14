@@ -95,7 +95,6 @@ private final class MidiSequencer: Thread {
 					//	writeln("Text: ", event.text);
 					continue;
 				}
-
 				events ~= event;
 			}
 		}
@@ -129,6 +128,8 @@ private final class MidiSequencer: Thread {
 			while(isRunning) {
 				//Time handling.
 				double currentTime = getMidiTime();
+				
+				checkTempo:
 				double msDeltaTime = currentTime - timeAtLastChange; //The time since last tempo change.
 				ticksElapsedSinceLastChange = msDeltaTime * tickPerMs;
 
@@ -148,31 +149,46 @@ private final class MidiSequencer: Thread {
 						timeAtLastChange += finalDeltaTime;
 						tickPerMs = (1000f * ticksPerQuarter * speedFactor) / usPerQuarter;
 						msPerTick = usPerQuarter / (ticksPerQuarter * 1000f * speedFactor);
+
+						if(isRunning)
+							goto checkTempo;
 					}
 				}
 				
 				//Events handling.
+				MidiEvent[ubyte] skippedEvents;
 				checkTick: if(events.length > eventsTop) {
 					uint tickThreshold = events[eventsTop].tick;
 					if(totalTicksElapsed > tickThreshold) {
 						MidiEvent ev = events[eventsTop];
-						switch(ev.type) with(MidiEventType) {
+
+						if(totalTicksElapsed > (tickThreshold + 10)) {
+							switch(ev.type) with(MidiEventType) {
 							case SystemExclusive:
-								midiOut.send(ev.data);
+								sendEvent(midiOut, ev);
 								break;
 							case ProgramChange:
 							case ChannelAfterTouch:
-								midiOut.send(cast(ubyte)ev.type | cast(ubyte)ev.note.channel, cast(ubyte)ev.note.note);
-								break;
 							case PitchWheel:
 							case ControlChange:
 							case KeyAfterTouch:
+								skippedEvents[cast(ubyte)ev.type | cast(ubyte)ev.note.channel] = ev;
+								break;
 							case NoteOn:
 							case NoteOff:
-								midiOut.send(cast(ubyte)ev.type | cast(ubyte)ev.note.channel, cast(ubyte)ev.note.note, cast(ubyte)ev.note.velocity);
 								break;
 							default:
 								break;
+							}
+						}
+						else {
+							if(skippedEvents.length) {
+								writeln("skipped: ", skippedEvents.length);
+							}
+							foreach(skippedEvent; skippedEvents) {
+								sendEvent(midiOut, skippedEvent);
+							}
+							sendEvent(midiOut, ev);
 						}
 
 						eventsTop ++;
@@ -181,6 +197,7 @@ private final class MidiSequencer: Thread {
 							goto checkTick;
 					}
 				}
+
                 Thread.sleep(dur!("msecs")(1));
 			}
 
@@ -192,6 +209,29 @@ private final class MidiSequencer: Thread {
 		catch(Exception e) {
 			import std.stdio: writeln;
 			writeln(e.msg);
+		}
+	}
+
+	private void sendEvent(MnOutput midiOut, MidiEvent ev) {
+		switch(ev.type) with(MidiEventType) {
+			case SystemExclusive:
+				midiOut.send(ev.data);
+				break;
+			case ProgramChange:
+			case ChannelAfterTouch:
+				midiOut.send(cast(ubyte)ev.type | cast(ubyte)ev.note.channel, cast(ubyte)ev.note.note);
+				break;
+			case PitchWheel:
+			case ControlChange:
+			case KeyAfterTouch:
+				midiOut.send(cast(ubyte)ev.type | cast(ubyte)ev.note.channel, cast(ubyte)ev.note.note, cast(ubyte)ev.note.velocity);
+				break;
+			case NoteOn:
+			case NoteOff:
+				midiOut.send(cast(ubyte)ev.type | cast(ubyte)ev.note.channel, cast(ubyte)ev.note.note, cast(ubyte)ev.note.velocity);
+				break;
+			default:
+				break;
 		}
 	}
 }
