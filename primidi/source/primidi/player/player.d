@@ -32,8 +32,10 @@ void stopMidi() {
 	stopMidiOutSequencer();    
 }
 
-void setMidiPosition() {
-    rewindMidi();
+void setMidiPosition(long position) {
+    if(position < getMidiTime())
+        rewindMidi();
+    setMidiTime(position);
 }
 
 void rewindMidi() {

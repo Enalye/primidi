@@ -51,6 +51,22 @@ final class ProgressBar: GuiElement {
         size(Vec2f(800f, 15f));
     }
 
+    override void onEvent(Event event) {
+        switch(event.type) with(EventType) {
+        case mouseDown:
+        import std.stdio;
+        writeln(origin.x, ", ", origin.x + size.x, ", ", event.position.x);
+            _factor = clamp(rlerp(origin.x, origin.x + size.x, event.position.x), 0f, 1f);
+            writeln(_factor, ", ", cast(long) (getMidiDuration() * _factor));
+            setMidiPosition(cast(long) (getMidiDuration() * _factor));
+            break;
+        case mouseUp:
+            break;
+        default:
+            break;
+        }
+    }
+
     override void update(float deltaTime) {
         auto currentTime = getMidiTime();
         auto totalTime = getMidiDuration();
