@@ -1,0 +1,50 @@
+{
+    "elements": [
+        {
+            "clip": {
+                "h": 64,
+                "w": 54,
+                "x": 0,
+                "y": 0
+            },
+            "flip": "none",
+            "name": "play",
+            "type": "sprite"
+        },
+        {
+            "clip": {
+                "h": 64,
+                "w": 42,
+                "x": 64,
+                "y": 0
+            },
+            "flip": "none",
+            "name": "pause",
+            "type": "sprite"
+        },
+        {
+            "clip": {
+                "h": 64,
+                "w": 63,
+                "x": 134,
+                "y": 0
+            },
+            "flip": "none",
+            "name": "rewind",
+            "type": "sprite"
+        },
+        {
+            "clip": {
+                "h": 32,
+                "w": 32,
+                "x": 0,
+                "y": 64
+            },
+            "flip": "none",
+            "name": "cursor",
+            "type": "sprite"
+        }
+    ],
+    "texture": "..\/..\/media\/gui\/ui.png",
+    "type": "spritesheet"
+}
