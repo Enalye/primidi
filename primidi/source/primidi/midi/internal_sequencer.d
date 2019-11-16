@@ -142,15 +142,22 @@ private final class Sequencer {
 		void process(long tick) {
 			while(notes.length > top) {
 				auto note = notes[top];
-				if((tick + _startInterval) > note.tick) {
-                    note.isAlive = true;
-                    note.duration = rlerp(0, _startInterval + _endInterval, note.step);
-					notesInRange.push(note);
-                    if(noteCallback !is null)
-                        noteCallback(note);
+				// Ignore already past events
+				if(tick > (note.tick + note.step + _endInterval)) {
 					top ++;
+                    continue;
 				}
-				else break;
+				// Not yet ready to enter the window
+				if((tick + _startInterval) <= note.tick)
+					break;
+
+				// Start entering the window
+				note.isAlive = true;
+				note.duration = rlerp(0, _startInterval + _endInterval, note.step);
+				notesInRange.push(note);
+				if(noteCallback !is null)
+					noteCallback(note);
+				top ++;
 			}
 
 			foreach(ubyte pitch; midiNoteOffEvents) {
@@ -307,6 +314,8 @@ private final class Sequencer {
 		//Just copied from pianoroll for now
 
 		double currentTime = getMidiTime();
+
+		checkTempo:
 		double msDeltaTime = currentTime - timeAtLastChange; //The time since last tempo change.
 		ticksElapsedSinceLastChange = msDeltaTime * tickPerMs;
 
@@ -327,6 +336,7 @@ private final class Sequencer {
 				tickPerMs = (1000f * ticksPerQuarter * speedFactor) / usPerQuarter;
 				msPerTick = usPerQuarter / (ticksPerQuarter * 1000f * speedFactor);
 				currentBpm = tickPerMs * 60_000f / ticksPerQuarter;
+				goto checkTempo;
 			}
 		}
 		
