@@ -68,7 +68,8 @@ void setupApplication(string[] args) {
 	initializeMidiDevices();
 	createApplication(Vec2u(1280u, 720u), "Primidi");
 
-    //windowClearColor = Color(0.111f, 0.1125f, 0.123f);
+	setWindowMinSize(Vec2u(500, 200));
+    setWindowClearColor(Color.white);
 
     if(processArguments(args))
 		return;

@@ -2,14 +2,14 @@ module primidi.gui.main_gui;
 
 import std.path, std.string;
 import atelier;
-import primidi.gui.taskbar_gui, primidi.gui.plugin, primidi.gui.ports_section, primidi.gui.logger;
+import primidi.gui.menubar, primidi.gui.taskbar_gui, primidi.gui.plugin, primidi.gui.options, primidi.gui.logger;
 import primidi.player, primidi.midi;
 
 final class MainGui: GuiElement {
     private {
+        MenuBar _menuBar;
         TaskbarGui _taskbarGui;
         PluginGui _pluginGui;
-        PortsSectionGui _portsSectionGui;
         LoggerGui _loggerGui;
     }
 
@@ -17,8 +17,6 @@ final class MainGui: GuiElement {
         position(Vec2f.zero);
         size(screenSize);
         setAlign(GuiAlignX.left, GuiAlignY.top);
-
-        _portsSectionGui = new PortsSectionGui;
 
         _pluginGui = new PluginGui;
         addChildGui(_pluginGui);
@@ -29,7 +27,8 @@ final class MainGui: GuiElement {
         _taskbarGui = new TaskbarGui;
         addChildGui(_taskbarGui);
 
-        addChildGui(_portsSectionGui);
+        _menuBar = new MenuBar;
+        addChildGui(_menuBar);
 
         startMidi();
     }
@@ -43,11 +42,15 @@ final class MainGui: GuiElement {
 
 		switch(event.type) with(EventType) {
         case dropFile:
-            if(extension(event.str).toLower == ".mid")
-                playMidi(event.str);
+            const string ext = extension(event.drop.filePath).toLower;
+            if(ext == ".mid" || ext == ".midi")
+                playMidi(event.drop.filePath);
             else {
                 //Modal window
             }
+            break;
+        case resize:
+            size = cast(Vec2f) event.window.size;
             break;
         default:
             break;

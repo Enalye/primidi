@@ -97,10 +97,13 @@ final class ProgressBar: GuiElement {
     override void onEvent(Event event) {
         switch(event.type) with(EventType) {
         case mouseDown:
-            _factor = clamp(rlerp(origin.x, origin.x + size.x, event.position.x), 0f, 1f);
+            _factor = clamp(rlerp(origin.x, origin.x + size.x, event.mouse.position.x), 0f, 1f);
             setMidiPosition(cast(long) (getMidiDuration() * _factor));
             break;
         case mouseUp:
+            break;
+        case resize:
+            size(Vec2f(event.window.size.x, 15f));
             break;
         default:
             break;
