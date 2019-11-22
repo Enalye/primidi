@@ -4,26 +4,50 @@ import atelier;
 import primidi.gui.port;
 import primidi.player, primidi.midi;
 
-final class TaskbarGui: VContainer {
+final class TaskbarGui: GuiElement {
     private {
     }
 
     this() {
-        position(Vec2f(0f, 50f));
-        size(Vec2f(100f, 100f));
+        size(Vec2f(screenWidth, 50f));
         setAlign(GuiAlignX.center, GuiAlignY.bottom);
 
-        addChildGui(new ProgressBar);
+        {
+            auto hbox = new HContainer;
+            addChildGui(hbox);
+            hbox.addChildGui(new CurrentTimeGui);
+            hbox.addChildGui(new ProgressBar);
+            hbox.addChildGui(new TotalTimeGui);
+        }
 
-        auto hbox = new HContainer;
-        addChildGui(hbox);
-        hbox.padding = Vec2f(0f, 0f);
+        {
+            auto playBtn = new PlayButton;
+            addChildGui(playBtn);
+        }
 
-        auto rewindBtn = new RewindButton;
-        hbox.addChildGui(rewindBtn);
+        {
+            auto hbox = new HContainer;
+            hbox.setAlign(GuiAlignX.left, GuiAlignY.bottom);
+            hbox.position = Vec2f(48f, 5f);
+            hbox.spacing = Vec2f(2f, 0f);
+            addChildGui(hbox);
 
-        auto playBtn = new PlayButton;
-        hbox.addChildGui(playBtn);
+            auto rewindBtn = new RewindButton;
+            hbox.addChildGui(rewindBtn);
+
+            auto stopBtn = new StopButton;
+            hbox.addChildGui(stopBtn);
+        }
+    }
+
+    override void onEvent(Event event) {
+        switch(event.type) with(EventType) {
+        case resize:
+            size(Vec2f(event.window.size.x, 50f));
+            break;
+        default:
+            break;
+        }
     }
 
     override void onCallback(string id) {
@@ -32,6 +56,10 @@ final class TaskbarGui: VContainer {
         default:
             break;
         }
+    }
+
+    override void draw() {
+        drawFilledRect(origin, size, Color(240, 240, 240));
     }
 }
 
@@ -44,9 +72,10 @@ final class PlayButton: Button {
     this() {
         _pauseSprite = fetch!Sprite("pause");
         _playSprite = fetch!Sprite("play");
-        _pauseSprite.size /= 2f;
-        _playSprite.size /= 2f;
-        size = Vec2f(50f, 50f);
+
+        setAlign(GuiAlignX.left, GuiAlignY.bottom);
+        position = Vec2f(4f, 2f);
+        size = Vec2f(30f, 30f);
     }
 
 	override void onSubmit() {
@@ -55,6 +84,8 @@ final class PlayButton: Button {
     }
 
     override void draw() {
+        drawFilledRect(origin, size, isHovered ? Color(229, 241, 251) : Color(225, 225, 225));
+        drawRect(origin, size, isHovered ? Color(0, 120, 215) : Color(173, 173, 173));
         if(_isPaused)
             _playSprite.draw(center);
         else
@@ -69,8 +100,7 @@ final class RewindButton: Button {
 
     this() {
         _rewindSprite = fetch!Sprite("rewind");
-        _rewindSprite.size /= 2f;
-        size = Vec2f(50f, 50f);
+        size = Vec2f(24f, 24f);
     }
 
     override void onSubmit() {
@@ -78,7 +108,30 @@ final class RewindButton: Button {
     }
 
     override void draw() {
+        drawFilledRect(origin, size, isHovered ? Color(229, 241, 251) : Color(225, 225, 225));
+        drawRect(origin, size, isHovered ? Color(0, 120, 215) : Color(173, 173, 173));
         _rewindSprite.draw(center);
+    }
+}
+
+final class StopButton: Button {
+    private {
+        Sprite _stopSprite;
+    }
+
+    this() {
+        _stopSprite = fetch!Sprite("stop");
+        size = Vec2f(24f, 24f);
+    }
+
+    override void onSubmit() {
+        stopMidi();
+    }
+
+    override void draw() {
+        drawFilledRect(origin, size, isHovered ? Color(229, 241, 251) : Color(225, 225, 225));
+        drawRect(origin, size, isHovered ? Color(0, 120, 215) : Color(173, 173, 173));
+        _stopSprite.draw(center);
     }
 }
 
@@ -89,9 +142,8 @@ final class ProgressBar: GuiElement {
     }
 
     this() {
-        size(Vec2f(screenWidth, 15f));
+        size(Vec2f(screenWidth - 100f, 15f));
         _cursorSprite = fetch!Sprite("cursor");
-        _cursorSprite.size /= 2f;
     }
 
     override void onEvent(Event event) {
@@ -103,7 +155,7 @@ final class ProgressBar: GuiElement {
         case mouseUp:
             break;
         case resize:
-            size(Vec2f(event.window.size.x, 15f));
+            size(Vec2f(event.window.size.x - 100f, 15f));
             break;
         default:
             break;
@@ -113,7 +165,10 @@ final class ProgressBar: GuiElement {
     override void update(float deltaTime) {
         auto currentTime = getMidiTime();
         auto totalTime = getMidiDuration();
-        if(totalTime <= 0) {
+        if(!isMidiPlaying()) {
+            _factor = 0f;
+        }
+        else if(totalTime <= 0) {
             _factor = 1f;
             return;
         }
@@ -123,8 +178,32 @@ final class ProgressBar: GuiElement {
     }
 
     override void draw() {
-        drawFilledRect(Vec2f(origin.x, center.y - 3f), Vec2f(size.x, 6f), Color.grey * .5f);
-        drawFilledRect(Vec2f(origin.x, center.y - 3f), Vec2f(size.x, 6f) * Vec2f(_factor, 1f), Color.cyan);
-        _cursorSprite.draw(origin + size * Vec2f(_factor, .5f));
+        drawFilledRect(Vec2f(origin.x, center.y - (size.y / 2f)), Vec2f(size.x, 10f), Color.grey * .5f);
+        drawFilledRect(Vec2f(origin.x, center.y - (size.y / 2f)), Vec2f(size.x, 10f) * Vec2f(_factor, 1f), Color.cyan);
+        if(isMidiPlaying())
+            _cursorSprite.draw(origin + size * Vec2f(_factor, .5f));
+    }
+}
+
+alias TotalTimeGui = CurrentTimeGui;
+final class CurrentTimeGui: GuiElement {
+    private {
+        Label _label;
+    }
+
+    this() {
+        _label = new Label("00:00");
+        _label.color = Color.black;
+        _label.setAlign(GuiAlignX.center, GuiAlignY.top);
+        size(Vec2f(50f, 25f));
+        addChildGui(_label);
+    }
+
+    override void update(float deltaTime) {
+
+    }
+
+    override void draw() {
+        _label.draw();
     }
 }

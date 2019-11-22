@@ -69,7 +69,7 @@ void setupApplication(string[] args) {
 	createApplication(Vec2u(1280u, 720u), "Primidi");
 
 	setWindowMinSize(Vec2u(500, 200));
-    setWindowClearColor(Color.white);
+    setWindowClearColor(Color.black);
 
     if(processArguments(args))
 		return;
@@ -81,7 +81,7 @@ void setupApplication(string[] args) {
 
 private MainGui _mainGui;
 void onLoadComplete() {
-    setDefaultFont(fetch!TrueTypeFont("VeraMono"));
+    setDefaultFont(fetch!TrueTypeFont("Cascadia"));
 	_mainGui = new MainGui;
 	onMainMenu();
 }

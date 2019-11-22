@@ -25,8 +25,8 @@ class LoaderGui: GuiElement {
         auto startTime = MonoTime.currTime();
         loadTextures();
         loadFonts();
-        auto deltaTime = MonoTime.currTime() - startTime;
-        writeln(deltaTime);
+        //auto deltaTime = MonoTime.currTime() - startTime;
+        //writeln(deltaTime);
         //Load completed
         removeRootGuis();
         callback();
@@ -120,9 +120,8 @@ void loadFonts() {
     auto fontCache = new ResourceCache!TrueTypeFont;
 	setResourceCache!TrueTypeFont(fontCache);
 
-
     auto files = dirEntries("media/font/", "{*.ttf}", SpanMode.depth);
     foreach(file; files) {
-        fontCache.set(new TrueTypeFont(file), baseName(file, ".ttf"));
+        fontCache.set(new TrueTypeFont(file, 12u), baseName(file, ".ttf"));
     }
 }
