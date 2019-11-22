@@ -84,8 +84,18 @@ final class PlayButton: Button {
     }
 
     override void draw() {
-        drawFilledRect(origin, size, isHovered ? Color(229, 241, 251) : Color(225, 225, 225));
-        drawRect(origin, size, isHovered ? Color(0, 120, 215) : Color(173, 173, 173));
+        if(isClicked) {
+            drawFilledRect(origin, size, Color(204, 228, 247));
+            drawRect(origin, size, Color(0, 84, 153));
+        }
+        else if(isHovered) {
+            drawFilledRect(origin, size, Color(229, 241, 251));
+            drawRect(origin, size, Color(0, 120, 215));
+        }
+        else {
+            drawFilledRect(origin, size, Color(225, 225, 225));
+            drawRect(origin, size, Color(173, 173, 173));
+        }
         if(_isPaused)
             _playSprite.draw(center);
         else
@@ -108,8 +118,18 @@ final class RewindButton: Button {
     }
 
     override void draw() {
-        drawFilledRect(origin, size, isHovered ? Color(229, 241, 251) : Color(225, 225, 225));
-        drawRect(origin, size, isHovered ? Color(0, 120, 215) : Color(173, 173, 173));
+        if(isClicked) {
+            drawFilledRect(origin, size, Color(204, 228, 247));
+            drawRect(origin, size, Color(0, 84, 153));
+        }
+        else if(isHovered) {
+            drawFilledRect(origin, size, Color(229, 241, 251));
+            drawRect(origin, size, Color(0, 120, 215));
+        }
+        else {
+            drawFilledRect(origin, size, Color(225, 225, 225));
+            drawRect(origin, size, Color(173, 173, 173));
+        }
         _rewindSprite.draw(center);
     }
 }
@@ -129,8 +149,18 @@ final class StopButton: Button {
     }
 
     override void draw() {
-        drawFilledRect(origin, size, isHovered ? Color(229, 241, 251) : Color(225, 225, 225));
-        drawRect(origin, size, isHovered ? Color(0, 120, 215) : Color(173, 173, 173));
+        if(isClicked) {
+            drawFilledRect(origin, size, Color(204, 228, 247));
+            drawRect(origin, size, Color(0, 84, 153));
+        }
+        else if(isHovered) {
+            drawFilledRect(origin, size, Color(229, 241, 251));
+            drawRect(origin, size, Color(0, 120, 215));
+        }
+        else {
+            drawFilledRect(origin, size, Color(225, 225, 225));
+            drawRect(origin, size, Color(173, 173, 173));
+        }
         _stopSprite.draw(center);
     }
 }
@@ -142,7 +172,7 @@ final class ProgressBar: GuiElement {
     }
 
     this() {
-        size(Vec2f(screenWidth - 100f, 15f));
+        size(Vec2f(screenWidth - 100f, 20f));
         _cursorSprite = fetch!Sprite("cursor");
     }
 
@@ -155,7 +185,7 @@ final class ProgressBar: GuiElement {
         case mouseUp:
             break;
         case resize:
-            size(Vec2f(event.window.size.x - 100f, 15f));
+            size(Vec2f(event.window.size.x - 100f, 20f));
             break;
         default:
             break;
@@ -178,21 +208,21 @@ final class ProgressBar: GuiElement {
     }
 
     override void draw() {
-        drawFilledRect(Vec2f(origin.x, center.y - (size.y / 2f)), Vec2f(size.x, 10f), Color.grey * .5f);
-        drawFilledRect(Vec2f(origin.x, center.y - (size.y / 2f)), Vec2f(size.x, 10f) * Vec2f(_factor, 1f), Color.cyan);
+        enum barSize = 10f;
+        drawFilledRect(Vec2f(origin.x, center.y - (barSize / 2f)), Vec2f(size.x, barSize), Color.grey * .5f);
+        drawFilledRect(Vec2f(origin.x, center.y - (barSize / 2f)), Vec2f(size.x, barSize) * Vec2f(_factor, 1f), Color.cyan);
         if(isMidiPlaying())
-            _cursorSprite.draw(origin + size * Vec2f(_factor, .5f));
+            _cursorSprite.draw(Vec2f(origin.x + size.x * _factor, center.y));
     }
 }
 
-alias TotalTimeGui = CurrentTimeGui;
 final class CurrentTimeGui: GuiElement {
     private {
         Label _label;
     }
 
     this() {
-        _label = new Label("00:00");
+        _label = new Label("--:--");
         _label.color = Color.black;
         _label.setAlign(GuiAlignX.center, GuiAlignY.top);
         size(Vec2f(50f, 25f));
@@ -200,7 +230,55 @@ final class CurrentTimeGui: GuiElement {
     }
 
     override void update(float deltaTime) {
+        import core.time: dur;
+        import std.format: format;
+        import std.conv: to;
 
+        string text;
+        if(isMidiPlaying()) {
+            const auto time = dur!"msecs"(getMidiTime().to!long).split!("minutes", "seconds");
+            text = format!"%02d:%02d"(time.minutes, time.seconds);
+        }
+        else {
+            text = "--:--";
+        }
+        if(_label.text != text)
+            _label.text = text;
+    }
+
+    override void draw() {
+        _label.draw();
+    }
+}
+
+final class TotalTimeGui: GuiElement {
+    private {
+        Label _label;
+    }
+
+    this() {
+        _label = new Label("--:--");
+        _label.color = Color.black;
+        _label.setAlign(GuiAlignX.center, GuiAlignY.top);
+        size(Vec2f(50f, 25f));
+        addChildGui(_label);
+    }
+
+    override void update(float deltaTime) {
+        import core.time: dur;
+        import std.format: format;
+        import std.conv: to;
+
+        string text;
+        if(isMidiPlaying()) {
+            const auto time = dur!"msecs"(getMidiDuration().to!long).split!("minutes", "seconds");
+            text = format!"%02d:%02d"(time.minutes, time.seconds);
+        }
+        else {
+            text = "--:--";
+        }
+        if(_label.text != text)
+            _label.text = text;
     }
 
     override void draw() {

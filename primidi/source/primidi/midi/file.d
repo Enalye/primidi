@@ -289,6 +289,7 @@ class MidiFile {
 
 	MidiEvent[][] tracks;
 
+	/// Total duration until the last event (in milliseconds).
 	double duration;
 
 	ulong lastTick = 0;

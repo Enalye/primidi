@@ -7,11 +7,11 @@ import atelier;
  */
 final class MenuBar: GuiElement {
     this() {
-        size(Vec2f(screenWidth, 25f));
+        size(Vec2f(screenWidth, 20f));
         auto box = new HContainer;
         addChildGui(box);
 
-        box.addChildGui(new TextButton(getDefaultFont(), "Test"));
+        box.addChildGui(new MenuButton("Test"));
     }
 
     override void onEvent(Event event) {
@@ -28,12 +28,25 @@ final class MenuBar: GuiElement {
         drawFilledRect(origin, size, Color.white);
     }
 }
-/*
-private final class MenuButton: TextButton {
-    this() {
 
+private final class MenuButton: TextButton {
+    this(string name) {
+        super(getDefaultFont(), name);
+        size(Vec2f(50f, 20f));
+        label.color = Color.black;
     }
-}*/
+
+    override void draw() {
+        if(isClicked) {
+            drawFilledRect(origin, size, Color(153, 209, 255));
+            drawRect(origin, size, Color(204, 232, 255));
+        }
+        else if(isHovered) {
+            drawFilledRect(origin, size, Color(229, 243, 255));
+            drawRect(origin, size, Color(204, 232, 255));
+        }
+    }
+}
 
 /** 
  * Overlay container
