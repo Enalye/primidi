@@ -1,10 +1,10 @@
-module primidi.gui.taskbar_gui;
+module primidi.gui.controlbar;
 
 import atelier;
 import primidi.gui.port;
 import primidi.player, primidi.midi;
 
-final class TaskbarGui: GuiElement {
+final class ControlBar: GuiElement {
     private {
     }
 
@@ -224,7 +224,8 @@ final class CurrentTimeGui: GuiElement {
     this() {
         _label = new Label("--:--");
         _label.color = Color.black;
-        _label.setAlign(GuiAlignX.center, GuiAlignY.top);
+        _label.setAlign(GuiAlignX.center, GuiAlignY.bottom);
+        _label.position(Vec2f(0f, 8f));
         size(Vec2f(50f, 25f));
         addChildGui(_label);
     }
@@ -259,7 +260,8 @@ final class TotalTimeGui: GuiElement {
     this() {
         _label = new Label("--:--");
         _label.color = Color.black;
-        _label.setAlign(GuiAlignX.center, GuiAlignY.top);
+        _label.setAlign(GuiAlignX.center, GuiAlignY.bottom);
+        _label.position(Vec2f(0f, 8f));
         size(Vec2f(50f, 25f));
         addChildGui(_label);
     }

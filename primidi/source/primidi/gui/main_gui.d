@@ -2,13 +2,13 @@ module primidi.gui.main_gui;
 
 import std.path, std.string;
 import atelier;
-import primidi.gui.menubar, primidi.gui.taskbar_gui, primidi.gui.plugin, primidi.gui.options, primidi.gui.logger;
+import primidi.gui.menubar, primidi.gui.controlbar, primidi.gui.plugin, primidi.gui.options, primidi.gui.logger;
 import primidi.player, primidi.midi;
 
 final class MainGui: GuiElement {
     private {
         MenuBar _menuBar;
-        TaskbarGui _taskbarGui;
+        ControlBar _controlBar;
         PluginGui _pluginGui;
         LoggerGui _loggerGui;
     }
@@ -24,8 +24,8 @@ final class MainGui: GuiElement {
         _loggerGui = new LoggerGui;
         addChildGui(_loggerGui);
 
-        _taskbarGui = new TaskbarGui;
-        addChildGui(_taskbarGui);
+        _controlBar = new ControlBar;
+        addChildGui(_controlBar);
 
         _menuBar = new MenuBar;
         addChildGui(_menuBar);
