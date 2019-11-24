@@ -1,6 +1,7 @@
 module primidi.gui.menubar;
 
 import atelier;
+import primidi.gui.open_file;
 
 private {
     bool _isMenuFocused;
@@ -19,14 +20,17 @@ final class MenuBar: GuiElement {
         auto box = new HContainer;
         addChildGui(box);
 
-        int i;
-        const auto menuNames = ["Test1", "Test2", "Test3"];
-        foreach(menuName; menuNames) {
-            auto menuBtn = new MenuButton(menuName, i, cast(uint) menuNames.length);
+        const auto menuNames = ["Media", "Ports", "Script"];
+        const auto menuItems = [
+            ["media.open"],
+            ["port.input", "port.output"],
+            ["---"]
+            ];
+        for(size_t i = 0uL; i < menuNames.length; ++ i) {
+            auto menuBtn = new MenuButton(menuNames[i], menuItems[i], cast(uint) i, cast(uint) menuNames.length);
             menuBtn.setCallback(this, "menu");
             box.addChildGui(menuBtn);
             _buttons ~= menuBtn;
-            i ++;
         }
     }
 
@@ -53,7 +57,7 @@ final class MenuBar: GuiElement {
             foreach(child; _buttons) {
                 if(child.requestChange) {
                     child.requestChange = false;
-                    _buttons[child.changeId].isHovered = true;
+                    _buttons[child.changeId].isClicked = true;
                     _buttons[child.changeId].onSubmit();
                     break;
                 }
@@ -89,10 +93,6 @@ private final class MenuChange: GuiElement {
     override void onHover() {
         triggerCallback();
     }
-
-    override void draw() {
-        //drawFilledRect(origin, size, Color.red);
-    }
 }
 
 private final class MenuButton: GuiElement {
@@ -107,14 +107,14 @@ private final class MenuButton: GuiElement {
 
     @property uint changeId() const { return _changeId; }
 
-    this(string name, uint id, uint maxId) {
+    this(const string name, const(string[]) menuItems, uint id, uint maxId) {
         _label = new Label(name);
         _label.setAlign(GuiAlignX.center, GuiAlignY.center);
         _label.color = Color.black;
         addChildGui(_label);
         size(Vec2f(50f, 20f));
 
-        _list = new MenuList(this, ["1", "2", "Hello"]);
+        _list = new MenuList(this, menuItems);
         _cancelTrigger = new MenuCancel;
         _cancelTrigger.setCallback(this, "cancel");
 
@@ -148,11 +148,12 @@ private final class MenuButton: GuiElement {
     }
 
     override void onCallback(string id) {
-        if(id == "cancel") {
+        switch(id) {
+        case "cancel":
             stopOverlay();
-            isHovered = false;
-        }
-        else if(id == "change") {
+            isClicked = false;
+            break;
+        case "change":
             foreach(changeTrigger; _changeTriggers) {
                 if(changeTrigger.isHovered) {
                     _changeId = changeTrigger.triggerId;
@@ -161,6 +162,15 @@ private final class MenuButton: GuiElement {
                     break;
                 }
             }
+            break;
+        case "media.open":
+            stopOverlay();
+            isClicked = false;
+            isHovered = false;
+            setModalGui(new OpenModal);
+            break;
+        default:
+            break;
         }
     }
 
@@ -188,7 +198,7 @@ private final class MenuButton: GuiElement {
  * Overlay container
  */
 private final class MenuList: VContainer {
-    this(GuiElement callbackObject, string[] options) {
+    this(GuiElement callbackObject, const(string[]) options) {
         position(Vec2f(0f, 20f));
         setChildAlign(GuiAlignX.left);
         foreach(option; options) {

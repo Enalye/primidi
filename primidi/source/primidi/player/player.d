@@ -6,6 +6,7 @@ import primidi.midi;
 private {
     MidiFile _midiFile;
     bool _isMidiFilePlaying;
+    string _midiFilePath;
 }
 
 void startMidi() {
@@ -16,6 +17,7 @@ void startMidi() {
 }
 
 void playMidi(string path) {
+    _midiFilePath = path;
     stopMidiClock();
     _midiFile = new MidiFile(path);
     stopMidiOutSequencer();
@@ -37,6 +39,10 @@ void stopMidi() {
 
 bool isMidiPlaying() {
     return _isMidiFilePlaying;
+}
+
+string getMidiFilePath() {
+    return _midiFilePath;
 }
 
 void setMidiPosition(long position) {
