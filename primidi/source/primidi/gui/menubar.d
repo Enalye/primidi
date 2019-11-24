@@ -46,8 +46,14 @@ final class MenuBar: GuiElement {
         case "menu":
             stopOverlay();
             foreach(child; _buttons) {
+                child.isHovered = false;
+                child.isClicked = false;
+                child.hasFocus = false;
+            }
+            foreach(child; _buttons) {
                 if(child.requestChange) {
                     child.requestChange = false;
+                    _buttons[child.changeId].isHovered = true;
                     _buttons[child.changeId].onSubmit();
                     break;
                 }
@@ -144,6 +150,7 @@ private final class MenuButton: GuiElement {
     override void onCallback(string id) {
         if(id == "cancel") {
             stopOverlay();
+            isHovered = false;
         }
         else if(id == "change") {
             foreach(changeTrigger; _changeTriggers) {
@@ -158,7 +165,7 @@ private final class MenuButton: GuiElement {
     }
 
     override void draw() {
-        if(hasFocus) {
+        if(isClicked) {
             drawFilledRect(origin, size, Color(153, 209, 255));
             drawRect(origin, size, Color(204, 232, 255));
         }
