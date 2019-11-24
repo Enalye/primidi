@@ -1,7 +1,7 @@
 module primidi.gui.menubar;
 
 import atelier;
-import primidi.gui.open_file;
+import primidi.gui.open_file, primidi.gui.port;
 
 private {
     bool _isMenuFocused;
@@ -168,6 +168,18 @@ private final class MenuButton: GuiElement {
             isClicked = false;
             isHovered = false;
             setModalGui(new OpenModal);
+            break;
+        case "port.output":
+            stopOverlay();
+            isClicked = false;
+            isHovered = false;
+            setModalGui(new OutPortModal);
+            break;
+        case "port.input":
+            stopOverlay();
+            isClicked = false;
+            isHovered = false;
+            setModalGui(new InPortModal);
             break;
         default:
             break;
