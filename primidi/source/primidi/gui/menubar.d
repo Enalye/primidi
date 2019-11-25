@@ -1,6 +1,7 @@
 module primidi.gui.menubar;
 
 import atelier;
+import primidi.player;
 import primidi.gui.open_file, primidi.gui.port;
 
 private {
@@ -24,7 +25,7 @@ final class MenuBar: GuiElement {
         const auto menuItems = [
             ["media.open"],
             ["port.input", "port.output"],
-            ["---"]
+            ["script.open", "script.restart"]
             ];
         for(size_t i = 0uL; i < menuNames.length; ++ i) {
             auto menuBtn = new MenuButton(menuNames[i], menuItems[i], cast(uint) i, cast(uint) menuNames.length);
@@ -167,7 +168,14 @@ private final class MenuButton: GuiElement {
             stopOverlay();
             isClicked = false;
             isHovered = false;
-            setModalGui(new OpenModal);
+            auto modal = new OpenModal(getMidiFilePath(), [".mid", ".midi"]);
+            modal.setCallback(this, "media.open.modal");
+            setModalGui(modal);
+            break;
+        case "media.open.modal":
+            auto modal = getModalGui!OpenModal;
+            stopModalGui();
+            playMidi(modal.getPath());
             break;
         case "port.output":
             stopOverlay();
@@ -180,6 +188,19 @@ private final class MenuButton: GuiElement {
             isClicked = false;
             isHovered = false;
             setModalGui(new InPortModal);
+            break;
+        case "script.open":
+            stopOverlay();
+            isClicked = false;
+            isHovered = false;
+            auto modal = new OpenModal("", [".gr", ".grimoire"]);
+            modal.setCallback(this, "script.open.modal");
+            setModalGui(modal);
+            break;
+        case "script.open.modal":
+            auto modal = getModalGui!OpenModal;
+            stopModalGui();
+            //loadScript(modal.getPath());
             break;
         default:
             break;

@@ -2,7 +2,6 @@ module primidi.gui.open_file;
 
 import std.file, std.path, std.string;
 import atelier;
-import primidi.player;
 import primidi.gui.editable_path;
 
 final class OpenModal: GuiElement {
@@ -51,12 +50,13 @@ final class OpenModal: GuiElement {
 		string _path, _fileName;
         Label _filePathLabel;
         GuiElement _applyBtn;
+        string[] _extensionList;
     }
 
-	this() {
-        string previousPath = getMidiFilePath();
-        if(previousPath.length) {
-            _path = dirName(previousPath);
+	this(string basePath, string[] extensionList) {
+        _extensionList = extensionList;
+        if(basePath.length) {
+            _path = dirName(basePath);
         }
         else {
             _path = dirName(getcwd());
@@ -185,8 +185,7 @@ final class OpenModal: GuiElement {
             reloadList();
             break;
         case "apply":
-            stopModalGui();
-            playMidi(getPath());
+            triggerCallback();
             break;
         case "cancel":
             stopModalGui();
@@ -204,11 +203,12 @@ final class OpenModal: GuiElement {
 
     /// Discriminate between file types.
     private FileType getFileType(string filePath) {
+        import std.algorithm: canFind;
         try {
             if(isDir(filePath))
                 return FileType.DirectoryType;
             const string ext = extension(filePath).toLower();
-            if(ext == ".mid" || ext == ".midi")
+            if(_extensionList.canFind(ext))
                 return FileType.MidiFileType;
             return FileType.InvalidType;
         }
