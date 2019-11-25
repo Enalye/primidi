@@ -3,7 +3,7 @@ module primidi.gui.main_gui;
 import std.path, std.string;
 import atelier;
 import primidi.gui.menubar, primidi.gui.controlbar, primidi.gui.plugin, primidi.gui.options, primidi.gui.logger;
-import primidi.player, primidi.midi;
+import primidi.player, primidi.midi, primidi.config;
 
 final class MainGui: GuiElement {
     private {
@@ -31,6 +31,8 @@ final class MainGui: GuiElement {
         addChildGui(_menuBar);
 
         startMidi();
+
+        loadConfig();
     }
 
     override void update(float deltaTime) {

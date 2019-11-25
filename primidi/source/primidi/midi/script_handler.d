@@ -165,6 +165,10 @@ void loadScript(string filePath) {
     _onNoteEventName = grMangleNamedFunction("onNote", [grGetUserType("Note")]);
 
     setSequencerNoteCallback(_handler._engine.hasEvent(_onNoteEventName) ? &onNote : null);
+
+
+    import primidi.config: saveConfig;
+    saveConfig();
 }
 
 ///Process a single pass of the VM.
@@ -193,6 +197,10 @@ void killScript() {
     if(!_handler)
         return;
     _handler.kill();
+}
+
+string getScriptFilePath() {
+    return _handler ? _handler._filePath : "";
 }
 
 ///Event callback when a note appears in the tick window.

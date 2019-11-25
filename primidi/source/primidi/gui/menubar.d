@@ -193,7 +193,7 @@ private final class MenuButton: GuiElement {
             stopOverlay();
             isClicked = false;
             isHovered = false;
-            auto modal = new OpenModal("", [".gr", ".grimoire"]);
+            auto modal = new OpenModal(getScriptFilePath(), [".gr", ".grimoire"]);
             modal.setCallback(this, "script.open.modal");
             setModalGui(modal);
             break;
@@ -203,13 +203,9 @@ private final class MenuButton: GuiElement {
             loadScript(modal.getPath());
             break;
         case "script.reload":
-        import std.stdio;
-        writeln("RELOAD");
             reloadScript();
             break;
         case "script.restart":
-        import std.stdio;
-        writeln("RESTART");
             restartScript();
             break;
         default:

@@ -10,3 +10,4 @@ __dummy.html
 *.exe
 *.sublime-workspace
 build/primidi/primidi
+config.json
