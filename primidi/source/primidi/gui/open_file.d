@@ -59,7 +59,7 @@ final class OpenModal: GuiElement {
             _path = dirName(basePath);
         }
         else {
-            _path = dirName(getcwd());
+            _path = getcwd();
         }
 
         size(Vec2f(500f, 500f));

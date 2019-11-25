@@ -45,30 +45,65 @@ private final class ScriptHandler {
         shared bool _isLoaded = false;
         shared bool _isProcessing = false;
         TimeoutThread _timeout;
+        GrData _data;
+        GrBytecode _bytecode;
+        string _filePath;
     }
 
-    this() {
-        _timeout = new TimeoutThread(this);      
-    }
+    this() {}
 
     void cleanup() {
         _isProcessing = false;
-        _engine.isRunning = false;
+        if(_engine)
+            _engine.isRunning = false;
         _isLoaded = false;
-        _timeout.isRunning = false;
+        if(_timeout)
+            _timeout.isRunning = false;
         _timeout = null;
     }
 
-    void load(string name) {
+    void load(string filePath) {
         try {
-            GrData data = new GrData;
-            grLoadStdLibrary(data);
-            loadScriptDefinitions(data);
-            auto bytecode = grCompileFile(data, name);
+            _filePath = filePath;
+            _data = new GrData;
+            grLoadStdLibrary(_data);
+            loadScriptDefinitions(_data);
+            _bytecode = grCompileFile(_data, filePath);
             _engine = new GrEngine;
-            _engine.load(data, bytecode);
+            _engine.load(_data, _bytecode);
             _engine.spawn();
+            _timeout = new TimeoutThread(this);      
             _timeout.start();
+            _isLoaded = true;
+        }
+        catch(Exception e) {
+            writeln("ScriptHandler caught an exception:\n" ~ e.msg);
+            cleanup();
+        }
+        catch(Error e) {
+            writeln("ScriptHandler caught an unrecoverable error:\n" ~ e.msg);
+            //We need to atleast kill the hanging thread.
+            cleanup();
+            throw e;
+        }
+    }
+
+    void reload() {
+        if(!_isLoaded)
+            return;
+        cleanup();
+        load(_filePath);
+    }
+
+    void restart() {
+        if(!_isLoaded)
+            return;
+        try {
+            _isLoaded = false;
+            _engine = new GrEngine;
+            _engine.load(_data, _bytecode);
+            _engine.spawn();
+            _isLoaded = true;
         }
         catch(Exception e) {
             writeln("ScriptHandler caught an exception:\n" ~ e.msg);
@@ -83,8 +118,9 @@ private final class ScriptHandler {
     }
 
     void run() {
+        if(!_isLoaded)
+            return;
         try {
-            _isLoaded = true;
             _isProcessing = true;
             _engine.process();
             _isProcessing = false;
@@ -115,25 +151,47 @@ private {
     dstring _onNoteEventName;
 }
 
-///Compile and load the script.
+///Setup the script handler.
 void initializeScript() {
     _handler = new ScriptHandler;
-    _handler.load("plugin/test.gr");
+}
+
+///Compile and load the script.
+void loadScript(string filePath) {
+    if(!_handler)
+        return;
+    _handler.load(filePath);
 
     _onNoteEventName = grMangleNamedFunction("onNote", [grGetUserType("Note")]);
 
-    if(_handler._engine.hasEvent(_onNoteEventName)) {
-        setSequencerNoteCallback(&onNote);
-    }
+    setSequencerNoteCallback(_handler._engine.hasEvent(_onNoteEventName) ? &onNote : null);
 }
 
 ///Process a single pass of the VM.
 void runScript() {
+    if(!_handler)
+        return;
     _handler.run();
+}
+
+///Recompile the file.
+void reloadScript() {
+    if(!_handler)
+        return;
+    _handler.reload();
+}
+
+///Relaunch the VM without recompiling.
+void restartScript() {
+    if(!_handler)
+        return;
+    _handler.restart();
 }
 
 ///Call upon quitting the program.
 void killScript() {
+    if(!_handler)
+        return;
     _handler.kill();
 }
 

@@ -28,6 +28,16 @@ final class PluginGui: GuiElement {
         popCanvas();
     }
 
+    override void onEvent(Event event) {
+        switch(event.type) with(EventType) {
+        case resize:
+            _fullscreenCanvas = new Canvas(event.window.size);
+            break;
+        default:
+            break;
+        }
+    }
+
     override void draw() {
         drawFilledRect(origin, size, Color.black);
         _fullscreenCanvas.draw(center);

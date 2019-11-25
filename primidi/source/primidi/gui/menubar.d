@@ -1,7 +1,7 @@
 module primidi.gui.menubar;
 
 import atelier;
-import primidi.player;
+import primidi.player, primidi.midi;
 import primidi.gui.open_file, primidi.gui.port;
 
 private {
@@ -25,7 +25,7 @@ final class MenuBar: GuiElement {
         const auto menuItems = [
             ["media.open"],
             ["port.input", "port.output"],
-            ["script.open", "script.restart"]
+            ["script.open", "script.reload", "script.restart"]
             ];
         for(size_t i = 0uL; i < menuNames.length; ++ i) {
             auto menuBtn = new MenuButton(menuNames[i], menuItems[i], cast(uint) i, cast(uint) menuNames.length);
@@ -200,7 +200,17 @@ private final class MenuButton: GuiElement {
         case "script.open.modal":
             auto modal = getModalGui!OpenModal;
             stopModalGui();
-            //loadScript(modal.getPath());
+            loadScript(modal.getPath());
+            break;
+        case "script.reload":
+        import std.stdio;
+        writeln("RELOAD");
+            reloadScript();
+            break;
+        case "script.restart":
+        import std.stdio;
+        writeln("RESTART");
+            restartScript();
             break;
         default:
             break;
