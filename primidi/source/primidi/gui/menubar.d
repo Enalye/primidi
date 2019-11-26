@@ -240,8 +240,14 @@ private final class MenuButton: GuiElement {
             setModalGui(new SelectLocaleModal);
             break;
         case "view.hide":
+            stopOverlay();
             break;
         case "view.fullscreen":
+            stopOverlay();
+            if(getWindowDisplay() == DisplayMode.windowed)
+                setWindowDisplay(DisplayMode.desktop);
+            else
+                setWindowDisplay(DisplayMode.windowed);
             break;
         default:
             break;
