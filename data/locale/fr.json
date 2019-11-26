@@ -1,0 +1,16 @@
+{
+    "locale": "Français",
+    "media": "Média",
+    "media.open": "Ouvrir fichier midi",
+    "ports": "Périphériques",
+    "port.input": "Périphérique d'entrée",
+    "port.output": "Périphérique de sortie",
+    "script": "Script",
+    "script.open": "Ouvrir un script",
+    "script.reload": "Recharger le script",
+    "script.restart": "Relancer le script",
+    "view": "Affichage",
+    "view.locale": "Changer la langue",
+    "view.hide": "Cacher l'interface",
+    "view.fullscreen": "Plein écran"
+}

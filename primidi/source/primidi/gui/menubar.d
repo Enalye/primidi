@@ -1,11 +1,12 @@
 module primidi.gui.menubar;
 
 import atelier;
-import primidi.player, primidi.midi;
-import primidi.gui.open_file, primidi.gui.port;
+import primidi.player, primidi.midi, primidi.locale;
+import primidi.gui.open_file, primidi.gui.port, primidi.gui.locale;
 
 private {
     bool _isMenuFocused;
+    float[] _menuSizes;
 }
 
 /** 
@@ -21,12 +22,14 @@ final class MenuBar: GuiElement {
         auto box = new HContainer;
         addChildGui(box);
 
-        const auto menuNames = ["Media", "Ports", "Script"];
+        const auto menuNames = ["media", "ports", "script", "view"];
         const auto menuItems = [
             ["media.open"],
             ["port.input", "port.output"],
-            ["script.open", "script.reload", "script.restart"]
+            ["script.open", "script.reload", "script.restart"],
+            ["view.locale", "view.hide", "view.fullscreen"]
             ];
+        _menuSizes.length = menuNames.length;
         for(size_t i = 0uL; i < menuNames.length; ++ i) {
             auto menuBtn = new MenuButton(menuNames[i], menuItems[i], cast(uint) i, cast(uint) menuNames.length);
             menuBtn.setCallback(this, "menu");
@@ -38,7 +41,7 @@ final class MenuBar: GuiElement {
     override void onEvent(Event event) {
         switch(event.type) with(EventType) {
         case resize:
-            size(Vec2f(event.window.size.x, 25f));
+            size(Vec2f(event.window.size.x, 20f));
             break;
         default:
             break;
@@ -102,25 +105,29 @@ private final class MenuButton: GuiElement {
         MenuCancel _cancelTrigger;
         MenuChange[] _changeTriggers;
         MenuList _list;
-        uint _changeId;
+        uint _changeId, _menuId;
+        string _nameId;
     }
     bool requestChange;
 
     @property uint changeId() const { return _changeId; }
 
     this(const string name, const(string[]) menuItems, uint id, uint maxId) {
-        _label = new Label(name);
+        _nameId = name;
+        _menuId = id;
+        _label = new Label(getLocalizedText(_nameId));
         _label.setAlign(GuiAlignX.center, GuiAlignY.center);
         _label.color = Color.black;
         addChildGui(_label);
-        size(Vec2f(50f, 20f));
+        size(Vec2f(_label.size.x + 20f, 20f));
+        _menuSizes[_menuId] = size.x;
 
         _list = new MenuList(this, menuItems);
         _cancelTrigger = new MenuCancel;
         _cancelTrigger.setCallback(this, "cancel");
 
         for(uint i = 0u; i < maxId; ++ i) {
-            if(i == id)
+            if(i == _menuId)
                 continue;
             auto changeTrigger = new MenuChange(i);
             changeTrigger.size = size;
@@ -130,8 +137,20 @@ private final class MenuButton: GuiElement {
     }
 
     override void onEvent(Event event) {
-        if(event.type == EventType.resize) {
+        switch(event.type) with(EventType) {
+        case resize:
             _cancelTrigger.size = cast(Vec2f) event.window.size;
+            break;
+        case custom:
+            if(event.custom.id == "locale") {
+                _label.text = getLocalizedText(_nameId);
+                size(Vec2f(_label.size.x + 20f, 20f));
+                _menuSizes[_menuId] = size.x;
+                _list.localize();
+            }
+            break;
+        default:
+            break;
         }
     }
 
@@ -203,10 +222,26 @@ private final class MenuButton: GuiElement {
             loadScript(modal.getPath());
             break;
         case "script.reload":
+            stopOverlay();
+            isClicked = false;
+            isHovered = false;
             reloadScript();
             break;
         case "script.restart":
+            stopOverlay();
+            isClicked = false;
+            isHovered = false;
             restartScript();
+            break;
+        case "view.locale":
+            stopOverlay();
+            isClicked = false;
+            isHovered = false;
+            setModalGui(new SelectLocaleModal);
+            break;
+        case "view.hide":
+            break;
+        case "view.fullscreen":
             break;
         default:
             break;
@@ -228,7 +263,12 @@ private final class MenuButton: GuiElement {
         _list.position = origin + Vec2f(0f, _size.y);
 
         foreach(changeTrigger; _changeTriggers) {
-            changeTrigger.position = Vec2f(changeTrigger.triggerId * 50f, 0f);
+            float x = 0f;
+            for(uint i = 0u; i < changeTrigger.triggerId; ++ i) {
+                x += _menuSizes[i];
+            }
+            changeTrigger.position = Vec2f(x, 0f);
+            changeTrigger.size = Vec2f(_menuSizes[changeTrigger.triggerId], 20f);
         }
     }
 }
@@ -241,10 +281,21 @@ private final class MenuList: VContainer {
         position(Vec2f(0f, 20f));
         setChildAlign(GuiAlignX.left);
         foreach(option; options) {
-            auto btn = new MenuItem(option); // TODO: Localize text.
+            auto btn = new MenuItem(option);
             btn.setCallback(callbackObject, option);
             addChildGui(btn);
         }
+    }
+
+    override void update(float deltaTime) {
+        super.update(deltaTime);
+        foreach(child; cast(MenuItem[]) children)
+            child.parentSize = size.x;
+    }
+
+    void localize() {
+        foreach(child; cast(MenuItem[]) children)
+            child.localize();
     }
 
     override void draw() {
@@ -255,15 +306,24 @@ private final class MenuList: VContainer {
 private final class MenuItem: GuiElement {
     private {
         Label _label;
+        string _nameId;
     }
 
+    float parentSize = 0f;
+
     this(string name) {
-        _label = new Label(name);
+        _nameId = name;
+        _label = new Label(getLocalizedText(_nameId));
         _label.position(Vec2f(50f, 0f));
         _label.setAlign(GuiAlignX.left, GuiAlignY.center);
         _label.color = Color.black;
         addChildGui(_label);
-        size(Vec2f(150f, 30f));
+        size(Vec2f(_label.size.x + 100f, 30f));
+    }
+
+    void localize() {
+        _label.text = getLocalizedText(_nameId);
+        size(Vec2f(_label.size.x + 100f, 30f));
     }
 
     override void onSubmit() {
@@ -276,8 +336,8 @@ private final class MenuItem: GuiElement {
 
     override void draw() {
         if(isHovered) {
-            drawFilledRect(origin, size, Color(229, 243, 255));
-            drawRect(origin, size, Color(204, 232, 255));
+            drawFilledRect(origin, Vec2f(parentSize, size.y), Color(229, 243, 255));
+            drawRect(origin, Vec2f(parentSize, size.y), Color(204, 232, 255));
         }
     }
 }

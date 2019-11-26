@@ -18,6 +18,9 @@ final class MainGui: GuiElement {
         size(screenSize);
         setAlign(GuiAlignX.left, GuiAlignY.top);
 
+        startMidi();
+        loadConfig();
+
         _pluginGui = new PluginGui;
         addChildGui(_pluginGui);
 
@@ -29,10 +32,6 @@ final class MainGui: GuiElement {
 
         _menuBar = new MenuBar;
         addChildGui(_menuBar);
-
-        startMidi();
-
-        loadConfig();
     }
 
     override void update(float deltaTime) {

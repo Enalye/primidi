@@ -1,8 +1,8 @@
 module primidi.config;
 
-import std.file;
+import std.file, std.path;
 import atelier, minuit;
-import primidi.player, primidi.midi;
+import primidi.player, primidi.midi, primidi.locale;
 
 private enum _configFilePath = "config.json";
 
@@ -12,11 +12,13 @@ void loadConfig() {
     JSONValue json = parseJSON(readText(_configFilePath));
     string inputName = getJsonStr(json, "input");
     string outputName = getJsonStr(json, "output");
-    string scriptPath = getJsonStr(json, "script");
+    string scriptPath = absolutePath(buildNormalizedPath(getJsonStr(json, "script")));
+    string localePath = absolutePath(buildNormalizedPath(getJsonStr(json, "locale")));
     
     selectMidiInDevice(mnFetchInput(inputName));
     selectMidiOutDevice(mnFetchOutput(outputName));
     loadScript(scriptPath);
+    setLocale(localePath);
 }
 
 void saveConfig() {
@@ -27,7 +29,8 @@ void saveConfig() {
         json["input"] = midiIn.port.name;
     if(midiOut && midiOut.port)
         json["output"] = midiOut.port.name;
-    json["script"] = getScriptFilePath();
+    json["script"] = relativePath(buildNormalizedPath((getScriptFilePath())));
+    json["locale"] = relativePath(buildNormalizedPath(getLocale()));
 
     std.file.write(_configFilePath, toJSON(json, true));
 }

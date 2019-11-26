@@ -1,0 +1,16 @@
+{
+    "locale": "English",
+    "media": "Media",
+    "media.open": "Open midi file",
+    "ports": "Ports",
+    "port.input": "Select input device",
+    "port.output": "Select output device",
+    "script": "Script",
+    "script.open": "Open script file",
+    "script.reload": "Reload script",
+    "script.restart": "Restart script",
+    "view": "View",
+    "view.locale": "Switch language",
+    "view.hide": "Hide the interface",
+    "view.fullscreen": "Full screen"
+}
