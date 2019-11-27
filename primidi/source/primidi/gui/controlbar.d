@@ -66,7 +66,6 @@ final class ControlBar: GuiElement {
 final class PlayButton: Button {
     private {
         Sprite _pauseSprite, _playSprite;
-        bool _isPaused;
     }
 
     this() {
@@ -79,8 +78,10 @@ final class PlayButton: Button {
     }
 
 	override void onSubmit() {
-        _isPaused = !_isPaused;
-        pauseMidi();
+        if(isMidiPlaying())
+            pauseMidi();
+        else
+            replayMidi();
     }
 
     override void draw() {
@@ -96,10 +97,10 @@ final class PlayButton: Button {
             drawFilledRect(origin, size, Color(225, 225, 225));
             drawRect(origin, size, Color(173, 173, 173));
         }
-        if(_isPaused)
-            _playSprite.draw(center);
-        else
+        if(isMidiPlaying() && isMidiClockRunning())
             _pauseSprite.draw(center);
+        else
+            _playSprite.draw(center);
     }
 }
 

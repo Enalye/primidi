@@ -31,6 +31,13 @@ void playMidi(string path) {
     _isMidiFilePlaying = true;
 }
 
+void replayMidi() {
+    import std.file: exists;
+    if(!exists(_midiFilePath))
+        return;
+    playMidi(_midiFilePath);
+}
+
 void stopMidi() {
 	stopMidiOutSequencer();
     stopInternalSequencer();
