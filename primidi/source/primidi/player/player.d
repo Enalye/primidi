@@ -32,8 +32,8 @@ void playMidi(string path) {
 }
 
 void stopMidi() {
-    stopMidiClock();
 	stopMidiOutSequencer();
+    _midiFile = null;
     _isMidiFilePlaying = false;
 }
 
@@ -79,6 +79,10 @@ void pauseMidi() {
 
 void updateMidi() {
     updateInternalSequencer();
+    if(_isMidiFilePlaying) {
+        if(getMidiTime() > getMidiDuration())
+            stopMidi();
+    }
 }
 
 double getMidiDuration() {
