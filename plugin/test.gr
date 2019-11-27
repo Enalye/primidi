@@ -24,17 +24,17 @@ main {
     seq_setInterval(2000, 2000);
     canvases = array(Canvas)[];
     loop(16) {
-        let canvas = Canvas(screenSize());
-        canvas::setPosition(screenCenter());
+        let canvas = Canvas(1280f, 720f);
+        canvas::setPosition(640f, 360f);
         canvas::setColorMod(Color(1f, 1f, 1f), 3);
         canvases ~= canvas;
     }
     spriteSheet = Texture("test.png");
     
     loop {
-        fillRect(1280f / 2f - 1f, 0f, 2f, 720f, Color(1f, 1f, 1f, 0.2f));
+        fillRect(640f - 1f, 0f, 2f, 720f, Color(1f, 1f, 1f, 0.2f));
         for(canvas, canvases) {
-            canvas::draw(screenCenter());
+            canvas::draw(640f, 360f);
             canvas::clear;
         }
         yield
@@ -42,11 +42,11 @@ main {
 }
 
 event onNote(Note note) {
+    let width, height = 1280f, 720f;
     let centerSprite = spriteSheet as Sprite;
     centerSprite::setClip(16, 0, 1, 1);
     centerSprite::setAnchor(0f, 0f);
 
-    let width, height = screenSize();
     Color color = colors[note::getChannel];
 
     let pitch = 1f - (note::getPitch as float / 128f);

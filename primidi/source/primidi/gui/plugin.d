@@ -6,24 +6,20 @@ import primidi.midi;
 /// Load and run the plugin's script
 final class PluginGui: GuiElement {
     private {
-        Canvas _fullscreenCanvas;
+        Canvas _canvas;
     }
 
     this() {
-        size(screenSize);
-        setAlign(GuiAlignX.center, GuiAlignY.center);
+        size(screenSize - Vec2f(0f, 70f));
+        position(Vec2f(0f, 20f));
+        setAlign(GuiAlignX.left, GuiAlignY.top);
 
-        _fullscreenCanvas = new Canvas(screenSize);
-        _fullscreenCanvas.position = centerScreen;
-        initializeScript();
+        _canvas = new Canvas(size);
+        _canvas.position = centerScreen; //TODO: remove that.
     }
 
-    void reload() {}
-
-    void setFullscreen() {}
-
     override void update(float deltaTime) {
-        pushCanvas(_fullscreenCanvas);
+        pushCanvas(_canvas);
         runScript();
         popCanvas();
     }
@@ -31,7 +27,8 @@ final class PluginGui: GuiElement {
     override void onEvent(Event event) {
         switch(event.type) with(EventType) {
         case resize:
-            _fullscreenCanvas = new Canvas(event.window.size);
+            size(screenSize - Vec2f(0f, 70f));
+            _canvas.renderSize = cast(Vec2u) size;
             break;
         default:
             break;
@@ -40,7 +37,7 @@ final class PluginGui: GuiElement {
 
     override void draw() {
         drawFilledRect(origin, size, Color.black);
-        _fullscreenCanvas.draw(center);
+        _canvas.draw(center);
     }
 
     override void onQuit() {

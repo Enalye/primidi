@@ -18,6 +18,7 @@ final class MainGui: GuiElement {
         size(screenSize);
         setAlign(GuiAlignX.left, GuiAlignY.top);
 
+        initializeScript();
         startMidi();
         loadConfig();
 
