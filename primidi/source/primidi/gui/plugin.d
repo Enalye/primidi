@@ -7,6 +7,7 @@ import primidi.midi;
 final class PluginGui: GuiElement {
     private {
         Canvas _canvas;
+        bool _isVisible = true;
     }
 
     this() {
@@ -16,6 +17,20 @@ final class PluginGui: GuiElement {
 
         _canvas = new Canvas(size);
         _canvas.position = centerScreen; //TODO: remove that.
+
+        GuiState hiddenState = {
+            offset: Vec2f(0f, -20f),
+            time: .25f,
+            easingFunction: getEasingFunction(EasingAlgorithm.quadInOut)
+        };
+        addState("hidden", hiddenState);
+
+        GuiState shownState = {
+            time: .25f,
+            easingFunction: getEasingFunction(EasingAlgorithm.quadInOut)
+        };
+        addState("shown", shownState);
+        setState("shown");
     }
 
     override void update(float deltaTime) {
@@ -27,8 +42,22 @@ final class PluginGui: GuiElement {
     override void onEvent(Event event) {
         switch(event.type) with(EventType) {
         case resize:
-            size(screenSize - Vec2f(0f, 70f));
+            if(_isVisible)
+                size(screenSize - Vec2f(0f, -70f));
+            else
+                size(screenSize);
             _canvas.renderSize = cast(Vec2u) size;
+            break;
+        case custom:
+            if(event.custom.id == "hide") {
+                doTransitionState(_isVisible ? "hidden" : "shown");
+                if(_isVisible)
+                    size(screenSize);
+                else
+                    size(screenSize - Vec2f(0f, -70f));
+                _canvas.renderSize = cast(Vec2u) size;
+                _isVisible = !_isVisible;
+            }
             break;
         default:
             break;

@@ -6,6 +6,7 @@ import primidi.player, primidi.midi;
 
 final class ControlBar: GuiElement {
     private {
+        bool _isVisible = true;
     }
 
     this() {
@@ -38,12 +39,32 @@ final class ControlBar: GuiElement {
             auto stopBtn = new StopButton;
             hbox.addChildGui(stopBtn);
         }
+
+        GuiState hiddenState = {
+            offset: Vec2f(0f, -50f),
+            time: .25f,
+            easingFunction: getEasingFunction(EasingAlgorithm.quadInOut)
+        };
+        addState("hidden", hiddenState);
+
+        GuiState shownState = {
+            time: .25f,
+            easingFunction: getEasingFunction(EasingAlgorithm.quadInOut)
+        };
+        addState("shown", shownState);
+        setState("shown");
     }
 
     override void onEvent(Event event) {
         switch(event.type) with(EventType) {
         case resize:
             size(Vec2f(event.window.size.x, 50f));
+            break;
+        case custom:
+            if(event.custom.id == "hide") {
+                doTransitionState(_isVisible ? "hidden" : "shown");
+                _isVisible = !_isVisible;
+            }
             break;
         default:
             break;

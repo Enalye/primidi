@@ -15,6 +15,7 @@ private {
 final class MenuBar: GuiElement {
     private {
         MenuButton[] _buttons;
+        bool _isVisible = true;
     }
 
     this() {
@@ -36,12 +37,32 @@ final class MenuBar: GuiElement {
             box.addChildGui(menuBtn);
             _buttons ~= menuBtn;
         }
+
+        GuiState hiddenState = {
+            offset: Vec2f(0f, -20f),
+            time: .25f,
+            easingFunction: getEasingFunction(EasingAlgorithm.quadInOut)
+        };
+        addState("hidden", hiddenState);
+
+        GuiState shownState = {
+            time: .25f,
+            easingFunction: getEasingFunction(EasingAlgorithm.quadInOut)
+        };
+        addState("shown", shownState);
+        setState("shown");
     }
 
     override void onEvent(Event event) {
         switch(event.type) with(EventType) {
         case resize:
             size(Vec2f(event.window.size.x, 20f));
+            break;
+        case custom:
+            if(event.custom.id == "hide") {
+                doTransitionState(_isVisible ? "hidden" : "shown");
+                _isVisible = !_isVisible;
+            }
             break;
         default:
             break;
@@ -252,6 +273,7 @@ private final class MenuButton: GuiElement {
             break;
         case "view.hide":
             stopOverlay();
+            sendCustomEvent("hide");
             break;
         case "view.fullscreen":
             stopOverlay();
