@@ -2,6 +2,7 @@
     "locale": "Français",
     "media": "Média",
     "media.open": "Ouvrir fichier midi",
+    "media.quit": "Quitter",
     "ports": "Périphériques",
     "port.input": "Périphérique d'entrée",
     "port.output": "Périphérique de sortie",

@@ -1,6 +1,6 @@
 GUI:
-    ☐ Add "media.quit" button.
-    ☐ Midi file name in title.
+    ✔ Add "media.quit" button. @done(19-11-28 02:25)
+    ✔ Midi file name in title. @done(19-11-28 02:22)
     ☐ Show/hide UI
 
 Shortcuts:

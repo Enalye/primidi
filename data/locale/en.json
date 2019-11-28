@@ -2,6 +2,7 @@
     "locale": "English",
     "media": "Media",
     "media.open": "Open midi file",
+    "media.quit": "Quit",
     "ports": "Ports",
     "port.input": "Select input device",
     "port.output": "Select output device",

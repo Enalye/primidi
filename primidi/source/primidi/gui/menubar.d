@@ -24,7 +24,7 @@ final class MenuBar: GuiElement {
 
         const auto menuNames = ["media", "ports", "script", "view"];
         const auto menuItems = [
-            ["media.open"],
+            ["media.open", "media.quit"],
             ["port.input", "port.output"],
             ["script.open", "script.reload", "script.restart"],
             ["view.locale", "view.hide", "view.fullscreen"]
@@ -202,6 +202,10 @@ private final class MenuButton: GuiElement {
             auto modal = getModalGui!OpenModal;
             stopModalGui();
             playMidi(modal.getPath());
+            break;
+        case "media.quit":
+            stopOverlay();
+            stopApplication();
             break;
         case "port.output":
             stopOverlay();
