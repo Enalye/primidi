@@ -84,6 +84,12 @@ final class PlayButton: Button {
             replayMidi();
     }
 
+    override void update(float deltaTime) {
+        super.update(deltaTime);
+        if(getButtonDown(KeyButton.space))
+            onSubmit();
+    }
+
     override void draw() {
         if(isClicked) {
             drawFilledRect(origin, size, Color(204, 228, 247));

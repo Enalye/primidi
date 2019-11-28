@@ -1,0 +1,9 @@
+GUI:
+    ☐ Add "media.quit" button.
+    ☐ Midi file name in title.
+    ☐ Show/hide UI
+
+Shortcuts:
+    ✔ F11 - fullscreen @done(19-11-28 02:18)
+    ✔ F10 - show/hide UI @done(19-11-28 02:18)
+    ✔ Space - Pause/Resume play @done(19-11-28 02:22)

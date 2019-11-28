@@ -167,6 +167,13 @@ private final class MenuButton: GuiElement {
         setOverlay(_list);
     }
 
+    override void update(float deltaTime) {
+        if(getButtonDown(KeyButton.f11))
+            onCallback("view.fullscreen");
+        if(getButtonDown(KeyButton.f10))
+            onCallback("view.hide");
+    }
+
     override void onCallback(string id) {
         switch(id) {
         case "cancel":

@@ -1,5 +1,6 @@
 module primidi.player.player;
 
+import std.path: baseName;
 import atelier, minuit;
 import primidi.midi;
 
@@ -29,6 +30,7 @@ void playMidi(string path) {
     startInternalSequencer();
     startMidiClock();
     _isMidiFilePlaying = true;
+    setWindowTitle("Primidi - " ~ baseName(_midiFilePath));
 }
 
 void replayMidi() {
@@ -43,6 +45,7 @@ void stopMidi() {
     stopInternalSequencer();
     _midiFile = null;
     _isMidiFilePlaying = false;
+    setWindowTitle("Primidi");
 }
 
 bool isMidiPlaying() {
