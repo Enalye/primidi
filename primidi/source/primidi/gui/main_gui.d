@@ -2,31 +2,32 @@ module primidi.gui.main_gui;
 
 import std.path, std.string;
 import atelier;
-import primidi.gui.menubar, primidi.gui.controlbar, primidi.gui.plugin, primidi.gui.options, primidi.gui.logger;
+import primidi.gui.menubar, primidi.gui.controlbar, primidi.gui.visualizer, primidi.gui.logger;
 import primidi.player, primidi.midi, primidi.config;
 
 final class MainGui: GuiElement {
     private {
         MenuBar _menuBar;
         ControlBar _controlBar;
-        PluginGui _pluginGui;
-        LoggerGui _loggerGui;
+        Visualizer _visualizer;
+        Logger _logger;
     }
 
     this() {
         position(Vec2f.zero);
         size(screenSize);
         setAlign(GuiAlignX.left, GuiAlignY.top);
+        _logger = new Logger;
+        setScriptLogger(_logger);
 
         initializeScript();
         startMidi();
         loadConfig();
 
-        _pluginGui = new PluginGui;
-        addChildGui(_pluginGui);
+        _visualizer = new Visualizer;
+        addChildGui(_visualizer);
 
-        _loggerGui = new LoggerGui;
-        addChildGui(_loggerGui);
+        addChildGui(_logger);
 
         _controlBar = new ControlBar;
         addChildGui(_controlBar);

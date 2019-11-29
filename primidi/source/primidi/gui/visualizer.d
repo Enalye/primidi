@@ -1,10 +1,10 @@
-module primidi.gui.plugin;
+module primidi.gui.visualizer;
 
 import atelier, grimoire;
 import primidi.midi;
 
 /// Load and run the plugin's script
-final class PluginGui: GuiElement {
+final class Visualizer: GuiElement {
     private {
         Canvas _canvas;
         bool _isVisible = true;

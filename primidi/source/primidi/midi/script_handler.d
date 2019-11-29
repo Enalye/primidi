@@ -3,7 +3,7 @@ module primidi.midi.script_handler;
 import std.stdio, core.thread;
 import minuit, grimoire, atelier;
 import primidi.midi.internal_sequencer;
-import primidi.script;
+import primidi.script, primidi.gui.logger;
 
 private final class ScriptHandler {
     private final class TimeoutThread: Thread {
@@ -34,7 +34,7 @@ private final class ScriptHandler {
                 }
             }
             catch(Exception e) {
-                writeln("Plugin timeout error: ", e.msg);
+                logMessage("Script timeout error: " ~ e.msg);
             }
         }
     }
@@ -77,11 +77,11 @@ private final class ScriptHandler {
             _isLoaded = true;
         }
         catch(Exception e) {
-            writeln("ScriptHandler caught an exception:\n" ~ e.msg);
+            logMessage(e.msg);
             cleanup();
         }
         catch(Error e) {
-            writeln("ScriptHandler caught an unrecoverable error:\n" ~ e.msg);
+            logMessage(e.msg);
             //We need to atleast kill the hanging thread.
             cleanup();
             throw e;
@@ -89,7 +89,10 @@ private final class ScriptHandler {
     }
 
     void reload() {
-        if(!_isLoaded)
+        import std.file: exists;
+        if(!_filePath.length)
+            return;
+        if(!exists(_filePath))
             return;
         cleanup();
         load(_filePath);
@@ -106,11 +109,11 @@ private final class ScriptHandler {
             _isLoaded = true;
         }
         catch(Exception e) {
-            writeln("ScriptHandler caught an exception:\n" ~ e.msg);
+            logMessage(e.msg);
             cleanup();
         }
         catch(Error e) {
-            writeln("ScriptHandler caught an unrecoverable error:\n" ~ e.msg);
+            logMessage(e.msg);
             //We need to atleast kill the hanging thread.
             cleanup();
             throw e;
@@ -118,6 +121,7 @@ private final class ScriptHandler {
     }
 
     void run() {
+        import std.conv: to;
         if(!_isLoaded)
             return;
         try {
@@ -125,16 +129,20 @@ private final class ScriptHandler {
             _engine.process();
             _isProcessing = false;
             _cycle = _cycle + 1;
-            if(!_engine.hasCoroutines) {
+            if(_engine.isPanicking) {
+                _timeout.isRunning = false;
+                throw new Exception("Panic: " ~ to!string(_engine.panicMessage));
+            }
+            else if(!_engine.hasCoroutines) {
                 _timeout.isRunning = false;
             }
         }
         catch(Exception e) {
-            writeln("ScriptHandler caught an exception:\n" ~ e.msg);
+            logMessage(e.msg);
             cleanup();
         }
         catch(Error e) {
-            writeln("ScriptHandler caught an unrecoverable error:\n" ~ e.msg);
+            logMessage(e.msg);
             //We need to atleast kill the hanging thread.
             cleanup();
             throw e;
@@ -149,11 +157,22 @@ private final class ScriptHandler {
 private {
     ScriptHandler _handler;
     dstring _onNoteEventName;
+    Logger _logger;
 }
 
 ///Setup the script handler.
 void initializeScript() {
     _handler = new ScriptHandler;
+}
+
+void setScriptLogger(Logger logger) {
+    _logger = logger;
+}
+
+private void logMessage(string msg) {
+    if(!_logger)
+        return;
+    _logger.add(msg);
 }
 
 ///Compile and load the script.
@@ -162,10 +181,10 @@ void loadScript(string filePath) {
         return;
     _handler.load(filePath);
 
-    _onNoteEventName = grMangleNamedFunction("onNote", [grGetUserType("Note")]);
-
-    setSequencerNoteCallback(_handler._engine.hasEvent(_onNoteEventName) ? &onNote : null);
-
+    if(_handler._isLoaded) {
+        _onNoteEventName = grMangleNamedFunction("onNote", [grGetUserType("Note")]);
+        setSequencerNoteCallback(_handler._engine.hasEvent(_onNoteEventName) ? &onNote : null);
+    }
 
     import primidi.config: saveConfig;
     saveConfig();
