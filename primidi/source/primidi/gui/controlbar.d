@@ -112,7 +112,7 @@ final class PlayButton: Button {
 
     override void update(float deltaTime) {
         super.update(deltaTime);
-        if(getButtonDown(KeyButton.space))
+        if(getButtonDown(KeyButton.space) || getButtonDown(KeyButton.k) || getButtonDown(KeyButton.p))
             onSubmit();
     }
 

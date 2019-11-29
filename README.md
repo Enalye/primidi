@@ -26,9 +26,9 @@ For the other options:
 ## Navigation
 
 ### Shortcuts
-Space: Play/Pause
-F10: Hide/Show the interface
-F11: Toggle fullscreen
+`Space`, `k` or `p`: Play/Pause
+`F10`: Hide/Show the interface
+`F11`: Toggle fullscreen
 
 ## How to build ##
 
