@@ -1,3 +1,8 @@
+/** 
+ * Copyright: Enalye
+ * License: Zlib
+ * Authors: Enalye
+ */
 module primidi.gui.open_file;
 
 import std.file, std.path, std.string;

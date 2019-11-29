@@ -1,3 +1,8 @@
+/** 
+ * Copyright: Enalye
+ * License: Zlib
+ * Authors: Enalye
+ */
 module primidi.midi.script_handler;
 
 import std.stdio, core.thread;

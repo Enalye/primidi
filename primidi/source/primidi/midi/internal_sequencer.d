@@ -1,3 +1,8 @@
+/** 
+ * Copyright: Enalye
+ * License: Zlib
+ * Authors: Enalye
+ */
 module primidi.midi.internal_sequencer;
 
 import std.algorithm;

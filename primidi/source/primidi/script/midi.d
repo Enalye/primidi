@@ -1,3 +1,8 @@
+/** 
+ * Copyright: Enalye
+ * License: Zlib
+ * Authors: Enalye
+ */
 module primidi.script.midi;
 
 import std.conv;
@@ -5,11 +10,10 @@ import grimoire, atelier;
 import primidi.midi;
 
 package void loadMidi(GrData data) {
-    auto defVec2 = grGetTupleType("Vec2f");
-
     auto grNote = data.addUserType("Note");
-    data.addPrimitive(&seq_getTick, "seq_tick", [], [], [grInt]);
-    data.addPrimitive(&seq_setInterval, "seq_setInterval", ["start", "end"], [grInt, grInt]);
+    data.addPrimitive(&clock_getTime, "getTime", [], [], [grFloat]);
+    data.addPrimitive(&seq_getTick, "getTick", [], [], [grInt]);
+    data.addPrimitive(&seq_setInterval, "setInterval", ["start", "end"], [grInt, grInt]);
 
     data.addPrimitive(&note_getChannel, "getChannel", ["note"], [grNote], [grInt]);
     data.addPrimitive(&note_getTick, "getTick", ["note"], [grNote], [grInt]);
@@ -23,7 +27,10 @@ package void loadMidi(GrData data) {
     data.addPrimitive(&note_isPlaying, "isPlaying", ["note"], [grNote], [grBool]);
     data.addPrimitive(&note_isAlive, "isAlive", ["note"], [grNote], [grBool]);
 }
-//note_isPlaying() note_isAlive() note_getProgress() note_setTickRange()
+
+private void clock_getTime(GrCall call) {
+    call.setFloat(getMidiTime() / 1_000f);
+}
 
 private void seq_getTick(GrCall call) {
     call.setInt(to!int(getInternalSequencerTick()));//Fix NaN on startup

@@ -1,3 +1,8 @@
+/** 
+ * Copyright: Enalye
+ * License: Zlib
+ * Authors: Enalye
+ */
 module primidi.script.library;
 
 import primidi.script.canvas, primidi.script.color, primidi.script.font, primidi.script.label, primidi.script.midi;
