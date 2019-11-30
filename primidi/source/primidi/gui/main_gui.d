@@ -53,6 +53,8 @@ final class MainGui: GuiElement {
             const string ext = extension(event.drop.filePath).toLower;
             if(ext == ".mid" || ext == ".midi")
                 playMidi(event.drop.filePath);
+            else if(ext == ".gr")
+                loadScript(event.drop.filePath);
             else {
                 //Modal window
             }

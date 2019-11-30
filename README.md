@@ -16,7 +16,10 @@ Go to `Ports` then `Select input device` or `Select output device`.
 
 ## Change script
 
-To change the rendering, go to `Script` > `Open script file` and choose a valid script (.gr).
+To change the rendering script, you can either:
+ * Drag & drop the `.gr` file into the application.
+ * `Script` > `Open script file` and choose a valid script (.gr).
+
 You can also write your own script, Primidi uses [Grimoire](https://github.com/Enalye/grimoire) for scripting and you can find its documentation [> here ! <](https://enalye.github.io/grimoire).
 
 For the other options:
@@ -29,8 +32,8 @@ For the other options:
 `Space`, `k` or `p`: Play/Pause
 `r`: Rewind midi to the beginning
 `s`: Stop the midi
-`F10`: Hide/Show the interface
-`F11`: Toggle fullscreen
+`F11`: Hide/Show the interface
+`F12`: Toggle fullscreen
 
 ## How to build ##
 
