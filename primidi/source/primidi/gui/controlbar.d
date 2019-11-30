@@ -150,6 +150,12 @@ final class RewindButton: Button {
         rewindMidi();
     }
 
+    override void update(float deltaTime) {
+        super.update(deltaTime);
+        if(getButtonDown(KeyButton.r))
+            onSubmit();
+    }
+
     override void draw() {
         if(isClicked) {
             drawFilledRect(origin, size, Color(204, 228, 247));
@@ -179,6 +185,12 @@ final class StopButton: Button {
 
     override void onSubmit() {
         stopMidi();
+    }
+
+    override void update(float deltaTime) {
+        super.update(deltaTime);
+        if(getButtonDown(KeyButton.s))
+            onSubmit();
     }
 
     override void draw() {

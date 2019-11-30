@@ -12,6 +12,6 @@
     "script.restart": "Restart script",
     "view": "View",
     "view.locale": "Switch language",
-    "view.hide": "Hide the interface (F10)",
-    "view.fullscreen": "Full screen (F11)"
+    "view.hide": "Hide the interface (F11)",
+    "view.fullscreen": "Full screen (F12)"
 }

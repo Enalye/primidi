@@ -27,6 +27,8 @@ For the other options:
 
 ### Shortcuts
 `Space`, `k` or `p`: Play/Pause
+`r`: Rewind midi to the beginning
+`s`: Stop the midi
 `F10`: Hide/Show the interface
 `F11`: Toggle fullscreen
 

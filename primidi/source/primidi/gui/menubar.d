@@ -194,9 +194,9 @@ private final class MenuButton: GuiElement {
     }
 
     override void update(float deltaTime) {
-        if(getButtonDown(KeyButton.f11))
+        if(getButtonDown(KeyButton.f12))
             onCallback("view.fullscreen");
-        if(getButtonDown(KeyButton.f10))
+        if(getButtonDown(KeyButton.f11))
             onCallback("view.hide");
     }
 
