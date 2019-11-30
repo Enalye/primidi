@@ -16,12 +16,15 @@ final class Visualizer: GuiElement {
     }
 
     this() {
+        import primidi.script: setScriptCanvas;
+
         size(screenSize - Vec2f(0f, 70f));
         position(Vec2f(0f, 20f));
         setAlign(GuiAlignX.left, GuiAlignY.top);
 
         _canvas = new Canvas(size);
-        _canvas.position = centerScreen; //TODO: remove that.
+        _canvas.position = centerScreen;
+        setScriptCanvas(_canvas);
 
         GuiState hiddenState = {
             offset: Vec2f(0f, -20f),

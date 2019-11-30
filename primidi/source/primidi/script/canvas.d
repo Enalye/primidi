@@ -7,6 +7,14 @@ module primidi.script.canvas;
 
 import grimoire, atelier;
 
+private {
+    Canvas _canvas;
+}
+
+void setScriptCanvas(Canvas canvas) {
+    _canvas = canvas;
+}
+
 package void loadCanvas(GrData data) {
     const defCanvas = data.addUserType("Canvas");
     const defColor = grGetTupleType("Color");
@@ -21,6 +29,10 @@ package void loadCanvas(GrData data) {
     data.addPrimitive(&_setColorMod, "setColorMod", ["canvas", "color", "blend"], [defCanvas, defColor, grInt]);
     data.addPrimitive(&_setAlpha, "setAlpha", ["canvas", "alpha"], [defCanvas, grInt]);
     data.addPrimitive(&_setPosition, "setPosition", ["canvas", "x", "y"], [defCanvas, grFloat, grFloat]);
+
+    data.addPrimitive(&_setCameraSizei, "setCameraSize", ["w", "h"], [grInt, grInt]);
+    data.addPrimitive(&_setCameraSizef, "setCameraSize", ["w", "h"], [grFloat, grFloat]);
+    data.addPrimitive(&_setCameraPosition, "setCameraPosition", ["x", "y"], [grFloat, grFloat]);
 }
 
 private void _makeCanvasf(GrCall call) {
@@ -69,4 +81,16 @@ private void _setAlpha(GrCall call) {
 private void _setPosition(GrCall call) {
     Canvas canvas = call.getUserData!Canvas("canvas");
     canvas.position = Vec2f(call.getFloat("x"), call.getFloat("y"));
+}
+
+private void _setCameraSizef(GrCall call) {
+    _canvas.size = Vec2f(call.getFloat("w"), call.getFloat("h"));
+}
+
+private void _setCameraSizei(GrCall call) {
+    _canvas.size = Vec2f(call.getInt("w"), call.getInt("h"));
+}
+
+private void _setCameraPosition(GrCall call) {
+    _canvas.position = Vec2f(call.getFloat("x"), call.getFloat("y"));
 }

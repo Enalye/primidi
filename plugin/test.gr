@@ -5,6 +5,7 @@
  */
 array(Canvas) canvases;
 Texture spriteSheet;
+let width, height = 1280f, 720f;
 
 let colors = [
     [109, 247, 193],
@@ -26,28 +27,38 @@ let colors = [
 ];
 
 main {
+    let centerX, centerY = width / 2f, height / 2f;
+
+    // Rendering canvas.
+    setCameraSize(width, height);
+    setCameraPosition(centerX, centerY);
+
+    // Midi events from 2000 ticks before to 2000 ticks after.
     setInterval(2000, 2000);
+
+    // We render each channel on a separate canvas.
     canvases = array(Canvas)[];
     loop(16) {
-        let canvas = Canvas(1280f, 720f);
-        canvas::setPosition(640f, 360f);
+        let canvas = Canvas(width, height);
+        canvas::setPosition(centerX, centerY);
         canvas::setColorMod(Color(1f, 1f, 1f), 3);
         canvases ~= canvas;
     }
     spriteSheet = Texture("test.png");
     
     loop {
-        fillRect(640f - 1f, 0f, 2f, 720f, Color(1f, 1f, 1f, 0.2f));
+        // Middle bar
+        fillRect(centerX - 1f, 0f, 2f, height, Color(1f, 1f, 1f, 0.2f));
         for(canvas, canvases) {
-            canvas::draw(640f, 360f);
+            canvas::draw(centerX, centerY);
             canvas::clear;
         }
         yield
     }
 }
 
+// Called for each note entering the Interval window.
 event onNote(Note note) {
-    let width, height = 1280f, 720f;
     let centerSprite = spriteSheet as Sprite;
     centerSprite::setClip(16, 0, 1, 1);
     centerSprite::setAnchor(0f, 0f);

@@ -117,7 +117,7 @@ private void _lerpColor(GrCall call) {
 }
 
 private void _printColor(GrCall call) {
-   writeln("Color(" ~ to!dstring(call.getFloat("c:r"))
+    writeln("Color(" ~ to!dstring(call.getFloat("c:r"))
         ~ ", " ~ to!dstring(call.getFloat("c:g"))
         ~ ", " ~ to!dstring(call.getFloat("c:b"))
         ~ ", " ~ to!dstring(call.getFloat("c:a")) ~ ")");
@@ -145,7 +145,7 @@ private void _castArrayToColor(GrCall call) {
 }
 
 private void _castColorToString(GrCall call) {
-   call.setString("Color(" ~ to!dstring(call.getFloat("c:r"))
+    call.setString("Color(" ~ to!dstring(call.getFloat("c:r"))
         ~ ", " ~ to!dstring(call.getFloat("c:g"))
         ~ ", " ~ to!dstring(call.getFloat("c:b"))
         ~ ", " ~ to!dstring(call.getFloat("c:a")) ~ ")");
