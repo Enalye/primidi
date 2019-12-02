@@ -12,10 +12,12 @@ void main(string[] args) {
 		setupApplication(args);
 	}
 	catch(Exception e) {
+		closeLock();
 		writeln(e.msg);
 	}
     catch(Error e) {
         //We need to clean up the remaining threads.
+		closeLock();
         stopMidiClock();
         stopMidiOutSequencer();
 		closeMidiDevices();

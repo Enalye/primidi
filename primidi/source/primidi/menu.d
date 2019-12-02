@@ -5,65 +5,109 @@
  */
 module primidi.menu;
 
-import std.stdio, std.conv;
+import std.stdio, std.conv, std.file, std.path, std.string;
 import atelier, grimoire, minuit;
 import primidi.loader, primidi.midi, primidi.gui, primidi.script;
 
-enum versionNumber = 0;
+private {
+	enum _version = "0.2.0";
+	enum _lockFileName = ".lock";
+	enum _msgFileName = ".primidi";
+	string _startingFilePath;
+	File _lockFile;
+	bool _isMainApplication;
+	MainGui _mainGui;
+}
+
 bool processArguments(string[] args) {
 	if(args.length == 1)
 		return false;
 	string arg = args[1];
-	if(arg.length == 0 || arg[0] != '-')
+	if(!arg.length)
 		return false;
-
-	string legalString = "Primidi version #" ~ to!string(versionNumber) ~ " (C) 2016~2019 Enalye <enalyen@gmail.com>\nPrimidi is a free software and comes with ABSOLUTELY NO WARRANTY."
-	;
 	switch(arg) {
 	case "-v":
 	case "--version":
-		writeln(legalString, "\n\nPrimidi build #", versionNumber);
+		writeln("Primidi version " ~ _version);
 		break;
 	case "-h":
 	case "--help":
-		writeln(legalString, "
+		writeln("Primidi (c) 2016~2019 by Enalye.
+Primidi is a free software and comes with ABSOLUTELY NO WARRANTY.
 
 Usage:
- primidi [option]
- primidi filename [filename...]
+ primidi
+ primidi <file>
+ primidi <option>
 
-Options:
+Where:
+ <file> A midi file path to read
+
+<option>:
  -h or --help		Display this help
- -v or --versions 	Display the version number"
- 		);
+ -v or --version 	Display the version number");
 		break;
 	default:
-		writeln(legalString, "\n\nInvalid option. Try \'primidi -h\' or \'primidi --help\' for additional help.");
+		_startingFilePath = arg;
 		break;
 	}
 	return true;
 }
 
 void setupApplication(string[] args) {
-	enableAudio(false);
-	initializeMidiDevices();
-	createApplication(Vec2u(1280u, 720u), "Primidi");
+	if(!exists(_lockFileName)) {
+		// If the file exists, Primidi is already launched.
+		_isMainApplication = true;
+	}
+	if(_isMainApplication) {
+		_lockFile = File(_lockFileName, "w");
+		_lockFile.lock();
+		
+		enableAudio(false);
+		initializeMidiDevices();
+		createApplication(Vec2u(1280u, 720u), "Primidi");
 
-	setWindowMinSize(Vec2u(500, 200));
-    setWindowClearColor(Color.black);
+		setWindowMinSize(Vec2u(500, 200));
+		setWindowClearColor(Color.black);
 
-    if(processArguments(args))
-		return;
-    onStartupLoad(&onLoadComplete);
-
-	runApplication();
-    destroyApplication();
+		if(!processArguments(args)) {
+			closeLock();
+			return;
+		}
+		onStartupLoad(&onLoadComplete);
+		runApplication();
+		destroyApplication();
+		closeLock();
+	}
+	else if(processArguments(args)) {
+		if(_startingFilePath.length)
+			std.file.write(_msgFileName, _startingFilePath);
+	}
 }
 
-private MainGui _mainGui;
+void closeLock() {
+	if(!_isMainApplication)
+		return;
+	_lockFile.close();
+	std.file.remove(_lockFileName);
+}
+
+string receiveFilePath() {
+	if(!exists(_msgFileName) || isDir(_msgFileName))
+		return "";
+	const string filePath = readText(_msgFileName);
+	std.file.remove(_msgFileName);
+	if(!exists(filePath) || isDir(filePath))
+		return "";
+	const string ext = extension(filePath).toLower;
+	if(ext != ".mid" && ext != ".midi")
+		return "";
+	return filePath;
+}
+
 void onLoadComplete() {
     setDefaultFont(fetch!TrueTypeFont("Cascadia"));
-	_mainGui = new MainGui;
+	_mainGui = new MainGui(_startingFilePath);
 	onMainMenu();
 }
 

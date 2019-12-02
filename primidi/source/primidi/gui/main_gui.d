@@ -18,7 +18,7 @@ final class MainGui: GuiElement {
         Logger _logger;
     }
 
-    this() {
+    this(string startingFilePath) {
         position(Vec2f.zero);
         size(screenSize);
         setAlign(GuiAlignX.left, GuiAlignY.top);
@@ -39,9 +39,16 @@ final class MainGui: GuiElement {
 
         _menuBar = new MenuBar;
         addChildGui(_menuBar);
+
+        if(startingFilePath.length)
+            playMidi(startingFilePath);
     }
 
     override void update(float deltaTime) {
+        import primidi.menu: receiveFilePath;
+        string receivedFilePath = receiveFilePath();
+        if(receivedFilePath.length)
+            playMidi(receivedFilePath);
         updateMidi();
     }
 
@@ -68,6 +75,8 @@ final class MainGui: GuiElement {
     }
 
     override void onQuit() {
+        import primidi.menu: closeLock;
+		closeLock();
         stopMidi();
 		closeMidiDevices();
     }
