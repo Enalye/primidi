@@ -11,8 +11,8 @@ import primidi.loader, primidi.midi, primidi.gui, primidi.script;
 
 private {
 	enum _version = "0.2.0";
-	enum _lockFileName = ".lock";
-	enum _msgFileName = ".primidi";
+	string _lockFileName = ".lock";
+	string _msgFileName = ".primidi";
 	string _startingFilePath;
 	File _lockFile;
 	bool _isMainApplication;
@@ -21,7 +21,7 @@ private {
 
 bool processArguments(string[] args) {
 	if(args.length == 1)
-		return false;
+		return true;
 	string arg = args[1];
 	if(!arg.length)
 		return false;
@@ -55,6 +55,8 @@ Where:
 }
 
 void setupApplication(string[] args) {
+	_lockFileName = buildNormalizedPath(dirName(thisExePath()), _lockFileName);
+	_msgFileName = buildNormalizedPath(dirName(thisExePath()), _msgFileName);
 	if(!exists(_lockFileName)) {
 		// If the file exists, Primidi is already launched.
 		_isMainApplication = true;
@@ -88,6 +90,8 @@ void setupApplication(string[] args) {
 void closeLock() {
 	if(!_isMainApplication)
 		return;
+	if(!exists(_lockFileName))
+		return;
 	_lockFile.close();
 	std.file.remove(_lockFileName);
 }
@@ -95,8 +99,12 @@ void closeLock() {
 string receiveFilePath() {
 	if(!exists(_msgFileName) || isDir(_msgFileName))
 		return "";
-	const string filePath = readText(_msgFileName);
-	std.file.remove(_msgFileName);
+	string filePath;
+	try {
+		filePath = readText(_msgFileName);
+		std.file.remove(_msgFileName);
+	}
+	catch(Exception e) {}
 	if(!exists(filePath) || isDir(filePath))
 		return "";
 	const string ext = extension(filePath).toLower;

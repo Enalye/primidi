@@ -97,6 +97,7 @@ void updateMidi() {
     updateInternalSequencer();
     if(_isMidiFilePlaying) {
         if(getMidiTime() > getMidiDuration()) {
+            setWindowTitle("Primidi");
             stopMidiOutSequencer();
             _midiFile = null;
             _isMidiFilePlaying = false;
