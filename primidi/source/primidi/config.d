@@ -21,7 +21,8 @@ void loadConfig() {
     }
     if(!exists(_configFilePath)) {
         saveConfig();
-        return;
+        if(!exists(_configFilePath))
+            return;
     }
     JSONValue json = parseJSON(readText(_configFilePath));
     string inputName = getJsonStr(json, "input", "");
@@ -43,7 +44,7 @@ void saveConfig() {
     json["output"] = (midiOut && midiOut.port) ? midiOut.port.name : "";
     json["script"] = relativePath(buildNormalizedPath(getScriptFilePath()), dirName(thisExePath()));
     json["locale"] = (getLocale().length && exists(getLocale())) ?
-        relativePath(buildNormalizedPath(getLocale())) :
+        relativePath(buildNormalizedPath(getLocale()), dirName(thisExePath())) :
         buildNormalizedPath("data", "locale", "en.json");
 
     std.file.write(_configFilePath, toJSON(json, true));

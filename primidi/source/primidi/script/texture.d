@@ -18,7 +18,7 @@ package void loadTexture(GrData data) {
 }
 
 private void _makeTexture(GrCall call) {
-    auto tex = new Texture(buildNormalizedPath(buildPath(getcwd(), "plugin",  to!string(call.getString("path")))));
+    auto tex = new Texture(buildNormalizedPath(buildPath(dirName(thisExePath()), "plugin",  to!string(call.getString("path")))));
     call.setUserData(tex);
 }
 
