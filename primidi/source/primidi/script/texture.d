@@ -7,6 +7,7 @@ module primidi.script.texture;
 
 import std.conv, std.file, std.path;
 import grimoire, atelier;
+import primidi.midi;
 
 package void loadTexture(GrData data) {
     auto defTexture = data.addUserType("Texture");
@@ -18,7 +19,7 @@ package void loadTexture(GrData data) {
 }
 
 private void _makeTexture(GrCall call) {
-    auto tex = new Texture(buildNormalizedPath(buildPath(dirName(thisExePath()), "plugin",  to!string(call.getString("path")))));
+    auto tex = new Texture(buildNormalizedPath(buildPath(dirName(getScriptFilePath()),  to!string(call.getString("path")))));
     call.setUserData(tex);
 }
 

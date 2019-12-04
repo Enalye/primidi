@@ -9,6 +9,7 @@ You can play a midi file by either:
  * Drag & drop the `.mid` or `.midi` file into the application.
  * `Media` > `Open midi file` and select a midi file to open.
  * By command line with `primidi PATH_TO_YOUR_FILE`.
+ * By double clicking on a midi file while selecting primidi to be the running program.
 
 ## Connect midi ports
 

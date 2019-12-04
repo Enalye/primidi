@@ -26,6 +26,7 @@ package void loadCanvas(GrData data) {
     data.addPrimitive(&_clearCanvas, "clear", ["canvas"], [defCanvas]);
     data.addPrimitive(&_renderCanvas, "draw", ["canvas", "x", "y"], [defCanvas, grFloat, grFloat]);
     
+    data.addPrimitive(&_setClearColor, "setClearColor", ["canvas", "color"], [defCanvas, defColor]);
     data.addPrimitive(&_setColorMod, "setColorMod", ["canvas", "color", "blend"], [defCanvas, defColor, grInt]);
     data.addPrimitive(&_setAlpha, "setAlpha", ["canvas", "alpha"], [defCanvas, grInt]);
     data.addPrimitive(&_setPosition, "setPosition", ["canvas", "x", "y"], [defCanvas, grFloat, grFloat]);
@@ -33,6 +34,7 @@ package void loadCanvas(GrData data) {
     data.addPrimitive(&_setCameraSizei, "setCameraSize", ["w", "h"], [grInt, grInt]);
     data.addPrimitive(&_setCameraSizef, "setCameraSize", ["w", "h"], [grFloat, grFloat]);
     data.addPrimitive(&_setCameraPosition, "setCameraPosition", ["x", "y"], [grFloat, grFloat]);
+    data.addPrimitive(&_setCameraClearColor, "setCameraClearColor", ["color"], [defColor]);
 }
 
 private void _makeCanvasf(GrCall call) {
@@ -59,6 +61,16 @@ private void _clearCanvas(GrCall call) {
 private void _renderCanvas(GrCall call) {
     Canvas canvas = call.getUserData!Canvas("canvas");
     canvas.draw(Vec2f(call.getFloat("x"), call.getFloat("y")));
+}
+
+private void _setClearColor(GrCall call) {
+    Canvas canvas = call.getUserData!Canvas("canvas");
+    const Color color = Color(
+        call.getFloat("color:r"),
+        call.getFloat("color:g"),
+        call.getFloat("color:b"),
+        call.getFloat("color:a"));
+    canvas.clearColor = color;
 }
 
 private void _setColorMod(GrCall call) {
@@ -93,4 +105,13 @@ private void _setCameraSizei(GrCall call) {
 
 private void _setCameraPosition(GrCall call) {
     _canvas.position = Vec2f(call.getFloat("x"), call.getFloat("y"));
+}
+
+private void _setCameraClearColor(GrCall call) {
+    const Color color = Color(
+        call.getFloat("color:r"),
+        call.getFloat("color:g"),
+        call.getFloat("color:b"),
+        call.getFloat("color:a"));
+    _canvas.clearColor = color;
 }

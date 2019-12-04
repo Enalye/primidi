@@ -6,6 +6,7 @@
 array(Canvas) canvases;
 Texture spriteSheet;
 let width, height = 1280f, 720f;
+let barWidth = 6f;
 
 let colors = [
     [109, 247, 193],
@@ -32,9 +33,10 @@ main {
     // Rendering canvas.
     setCameraSize(width, height);
     setCameraPosition(centerX, centerY);
+    setCameraClearColor(Color(0.051, 0.082, 0.125));
 
-    // Midi events from 2000 ticks before to 2000 ticks after.
-    setInterval(2000, 2000);
+    // Midi events from 3500 ticks before to 500 ticks after hit.
+    setInterval(5000, 1000);
 
     // We render each channel on a separate canvas.
     canvases = array(Canvas)[];
@@ -45,14 +47,22 @@ main {
         canvases ~= canvas;
     }
     spriteSheet = Texture("test.png");
-    
+
+    let mainCanvas = Canvas(width, height);
+    mainCanvas::setPosition(centerX, centerY);
+    mainCanvas::setColorMod(Color(1f, 1f, 1f), 3);
+
     loop {
-        // Middle bar
-        fillRect(centerX - 1f, 0f, 2f, height, Color(1f, 1f, 1f, 0.2f));
         for(canvas, canvases) {
             canvas::draw(centerX, centerY);
             canvas::clear;
         }
+        // Middle bar
+        pushCanvas(mainCanvas);
+        fillRect((width / 6f) - (barWidth / 2f), 0f, barWidth, height, Color(1f, 1f, 1f, 0.2f));
+        popCanvas();
+        mainCanvas::draw(centerX, centerY);
+        mainCanvas::clear;
         yield
     }
 }
@@ -66,6 +76,7 @@ event onNote(Note note) {
     Color color = colors[note::getChannel];
 
     let pitch = 1f - (note::getPitch as float / 128f);
+    float fadeOut = 1f;
 
     loop {
         unless(note::isAlive)
@@ -80,19 +91,30 @@ event onNote(Note note) {
         
         centerSprite::setSize(w, h);
         
-        pushCanvas(canvases[note::getChannel]);
         let x, y =
             width * (1f - note::getTime),
             height * pitch;
 
         if(note::isPlaying) {
             let factor = note::getPlayTime;
-            let c = lerp(Color(1f, 1f, 1f), color, factor);
+            let c = lerp(Color(1f, 1f, 1f, 1f), color, factor);
             centerSprite::setColor(c);
         }
         else {
-            centerSprite::setColor(color);
+            if(note::getPlayTime > 0f) {
+                centerSprite::setColor(lerp(Color(1f, 1f, 1f, 0f), color, fadeOut));
+                if(fadeOut > 0f) {
+                    fadeOut -= 0.025f;
+                    if(fadeOut < 0f) {
+                        fadeOut = 0f;
+                    }
+                }
+            }
+            else {
+                centerSprite::setColor(Color(1f, 1f, 1f, 0.5f));
+            }
         }
+        pushCanvas(canvases[note::getChannel]);
         centerSprite::draw(x, y);
         popCanvas();
         yield
