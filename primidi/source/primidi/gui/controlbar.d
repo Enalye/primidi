@@ -213,12 +213,16 @@ final class StopButton: Button {
 final class ProgressBar: GuiElement {
     private {
         float _factor;
-        Sprite _cursorSprite;
+        Sprite _cursorSprite, _circleSprite;
+        Color _backgroundColor, _foregroundColor;
     }
 
     this() {
-        size(Vec2f(screenWidth - 100f, 20f));
+        size(Vec2f(screenWidth - 100f, 25f));
         _cursorSprite = fetch!Sprite("cursor");
+        _circleSprite = fetch!Sprite("circle");
+        _backgroundColor = Color(0.70f, 0.75f, 0.76f);
+        _foregroundColor = Color(0.255f, 0.41f, 0.85f);
     }
 
     override void onEvent(Event event) {
@@ -230,7 +234,7 @@ final class ProgressBar: GuiElement {
         case mouseUp:
             break;
         case resize:
-            size(Vec2f(event.window.size.x - 100f, 20f));
+            size(Vec2f(event.window.size.x - 100f, 25f));
             break;
         default:
             break;
@@ -254,10 +258,23 @@ final class ProgressBar: GuiElement {
 
     override void draw() {
         enum barSize = 10f;
-        drawFilledRect(Vec2f(origin.x, center.y - (barSize / 2f)), Vec2f(size.x, barSize), Color.grey * .5f);
-        drawFilledRect(Vec2f(origin.x, center.y - (barSize / 2f)), Vec2f(size.x, barSize) * Vec2f(_factor, 1f), Color.cyan);
-        if(isMidiPlaying())
+        _circleSprite.color = _backgroundColor;
+        _circleSprite.draw(Vec2f(origin.x, center.y));
+        _circleSprite.draw(Vec2f(origin.x + size.x, center.y));
+        drawFilledRect(
+            Vec2f(origin.x, center.y - (barSize / 2f)),
+            Vec2f(size.x, barSize),
+            _backgroundColor);
+        if(isMidiPlaying()) {
+            _circleSprite.color = _foregroundColor;
+            _circleSprite.draw(Vec2f(origin.x, center.y));
+            _circleSprite.draw(Vec2f(origin.x + size.x * _factor, center.y));
+            drawFilledRect(
+                Vec2f(origin.x, center.y - (barSize / 2f)),
+                Vec2f(size.x, barSize) * Vec2f(_factor, 1f),
+                _foregroundColor);
             _cursorSprite.draw(Vec2f(origin.x + size.x * _factor, center.y));
+        }
     }
 }
 

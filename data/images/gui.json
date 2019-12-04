@@ -65,6 +65,17 @@
             "flip": "none",
             "name": "cursor",
             "type": "sprite"
+        },
+        {
+            "clip": {
+                "h": 10,
+                "w": 10,
+                "x": 16,
+                "y": 19
+            },
+            "flip": "none",
+            "name": "circle",
+            "type": "sprite"
         }
     ],
     "texture": "..\/..\/media\/gui\/gui.png",
