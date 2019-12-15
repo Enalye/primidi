@@ -66,7 +66,14 @@ main {
         yield
     }
 }
-
+/*
+event onNoteHit(Note note) {
+    loop(i, 60) {
+        drawRect()
+        yield
+    }
+}
+*/
 // Called for each note entering the Interval window.
 event onNote(Note note) {
     let centerSprite = spriteSheet as Sprite;

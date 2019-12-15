@@ -96,7 +96,7 @@ private final class SelectLocaleGui: DropDownList {
 	private void reload() {
 		removeChildrenGuis();
         _locales.length = 0uL;
-        foreach(file; dirEntries("data/locale", SpanMode.shallow)) {
+        foreach(file; dirEntries(buildNormalizedPath(dirName(thisExePath()), "data", "locale"), SpanMode.shallow)) {
             const string filePath = absolutePath(buildNormalizedPath(file));
             if(extension(filePath).toLower() != ".json")
                 continue;

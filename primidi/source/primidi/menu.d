@@ -77,6 +77,14 @@ void setupApplication(string[] args) {
 			return;
 		}
 		onStartupLoad(&onLoadComplete);
+
+		scope(exit) {
+			//We need to clean up the remaining threads.
+			closeLock();
+			stopMidiClock();
+			stopMidiOutSequencer();
+			closeMidiDevices();
+		}
 		runApplication();
 		destroyApplication();
 		closeLock();

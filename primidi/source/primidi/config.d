@@ -12,6 +12,7 @@ import primidi.player, primidi.midi, primidi.locale;
 private {
     bool _isConfigFilePathConfigured;
     string _configFilePath = "config.json";
+    string _pluginFilePath;
 }
 
 void loadConfig() {
@@ -27,13 +28,33 @@ void loadConfig() {
     JSONValue json = parseJSON(readText(_configFilePath));
     string inputName = getJsonStr(json, "input", "");
     string outputName = getJsonStr(json, "output", "");
-    string scriptPath = buildNormalizedPath(absolutePath(getJsonStr(json, "script", ""), dirName(thisExePath())));
+    string pluginPath = buildNormalizedPath(absolutePath(getJsonStr(json, "plugin", ""), dirName(thisExePath())));
     string localePath = buildNormalizedPath(absolutePath(getJsonStr(json, "locale", ""), dirName(thisExePath())));
     selectMidiInDevice(mnFetchInput(inputName));
     selectMidiOutDevice(mnFetchOutput(outputName));
-    if(exists(scriptPath))
-        loadScript(scriptPath);
+    if(exists(pluginPath)) {
+        loadPlugin(pluginPath);
+    }
     setLocale(localePath);
+}
+
+private bool loadPlugin(string pluginPath) {
+    JSONValue json = parseJSON(readText(pluginPath));
+    string scriptPath = buildNormalizedPath(absolutePath(getJsonStr(json, "script", ""), dirName(pluginPath)));
+    if(!exists(scriptPath))
+        return false;
+    _pluginFilePath = pluginPath;
+    loadScript(scriptPath);
+    return true;
+}
+
+void setPlugin(string pluginPath) {
+    if(loadPlugin(pluginPath))
+        saveConfig();
+}
+
+string getPluginPath() {
+    return _pluginFilePath;
 }
 
 void saveConfig() {
@@ -42,7 +63,7 @@ void saveConfig() {
     auto midiOut = getMidiOut();
     json["input"] = (midiIn && midiIn.port) ? midiIn.port.name : "";
     json["output"] = (midiOut && midiOut.port) ? midiOut.port.name : "";
-    json["script"] = relativePath(buildNormalizedPath(getScriptFilePath()), dirName(thisExePath()));
+    json["plugin"] = relativePath(buildNormalizedPath(_pluginFilePath), dirName(thisExePath()));
     json["locale"] = (getLocale().length && exists(getLocale())) ?
         relativePath(buildNormalizedPath(getLocale()), dirName(thisExePath())) :
         buildNormalizedPath("data", "locale", "en.json");

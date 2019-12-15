@@ -44,6 +44,14 @@
 			"name": "windows-build",
 			"platforms": ["windows"],
 			"targetPath": "../bin",
+			"postBuildCommands": [
+				"copy ..\\lib$ARCH\\*.dll ..\\bin"
+			]
+		},
+		{
+			"name": "windows-release",
+			"platforms": ["windows"],
+			"targetPath": "../bin",
 			"lflags":[
 				"-subsystem:windows",
 				"-entry:mainCRTStartup"

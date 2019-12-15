@@ -3,7 +3,7 @@
  * License: Zlib
  * Authors: Enalye
  */
-import std.stdio;
+import std.stdio, std.exception;
 
 import primidi.menu, primidi.midi;
 
@@ -12,15 +12,9 @@ void main(string[] args) {
 		setupApplication(args);
 	}
 	catch(Exception e) {
-		closeLock();
 		writeln(e.msg);
+		foreach(trace; e.info) {
+			writeln("at: ", trace);
+		}
 	}
-    catch(Error e) {
-        //We need to clean up the remaining threads.
-		closeLock();
-        stopMidiClock();
-        stopMidiOutSequencer();
-		closeMidiDevices();
-        throw e;
-    }
 }

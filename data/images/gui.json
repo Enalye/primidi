@@ -76,6 +76,17 @@
             "flip": "none",
             "name": "circle",
             "type": "sprite"
+        },
+        {
+            "clip": {
+                "h": 16,
+                "w": 16,
+                "x": 0,
+                "y": 32
+            },
+            "flip": "none",
+            "name": "default_cover",
+            "type": "sprite"
         }
     ],
     "texture": "..\/..\/media\/gui\/gui.png",

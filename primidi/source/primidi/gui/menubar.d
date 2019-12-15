@@ -7,7 +7,7 @@ module primidi.gui.menubar;
 
 import atelier;
 import primidi.player, primidi.midi, primidi.locale;
-import primidi.gui.open_file, primidi.gui.port, primidi.gui.locale;
+import primidi.gui.open_file, primidi.gui.port, primidi.gui.locale, primidi.gui.plugin;
 
 private {
     bool _isMenuFocused;
@@ -249,14 +249,7 @@ private final class MenuButton: GuiElement {
             stopOverlay();
             isClicked = false;
             isHovered = false;
-            auto modal = new OpenModal(getScriptFilePath(), [".gr", ".grimoire"]);
-            modal.setCallback(this, "script.open.modal");
-            setModalGui(modal);
-            break;
-        case "script.open.modal":
-            auto modal = getModalGui!OpenModal;
-            stopModalGui();
-            loadScript(modal.getPath());
+            setModalGui(new SelectPluginModal);
             break;
         case "script.reload":
             stopOverlay();
