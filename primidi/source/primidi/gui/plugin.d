@@ -15,11 +15,12 @@ final class SelectPluginModal: GuiElement {
         PluginItem _currentItem;
         Label _nameLabel, _infoLabel, _authorLabel;
         string _scriptPath;
+        Sprite _cover;
 	}
 
 	this() {
 		setAlign(GuiAlignX.center, GuiAlignY.center);
-        size(Vec2f(600f, 600f));
+        size(Vec2f(700f, 600f));
 
 		{ //Port
 			_pluginList = new PluginList;
@@ -31,7 +32,8 @@ final class SelectPluginModal: GuiElement {
 
         {
             auto box = new VContainer;
-            box.position(Vec2f(10f, 25f));
+            box.position(Vec2f(125f, 250f));
+            box.setChildAlign(GuiAlignX.left);
             box.setAlign(GuiAlignX.right, GuiAlignY.top);
             addChildGui(box);
 
@@ -86,9 +88,10 @@ final class SelectPluginModal: GuiElement {
     private void setCurrentPlugin(PluginItem item) {
         _currentItem = item;
         if(_currentItem) {
-            _nameLabel.text = _currentItem._name;
-            _infoLabel.text = _currentItem._description;
-            _authorLabel.text = _currentItem._authorName;
+            _nameLabel.text = getLocalizedText("name") ~ ": " ~ _currentItem._name;
+            _infoLabel.text = getLocalizedText("info") ~ ": " ~ _currentItem._description;
+            _authorLabel.text = getLocalizedText("author") ~ ": " ~ _currentItem._authorName;
+            _cover = _currentItem._cover;
         }
     }
 
@@ -112,6 +115,8 @@ final class SelectPluginModal: GuiElement {
 
 	override void draw() {
         drawFilledRect(origin, size, Color(.11f, .08f, .15f));
+        if(_cover)
+            _cover.draw(origin + Vec2f(size.x - (_cover.size.x / 2f + 80f), 40f + _cover.size.y / 2f));
     }
 
     override void drawOverlay() {

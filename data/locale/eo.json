@@ -25,5 +25,8 @@
     "select_output": "Elektu eligilon",
     "select_input": "Elektu enigilon",
     "no_output": "Neniu eligilo",
-    "no_input": "Neniu enigilo"
+    "no_input": "Neniu enigilo",
+    "name": "Nomo",
+    "info": "Informo",
+    "author": "Aŭtoro"
 }

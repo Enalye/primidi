@@ -24,7 +24,7 @@ final class OutPortModal: GuiElement {
 		}
 
 		{ //Title
-            auto title = new Label(getLocalizedText("Select an output") ~ ":");
+            auto title = new Label(getLocalizedText("select_output") ~ ":");
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
             addChildGui(title);
@@ -89,7 +89,7 @@ final class InPortModal: GuiElement {
 		}
 
 		{ //Title
-            auto title = new Label(getLocalizedText("Select an output") ~ ":");
+            auto title = new Label(getLocalizedText("select_input") ~ ":");
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
             addChildGui(title);

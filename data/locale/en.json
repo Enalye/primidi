@@ -25,5 +25,8 @@
     "select_output": "Select an output",
     "select_input": "Select an input",
     "no_output": "No Output",
-    "no_input": "No Input"
+    "no_input": "No Input",
+    "name": "Name",
+    "info": "Description",
+    "author": "Author"
 }

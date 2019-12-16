@@ -25,5 +25,8 @@
     "select_output": "Choisissez un port de sortie",
     "select_input": "Choisissez un port d'entrée",
     "no_output": "Aucune sortie",
-    "no_input": "Aucune entrée"
+    "no_input": "Aucune entrée",
+    "name": "Nom",
+    "info": "Description",
+    "author": "Auteur"
 }
