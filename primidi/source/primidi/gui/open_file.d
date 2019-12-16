@@ -7,6 +7,7 @@ module primidi.gui.open_file;
 
 import std.file, std.path, std.string;
 import atelier;
+import primidi.locale;
 import primidi.gui.editable_path;
 
 final class OpenModal: GuiElement {
@@ -73,7 +74,7 @@ final class OpenModal: GuiElement {
         Font font = getDefaultFont();
 
         { //Title
-            auto title = new Label(font, "File to open:");
+            auto title = new Label(font, getLocalizedText("file_to_open") ~ ":");
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
             addChildGui(title);
@@ -88,7 +89,7 @@ final class OpenModal: GuiElement {
         }
 
         {
-            _filePathLabel = new Label(font, "File: ---");
+            _filePathLabel = new Label(font, getLocalizedText("file") ~ ": ---");
             _filePathLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
             _filePathLabel.position = Vec2f(20f, 30f);
             addChildGui(_filePathLabel);
@@ -100,14 +101,14 @@ final class OpenModal: GuiElement {
             box.spacing = Vec2f(25f, 15f);
             addChildGui(box);
 
-            auto applyBtn = new TextButton(font, "Open");
+            auto applyBtn = new TextButton(font, getLocalizedText("open"));
             applyBtn.size = Vec2f(80f, 35f);
             applyBtn.setCallback(this, "apply");
             applyBtn.isLocked = true;
             box.addChildGui(applyBtn);
             _applyBtn = applyBtn;
 
-            auto cancelBtn = new TextButton(font, "Cancel");
+            auto cancelBtn = new TextButton(font, getLocalizedText("cancel"));
             cancelBtn.size = Vec2f(80f, 35f);
             cancelBtn.setCallback(this, "cancel");
             box.addChildGui(cancelBtn);
@@ -169,7 +170,7 @@ final class OpenModal: GuiElement {
             else {
                 _path = dirName(_pathLabel.text);
                 _fileName = baseName(_pathLabel.text);
-                _filePathLabel.text = "File: " ~ _fileName;
+                _filePathLabel.text = getLocalizedText("file") ~ ": " ~ _fileName;
                 _applyBtn.isLocked = false;
             }
             break;
@@ -181,7 +182,7 @@ final class OpenModal: GuiElement {
             }
             else {
                 _fileName = _list.getSubDir();
-                _filePathLabel.text = "File: " ~ _fileName;
+                _filePathLabel.text = getLocalizedText("file") ~ ": " ~ _fileName;
                 _applyBtn.isLocked = false;
             }
             break;
@@ -227,7 +228,7 @@ final class OpenModal: GuiElement {
     
     private void reloadList() {
         _fileName = "";
-        _filePathLabel.text = "File: ---";
+        _filePathLabel.text = getLocalizedText("file") ~ ": ---";
         _applyBtn.isLocked = true;
         _pathLabel.text = _path;
         _list.reset();

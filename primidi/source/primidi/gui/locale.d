@@ -25,14 +25,14 @@ final class SelectLocaleModal: GuiElement {
 		}
 
 		{ //Title
-            auto title = new Label("Language selection:");
+            auto title = new Label(getLocalizedText("select_language") ~ ":");
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
             addChildGui(title);
         }
 
 		{ //Close
-            auto closeBtn = new TextButton(getDefaultFont(), "Close");
+            auto closeBtn = new TextButton(getDefaultFont(), getLocalizedText("close"));
             closeBtn.setAlign(GuiAlignX.right, GuiAlignY.bottom);
             closeBtn.size = Vec2f(80f, 35f);
             closeBtn.setCallback(this, "close");

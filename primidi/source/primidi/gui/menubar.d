@@ -28,11 +28,11 @@ final class MenuBar: GuiElement {
         auto box = new HContainer;
         addChildGui(box);
 
-        const auto menuNames = ["media", "ports", "script", "view"];
+        const auto menuNames = ["media", "ports", "plugin", "view"];
         const auto menuItems = [
             ["media.open", "media.quit"],
             ["port.input", "port.output"],
-            ["script.open", "script.reload", "script.restart"],
+            ["plugin.open", "plugin.reload", "plugin.restart"],
             ["view.locale", "view.hide", "view.fullscreen"]
             ];
         _menuSizes.length = menuNames.length;
@@ -245,19 +245,19 @@ private final class MenuButton: GuiElement {
             isHovered = false;
             setModalGui(new InPortModal);
             break;
-        case "script.open":
+        case "plugin.open":
             stopOverlay();
             isClicked = false;
             isHovered = false;
             setModalGui(new SelectPluginModal);
             break;
-        case "script.reload":
+        case "plugin.reload":
             stopOverlay();
             isClicked = false;
             isHovered = false;
             reloadScript();
             break;
-        case "script.restart":
+        case "plugin.restart":
             stopOverlay();
             isClicked = false;
             isHovered = false;

@@ -6,7 +6,7 @@
 module primidi.gui.port;
 
 import atelier, minuit;
-import primidi.midi;
+import primidi.midi, primidi.locale;
 
 final class OutPortModal: GuiElement {
 	private {
@@ -24,14 +24,14 @@ final class OutPortModal: GuiElement {
 		}
 
 		{ //Title
-            auto title = new Label("Select an output:");
+            auto title = new Label(getLocalizedText("Select an output") ~ ":");
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
             addChildGui(title);
         }
 
 		{ //Close
-            auto closeBtn = new TextButton(getDefaultFont(), "Close");
+            auto closeBtn = new TextButton(getDefaultFont(), getLocalizedText("close"));
             closeBtn.setAlign(GuiAlignX.right, GuiAlignY.bottom);
             closeBtn.size = Vec2f(80f, 35f);
             closeBtn.setCallback(this, "close");
@@ -89,14 +89,14 @@ final class InPortModal: GuiElement {
 		}
 
 		{ //Title
-            auto title = new Label("Select an input:");
+            auto title = new Label(getLocalizedText("Select an output") ~ ":");
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
             addChildGui(title);
         }
 
 		{ //Close
-            auto closeBtn = new TextButton(getDefaultFont(), "Close");
+            auto closeBtn = new TextButton(getDefaultFont(), getLocalizedText("close"));
             closeBtn.setAlign(GuiAlignX.right, GuiAlignY.bottom);
             closeBtn.size = Vec2f(80f, 35f);
             closeBtn.setCallback(this, "close");
@@ -162,7 +162,7 @@ final class OutPortGui: DropDownList {
         _ports = [null];
 		_ports ~= mnFetchOutputs();
 		foreach(device; _ports)
-            add(device is null ? "No Output" : device.name);
+            add(device is null ? getLocalizedText("no_output") : device.name);
 
 		const auto oldDevice = getMidiOut().port;
 		if(oldDevice !is null) {
@@ -202,7 +202,7 @@ final class InPortGui: DropDownList {
         _ports = [null];
 		_ports ~= mnFetchInputs();
 		foreach(device; _ports)
-            add(device is null ? "No Input" : device.name);
+            add(device is null ? getLocalizedText("no_input") : device.name);
 
 		const auto oldDevice = getMidiIn().port;
 		if(oldDevice !is null) {
