@@ -27,8 +27,6 @@ final class SelectPluginModal: GuiElement {
 			_pluginList.setAlign(GuiAlignX.left, GuiAlignY.center);
             _pluginList.setCallback(this, "list");
 			addChildGui(_pluginList);
-
-            reload();
 		}
 
         {
@@ -37,7 +35,7 @@ final class SelectPluginModal: GuiElement {
             box.setAlign(GuiAlignX.right, GuiAlignY.top);
             addChildGui(box);
 
-            _nameLabel = new Label("HELLO WORLD-------");
+            _nameLabel = new Label;
             box.addChildGui(_nameLabel);
             _infoLabel = new Label;
             box.addChildGui(_infoLabel);
@@ -67,6 +65,7 @@ final class SelectPluginModal: GuiElement {
             applyBtn.setCallback(this, "apply");
             box.addChildGui(applyBtn);
         }
+        reload();
 
 		GuiState hiddenState = {
             offset: Vec2f(0f, -50f),
@@ -84,15 +83,19 @@ final class SelectPluginModal: GuiElement {
         doTransitionState("default");
 	}
 
+    private void setCurrentPlugin(PluginItem item) {
+        _currentItem = item;
+        if(_currentItem) {
+            _nameLabel.text = _currentItem._name;
+            _infoLabel.text = _currentItem._description;
+            _authorLabel.text = _currentItem._authorName;
+        }
+    }
+
 	override void onCallback(string id) {
 		switch(id) {
         case "list":
-            _currentItem = _pluginList._selectedItem;
-            if(_currentItem) {
-                _nameLabel.text = _pluginList._selectedItem._name;
-                _infoLabel.text = _pluginList._selectedItem._description;
-                _authorLabel.text = _pluginList._selectedItem._authorName;
-            }
+            setCurrentPlugin(_pluginList._selectedItem);
             break;
 		case "close":
             stopModalGui();
@@ -141,6 +144,7 @@ final class SelectPluginModal: GuiElement {
             for(size_t i = 0u; i < list.length; ++ i) {
 				if(list[i]._pluginPath == pluginPath) {
 					_pluginList.selected(cast(uint) i);
+                    setCurrentPlugin(list[i]);
 					break;
 				}
 			}
