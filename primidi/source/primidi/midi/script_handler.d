@@ -80,6 +80,16 @@ private final class ScriptHandler {
             _timeout = new TimeoutThread(this);      
             _timeout.start();
             _isLoaded = true;
+
+            // Events
+            _onNoteEnterEventName = grMangleNamedFunction("onNoteEnter", [grGetUserType("Note")]);
+            setNoteEnterCallback(_handler._engine.hasEvent(_onNoteEnterEventName) ? &onNoteEnter : null);
+
+            _onNoteHitEventName = grMangleNamedFunction("onNoteHit", [grGetUserType("Note")]);
+            setNoteHitCallback(_handler._engine.hasEvent(_onNoteHitEventName) ? &onNoteHit : null);
+
+            _onNoteExitEventName = grMangleNamedFunction("onNoteExit", [grGetUserType("Note")]);
+            setNoteExitCallback(_handler._engine.hasEvent(_onNoteExitEventName) ? &onNoteExit : null);
         }
         catch(Exception e) {
             logMessage(e.msg);
@@ -161,7 +171,7 @@ private final class ScriptHandler {
 
 private {
     ScriptHandler _handler;
-    dstring _onNoteEventName;
+    dstring _onNoteEnterEventName, _onNoteHitEventName, _onNoteExitEventName;
     Logger _logger;
 }
 
@@ -185,12 +195,6 @@ void loadScript(string filePath) {
     if(!_handler)
         return;
     _handler.load(filePath);
-
-    if(_handler._isLoaded) {
-        _onNoteEventName = grMangleNamedFunction("onNote", [grGetUserType("Note")]);
-        setSequencerNoteCallback(_handler._engine.hasEvent(_onNoteEventName) ? &onNote : null);
-    }
-
     import primidi.config: saveConfig;
     saveConfig();
 }
@@ -228,8 +232,19 @@ string getScriptFilePath() {
 }
 
 ///Event callback when a note appears in the tick window.
-private void onNote(Note note) {
-    auto context = _handler._engine.spawnEvent(_onNoteEventName);
+private void onNoteEnter(Note note) {
+    auto context = _handler._engine.spawnEvent(_onNoteEnterEventName);
     context.setUserData(note);
 }
 
+///Event callback when a note is played.
+private void onNoteHit(Note note) {
+    auto context = _handler._engine.spawnEvent(_onNoteHitEventName);
+    context.setUserData(note);
+}
+
+///Event callback when a note disappears in the tick window.
+private void onNoteExit(Note note) {
+    auto context = _handler._engine.spawnEvent(_onNoteExitEventName);
+    context.setUserData(note);
+}

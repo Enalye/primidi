@@ -66,16 +66,9 @@ main {
         yield
     }
 }
-/*
-event onNoteHit(Note note) {
-    loop(i, 60) {
-        drawRect()
-        yield
-    }
-}
-*/
+
 // Called for each note entering the Interval window.
-event onNote(Note note) {
+event onNoteEnter(Note note) {
     let centerSprite = spriteSheet as Sprite;
     centerSprite::setClip(16, 0, 1, 1);
     centerSprite::setAnchor(0f, 0f);

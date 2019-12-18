@@ -20,7 +20,7 @@ class Note {
     uint channel;
 	uint velocity;
 	float playTime, time, duration;
-    bool isAlive;
+    bool isAlive, hasHit;
 }
 
 alias NotesArray = IndexedArray!(Note, 4096u);
@@ -83,8 +83,8 @@ void updateInternalSequencer() {
 				note.velocity = bytes[2];
 				_sequencer.channels[channelId].midiNoteOnEvents.push(note);
 				_sequencer.channels[channelId].notesInRange.push(note);
-				if(noteCallback !is null)
-					noteCallback(note);
+				if(_onNoteHitCallback !is null)
+					_onNoteHitCallback(note);
 			}
 			break;
 		case NoteOff:
@@ -125,9 +125,17 @@ double getInternalSequencerTick() {
 }
 
 alias NoteCallback = void function(Note);
-NoteCallback noteCallback;
-void setSequencerNoteCallback(NoteCallback callback) {
-    noteCallback = callback;
+private NoteCallback _onNoteEnterCallback, _onNoteHitCallback, _onNoteExitCallback;
+void setNoteEnterCallback(NoteCallback callback) {
+    _onNoteEnterCallback = callback;
+}
+
+void setNoteHitCallback(NoteCallback callback) {
+    _onNoteHitCallback = callback;
+}
+
+void setNoteExitCallback(NoteCallback callback) {
+    _onNoteExitCallback = callback;
 }
 
 private final class Sequencer {
@@ -160,8 +168,8 @@ private final class Sequencer {
 				note.isAlive = true;
 				note.duration = rlerp(0, _startInterval + _endInterval, note.step);
 				notesInRange.push(note);
-				if(noteCallback !is null)
-					noteCallback(note);
+				if(_onNoteEnterCallback !is null)
+					_onNoteEnterCallback(note);
 				top ++;
 			}
 
@@ -189,9 +197,18 @@ private final class Sequencer {
 				note.playTime = cast(float)(cast(int)tick - cast(int)note.tick) / cast(float)note.step;
                 note.time = rlerp(tick + _startInterval, tick - _endInterval, note.tick);
 
+				if(tick >= note.tick && !note.hasHit) {
+					note.hasHit = true;
+					if(_onNoteHitCallback !is null)
+						_onNoteHitCallback(note);
+				}
+
 				if(tick > (note.tick + note.step + _endInterval)) {
+					// Leaving the window
                     note.isAlive = false;
 					notesInRange.markInternalForRemoval(i);
+					if(_onNoteExitCallback !is null)
+						_onNoteExitCallback(note);
                 }
 				i ++;
 			}
