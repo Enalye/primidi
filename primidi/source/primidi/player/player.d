@@ -75,6 +75,7 @@ void setMidiPosition(long position) {
 void rewindMidi() {
     if(!_midiFile)
         return;
+    bool wasClockRunning = isMidiClockRunning();
     stopMidiClock();
     stopMidiOutSequencer();
     stopInternalSequencer();
@@ -83,7 +84,8 @@ void rewindMidi() {
     setupMidiOutSequencer(_midiFile);
     startMidiOutSequencer();
     startInternalSequencer();
-    startMidiClock();
+    if(wasClockRunning)
+        startMidiClock();
 }
 
 void pauseMidi() {
