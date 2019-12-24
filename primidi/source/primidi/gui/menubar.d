@@ -198,6 +198,10 @@ private final class MenuButton: GuiElement {
             onCallback("view.fullscreen");
         if(getButtonDown(KeyButton.f11))
             onCallback("view.hide");
+        if(getButtonDown(KeyButton.f5))
+            onCallback("plugin.reload");
+        if(getButtonDown(KeyButton.f6))
+            onCallback("plugin.restart");
     }
 
     override void onCallback(string id) {
@@ -252,6 +256,8 @@ private final class MenuButton: GuiElement {
             setModalGui(new SelectPluginModal);
             break;
         case "plugin.reload":
+            if(isModalGui())
+                stopModalGui();
             stopOverlay();
             isClicked = false;
             isHovered = false;
