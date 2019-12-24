@@ -1,0 +1,154 @@
+/** 
+ * Copyright: Enalye
+ * License: Zlib
+ * Authors: Enalye
+ */
+array(Canvas) canvases;
+Canvas mainCanvas;
+Texture spriteSheet;
+let width, height = 1280f, 720f;
+let barWidth, barFactor = 2f, 0f;
+Color barColor;
+
+let colors = [
+    [109, 247, 193],
+    [17, 173, 193],
+    [96, 108, 129],
+    [57, 52, 87],
+    [30, 136, 117],
+    [91, 179, 97],
+    [161, 229, 90],
+    [247, 228, 118],
+    [249, 146, 82],
+    [203, 77, 104],
+    [106, 55, 113],
+    [201, 36, 100],
+    [244, 140, 182],
+    [247, 182, 158],
+    [155, 156, 130],
+    [49, 122, 215]
+];
+
+main {
+    let centerX, centerY = width / 2f, height / 2f;
+    Color baseBarColor;
+    baseBarColor, barColor = Color(1f, 1f, 1f, 0.2f);
+
+    // Rendering canvas.
+    setCameraSize(width, height);
+    setCameraPosition(centerX, centerY);
+    setCameraClearColor(Color(0.051, 0.082, 0.125));
+
+    // Midi events from 3500 ticks before to 500 ticks after hit.
+    setInterval(5000, 1000);
+
+    // We render each channel on a separate canvas.
+    canvases = array(Canvas)[];
+    loop(16) {
+        let canvas = Canvas(width, height);
+        canvas::setPosition(centerX, centerY);
+        canvas::setColorMod(Color(1f, 1f, 1f), 3);
+        canvases ~= canvas;
+    }
+    spriteSheet = Texture("test.png");
+
+    mainCanvas = Canvas(width, height);
+    mainCanvas::setPosition(centerX, centerY);
+    mainCanvas::setColorMod(Color(1f, 1f, 1f), 3);
+
+    loop {
+        for(canvas, canvases) {
+            canvas::draw(centerX, centerY);
+            canvas::clear;
+        }
+        // Middle bar
+        if(barFactor > 1f)
+            barFactor = 1f;
+        barColor:a = 0.6f;
+        pushCanvas(mainCanvas);
+        fillRect((width / 6f) - (barWidth / 2f), 0f, barWidth, height, lerp(baseBarColor, barColor, barFactor));
+        popCanvas();
+        if(barFactor < 0f) {
+            barFactor = 0f;
+        }
+        else {
+            barFactor -= 0.1f;
+        }
+        
+        mainCanvas::draw(centerX, centerY);
+        mainCanvas::clear;
+        yield
+    }
+}
+
+// Called for each note entering the Interval window.
+event onNoteEnter(Note note) {
+    bool wasHit = false;
+    let centerSprite = spriteSheet as Sprite;
+    centerSprite::setClip(16, 0, 1, 1);
+    centerSprite::setAnchor(0f, 0f);
+
+    Color color = colors[note::getChannel];
+
+    let pitch = 1f - (note::getPitch as float / 128f);
+    float fadeOut = 1f;
+    int time = 0;
+
+    loop {
+        unless(note::isAlive)
+            kill
+
+        let w, h =
+            width * note::getDuration,
+            height / 128f;
+
+        if(w < 4f)
+            w = 4f;
+        
+        centerSprite::setSize(w, h);
+        
+        let x, y =
+            width * (1f - note::getTime),
+            height * pitch;
+
+        if(note::isPlaying) {
+            let factor = note::getPlayTime;
+            let c = lerp(Color(1f, 1f, 1f, 1f), color, factor);
+            centerSprite::setColor(c);
+
+            // Particles
+            let particleX = width / 6f + (barWidth / 2f);
+            unless(wasHit) {
+                wasHit = true;
+                loop(i, 17) {
+                    createParticle(particleX, y + h / 2f, -85f + i as float * 10f + random(-6f, 6f), random(1.1f, 1.7f), random(-0.2f, 0.2f), random(5, 30), color, c);
+                }
+            }
+            else if((time % 5) == 0) {
+                createParticle(particleX, y, random(-85f, 5f), random(0.2f, 1.5f), random(-0.2f, 0.2f), random(5, 20), color, c);
+                createParticle(particleX, y + h, random(5f, 85f), random(0.2f, 1.5f), random(-0.2f, 0.2f), random(5, 20), color, c);
+            }
+            barColor = mix(barColor, c);
+            barFactor += (1f - factor) * 0.2f;
+        }
+        else {
+            if(note::getPlayTime > 0f) {
+                centerSprite::setColor(lerp(Color(1f, 1f, 1f, 0f), color, fadeOut));
+                if(fadeOut > 0f) {
+                    fadeOut -= 0.025f;
+                    if(fadeOut < 0f) {
+                        fadeOut = 0f;
+                    }
+                }
+            }
+            else {
+                centerSprite::setColor(Color(1f, 1f, 1f, 0.5f));
+            }
+        }
+        pushCanvas(canvases[note::getChannel]);
+        centerSprite::draw(x, y);
+        popCanvas();
+        time ++;
+        yield
+    }
+}

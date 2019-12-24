@@ -28,5 +28,6 @@
     "no_input": "Neniu enigilo",
     "name": "Nomo",
     "info": "Informo",
-    "author": "Aŭtoro"
+    "author": "Aŭtoro",
+    "error": "Eraro okazis"
 }

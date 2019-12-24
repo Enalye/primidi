@@ -6,7 +6,7 @@
 module primidi.gui.visualizer;
 
 import atelier, grimoire;
-import primidi.midi;
+import primidi.midi, primidi.particles;
 
 /// Load and run the plugin's script
 final class Visualizer: GuiElement {
@@ -25,6 +25,8 @@ final class Visualizer: GuiElement {
         _canvas = new Canvas(size);
         _canvas.position = centerScreen;
         setScriptCanvas(_canvas);
+
+        initializeParticles();
 
         GuiState hiddenState = {
             offset: Vec2f(0f, -20f),
@@ -45,6 +47,7 @@ final class Visualizer: GuiElement {
         pushCanvas(_canvas);
         runScript();
         popCanvas();
+        updateParticles(deltaTime);
     }
 
     override void onEvent(Event event) {
@@ -74,6 +77,9 @@ final class Visualizer: GuiElement {
 
     override void draw() {
         drawFilledRect(origin, size, Color.black);
+        pushCanvas(_canvas, false);
+        drawParticles();
+        popCanvas();
         _canvas.draw(center);
     }
 

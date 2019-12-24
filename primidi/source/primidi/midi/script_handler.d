@@ -8,7 +8,7 @@ module primidi.midi.script_handler;
 import std.stdio, core.thread;
 import minuit, grimoire, atelier;
 import primidi.midi.internal_sequencer;
-import primidi.script, primidi.gui.logger;
+import primidi.script, primidi.gui.logger, primidi.gui;
 
 private final class ScriptHandler {
     private final class TimeoutThread: Thread {
@@ -53,6 +53,7 @@ private final class ScriptHandler {
         GrData _data;
         GrBytecode _bytecode;
         string _filePath;
+        GrError _error;
     }
 
     this() {}
@@ -73,7 +74,13 @@ private final class ScriptHandler {
             _data = new GrData;
             grLoadStdLibrary(_data);
             loadScriptDefinitions(_data);
-            _bytecode = grCompileFile(_data, filePath);
+            GrCompiler compiler = new GrCompiler(_data);
+            if(!compiler.compileFile(_bytecode, filePath)) {
+                _isLoaded = false;
+                _error = compiler.getError();
+                cleanup();
+                return;
+            }
             _engine = new GrEngine;
             _engine.load(_data, _bytecode);
             _engine.spawn();
@@ -137,6 +144,10 @@ private final class ScriptHandler {
 
     void run() {
         import std.conv: to;
+        if(_error) {
+            setModalGui(new ScriptErrorModal(_error));
+            _error = null;
+        }
         if(!_isLoaded)
             return;
         try {

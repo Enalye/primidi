@@ -28,5 +28,6 @@
     "no_input": "Aucune entrée",
     "name": "Nom",
     "info": "Description",
-    "author": "Auteur"
+    "author": "Auteur",
+    "error": "Un problème est survenu"
 }

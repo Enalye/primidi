@@ -67,7 +67,7 @@ void setupApplication(string[] args) {
 		
 		enableAudio(false);
 		initializeMidiDevices();
-		createApplication(Vec2u(1280u, 720u), "Primidi");
+		createApplication(Vec2u(1280u, 720u + 70u), "Primidi");
 
 		setWindowMinSize(Vec2u(500, 200));
 		setWindowClearColor(Color.black);
