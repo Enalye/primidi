@@ -73,11 +73,4 @@ final class MainGui: GuiElement {
             break;
         }
     }
-
-    override void onQuit() {
-        import primidi.menu: closeLock;
-		closeLock();
-        stopMidi();
-		closeMidiDevices();
-    }
 }

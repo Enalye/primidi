@@ -87,7 +87,6 @@ void setupApplication(string[] args) {
 		}
 		runApplication();
 		destroyApplication();
-		closeLock();
 	}
 	else if(processArguments(args)) {
 		if(_startingFilePath.length)
@@ -95,7 +94,7 @@ void setupApplication(string[] args) {
 	}
 }
 
-void closeLock() {
+private void closeLock() {
 	if(!_isMainApplication)
 		return;
 	if(!exists(_lockFileName))
@@ -121,13 +120,13 @@ string receiveFilePath() {
 	return filePath;
 }
 
-void onLoadComplete() {
+private void onLoadComplete() {
     setDefaultFont(fetch!TrueTypeFont("Cascadia"));
 	_mainGui = new MainGui(_startingFilePath);
 	onMainMenu();
 }
 
-void onMainMenu() {
+private void onMainMenu() {
 	removeRootGuis();
 	addRootGui(_mainGui);
 }
