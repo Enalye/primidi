@@ -12,4 +12,5 @@ public {
 	import primidi.midi.device;
 	import primidi.midi.script_handler;
     import primidi.midi.clock;
+    import primidi.midi.state;
 }

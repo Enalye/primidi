@@ -16,6 +16,8 @@ import minuit;
 import primidi.midi.file;
 import primidi.midi.device;
 import primidi.midi.clock;
+import primidi.midi.state;
+
 
 auto speedFactor = 1f;
 auto initialBpm = 120;
@@ -54,6 +56,7 @@ private final class MidiSequencer: Thread {
 	shared bool isRunning;
 
 	this(MidiFile midiFile) {
+		initializeMidiState();
 		speedFactor = 1f;
 		initialBpm = 120;
 
@@ -203,6 +206,8 @@ private final class MidiSequencer: Thread {
 				midiOut.send(cast(ubyte)ev.type | cast(ubyte)ev.note.channel, cast(ubyte)ev.note.note);
 				break;
 			case PitchWheel:
+				setPitchBend(ev.note.channel, ((ev.note.velocity & 0x7F) << 7) | (ev.note.note & 0x7F));
+				goto case NoteOn;
 			case ControlChange:
 			case KeyAfterTouch:
 				midiOut.send(cast(ubyte)ev.type | cast(ubyte)ev.note.channel, cast(ubyte)ev.note.note, cast(ubyte)ev.note.velocity);

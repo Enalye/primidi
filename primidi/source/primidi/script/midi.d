@@ -28,6 +28,9 @@ package void loadMidi(GrData data) {
 
     data.addPrimitive(&note_isPlaying, "isPlaying", ["note"], [grNote], [grBool]);
     data.addPrimitive(&note_isAlive, "isAlive", ["note"], [grNote], [grBool]);
+
+
+    data.addPrimitive(&note_getPitchBend, "getPitchBend", ["chan"], [grInt], [grFloat]);
 }
 
 private void clock_getTime(GrCall call) {
@@ -99,4 +102,13 @@ private void note_isAlive(GrCall call) {
 private void note_isPlaying(GrCall call) {
     auto note = call.getUserData!Note("note");
     call.setBool(note.playTime >= 0f && note.playTime <= 1f);
+}
+
+private void note_getPitchBend(GrCall call) {
+    auto chan = call.getInt("chan");
+    if(chan >= 16 || chan < 0) {
+        call.raise("Channel index out of bounds");
+        return;
+    }
+    call.setFloat(getPitchBend(cast(ubyte) chan));
 }

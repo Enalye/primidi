@@ -104,7 +104,7 @@ event onNoteEnter(Note note) {
         
         let x, y =
             width * (1f - note::getTime),
-            height * pitch;
+            height * pitch - getPitchBend(note::getChannel) * h * 2f;
 
         if(note::isPlaying) {
             let factor = note::getPlayTime;
