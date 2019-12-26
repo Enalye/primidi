@@ -13,7 +13,9 @@ package void loadMidi(GrData data) {
     auto grNote = data.addUserType("Note");
     data.addPrimitive(&clock_getTime, "getTime", [], [], [grFloat]);
     data.addPrimitive(&seq_getTick, "getTick", [], [], [grInt]);
-    data.addPrimitive(&seq_setInterval, "setInterval", ["start", "end"], [grInt, grInt]);
+    data.addPrimitive(&seq_setInterval, "setInterval", ["size"], [grInt]);
+    data.addPrimitive(&seq_setHitRatio, "setRatio", ["ratio"], [grFloat]);
+    data.addPrimitive(&seq_getHitRatio, "getRatio", [], [], [grFloat]);
 
     data.addPrimitive(&note_getChannel, "getChannel", ["note"], [grNote], [grInt]);
     data.addPrimitive(&note_getTick, "getTick", ["note"], [grNote], [grInt]);
@@ -37,7 +39,15 @@ private void seq_getTick(GrCall call) {
 }
 
 private void seq_setInterval(GrCall call) {
-    setInternalSequencerInterval(call.getInt("start"), call.getInt("end"));
+    setInternalSequencerInterval(call.getInt("size"));
+}
+
+private void seq_setHitRatio(GrCall call) {
+    setInternalSequencerHitRatio(call.getFloat("ratio"));
+}
+
+private void seq_getHitRatio(GrCall call) {
+    call.setFloat(getInternalSequencerHitRatio());
 }
 
 private void note_getChannel(GrCall call) {

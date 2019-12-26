@@ -10,6 +10,7 @@
     "plugin.open": "Select plugin",
     "plugin.reload": "Reload plugin (F5)",
     "plugin.restart": "Restart plugin (F6)",
+    "plugin.ticks": "Set tick window",
     "view": "View",
     "view.locale": "Switch language",
     "view.hide": "Hide the interface (F11)",
@@ -29,5 +30,7 @@
     "name": "Name",
     "info": "Description",
     "author": "Author",
-    "error": "An error occurred"
+    "error": "An error occurred",
+    "select_ticks": "Select the tick window size",
+    "range_ticks": "Ticks in range"
 }

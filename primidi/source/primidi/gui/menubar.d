@@ -7,7 +7,8 @@ module primidi.gui.menubar;
 
 import atelier;
 import primidi.player, primidi.midi, primidi.locale;
-import primidi.gui.open_file, primidi.gui.port, primidi.gui.locale, primidi.gui.plugin;
+import primidi.gui.open_file, primidi.gui.port, primidi.gui.locale;
+import primidi.gui.plugin, primidi.gui.ticks;
 
 private {
     bool _isMenuFocused;
@@ -32,7 +33,7 @@ final class MenuBar: GuiElement {
         const auto menuItems = [
             ["media.open", "media.quit"],
             ["port.input", "port.output"],
-            ["plugin.open", "plugin.reload", "plugin.restart"],
+            ["plugin.open", "plugin.reload", "plugin.restart", "plugin.ticks"],
             ["view.locale", "view.hide", "view.fullscreen"]
             ];
         _menuSizes.length = menuNames.length;
@@ -268,6 +269,12 @@ private final class MenuButton: GuiElement {
             isClicked = false;
             isHovered = false;
             restartScript();
+            break;
+        case "plugin.ticks":
+            stopOverlay();
+            isClicked = false;
+            isHovered = false;
+            setModalGui(new SelectTicksIntervalModal);
             break;
         case "view.locale":
             stopOverlay();

@@ -10,6 +10,7 @@
     "plugin.open": "Ouvrir un greffon",
     "plugin.reload": "Recharger le greffon (F5)",
     "plugin.restart": "Relancer le greffon (F6)",
+    "plugin.ticks": "Régler l'intervale d'horloge",
     "view": "Affichage",
     "view.locale": "Changer la langue",
     "view.hide": "Cacher l'interface (F11)",
@@ -29,5 +30,7 @@
     "name": "Nom",
     "info": "Description",
     "author": "Auteur",
-    "error": "Un problème est survenu"
+    "error": "Un problème est survenu",
+    "select_ticks": "Réglez la taille de la fenêtre d'événements",
+    "range_ticks": "Taille de la fenêtre"
 }

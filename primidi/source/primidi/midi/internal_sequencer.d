@@ -27,7 +27,8 @@ alias NotesArray = IndexedArray!(Note, 4096u);
 
 private {
     Sequencer _sequencer;
-    int _startInterval = 6_000, _endInterval = 6_000;
+    int _intervalWindowSize = 5_000, _startInterval = 2_500, _endInterval = 2_500;
+	float _intervalRatio = 0.5f;
 }
 
 Note[][16] sequencerNotes;
@@ -51,9 +52,24 @@ void playInternalSequencer(MidiFile midiFile) {
 	_sequencer.play(midiFile);
 }
 
-void setInternalSequencerInterval(int startInterval, int endInterval) {
-    _startInterval = startInterval;
-    _endInterval = endInterval;
+void setInternalSequencerInterval(int windowSize) {
+	_intervalWindowSize = windowSize;
+    _startInterval = cast(int) (_intervalWindowSize * _intervalRatio);
+    _endInterval = cast(int) (_intervalWindowSize * (1f - _intervalRatio));
+}
+
+int getInternalSequencerInterval() {
+	return _intervalWindowSize;
+}
+
+void setInternalSequencerHitRatio(float hitRatio = 0.5f) {
+	_intervalRatio = clamp(hitRatio, 0f, 1f);
+    _startInterval = cast(int) (_intervalWindowSize * _intervalRatio);
+    _endInterval = cast(int) (_intervalWindowSize * (1f - _intervalRatio));
+}
+
+float getInternalSequencerHitRatio() {
+	return _intervalRatio;
 }
 
 void startInternalSequencer() {
@@ -166,7 +182,7 @@ private final class Sequencer {
 
 				// Start entering the window
 				note.isAlive = true;
-				note.duration = rlerp(0, _startInterval + _endInterval, note.step);
+				note.duration = rlerp(0, _intervalWindowSize, note.step);
 				notesInRange.push(note);
 				if(_onNoteEnterCallback !is null)
 					_onNoteEnterCallback(note);
@@ -187,7 +203,7 @@ private final class Sequencer {
 
 			foreach(ref note; midiNoteOnEvents) {
 				note.step = cast(int)getInternalSequencerTick() - note.tick;
-                note.duration = rlerp(0, _startInterval + _endInterval, note.step);
+                note.duration = rlerp(0, _intervalWindowSize, note.step);
 				note.playTime = 0f;
                 note.time = rlerp(tick + _startInterval, tick - _endInterval, note.tick);
 			}
@@ -195,6 +211,7 @@ private final class Sequencer {
 			int i = 0;
 			foreach(ref note; notesInRange) {
 				note.playTime = cast(float)(cast(int)tick - cast(int)note.tick) / cast(float)note.step;
+                note.duration = rlerp(0, _intervalWindowSize, note.step);
                 note.time = rlerp(tick + _startInterval, tick - _endInterval, note.tick);
 
 				if(tick >= note.tick && !note.hasHit) {

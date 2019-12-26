@@ -10,6 +10,7 @@
     "plugin.open": "Malfermi kromprogramon",
     "plugin.reload": "Ŝargi kromprogramon (F5)",
     "plugin.restart": "Ruli denove (F6)",
+    "plugin.ticks": "Agordi la intervalon de la tiktakoj",
     "view": "Vido",
     "view.locale": "Ŝanĝi lingvon",
     "view.hide": "Kaŝi fasadon (F11)",
@@ -29,5 +30,7 @@
     "name": "Nomo",
     "info": "Informo",
     "author": "Aŭtoro",
-    "error": "Eraro okazis"
+    "error": "Eraro okazis",
+    "select_ticks": "Agordu la intervalon de eventoj",
+    "range_ticks": "Longo de la intervalo"
 }

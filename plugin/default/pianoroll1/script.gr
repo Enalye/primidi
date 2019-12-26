@@ -7,6 +7,7 @@ array(Canvas) canvases;
 Texture spriteSheet;
 let width, height = 1280f, 720f;
 let barWidth = 6f;
+float barX;
 
 let colors = [
     [109, 247, 193],
@@ -35,8 +36,17 @@ main {
     setCameraPosition(centerX, centerY);
     setCameraClearColor(Color(0.051, 0.082, 0.125));
 
-    // Midi events from 3500 ticks before to 500 ticks after hit.
-    setInterval(5000, 1000);
+    /*
+        Default interval of ticks to be displayed.
+        A too large value can cause slowdowns.
+    */
+    setInterval(6000);
+    /*
+        0 = note are hit on the right side of the screen.
+        0.5 = in the center.
+        1 = left side.
+    */
+    setRatio(0.8f);
 
     // We render each channel on a separate canvas.
     canvases = array(Canvas)[];
@@ -52,6 +62,7 @@ main {
     mainCanvas::setPosition(centerX, centerY);
     mainCanvas::setColorMod(Color(1f, 1f, 1f), 3);
 
+    barX = width * (1f - getRatio()) - (barWidth / 2f);
     loop {
         for(canvas, canvases) {
             canvas::draw(centerX, centerY);
@@ -59,7 +70,7 @@ main {
         }
         // Middle bar
         pushCanvas(mainCanvas);
-        fillRect((width / 6f) - (barWidth / 2f), 0f, barWidth, height, Color(1f, 1f, 1f, 0.2f));
+        fillRect(barX, 0f, barWidth, height, Color(1f, 1f, 1f, 0.2f));
         popCanvas();
         mainCanvas::draw(centerX, centerY);
         mainCanvas::clear;
