@@ -11,13 +11,11 @@ import atelier, grimoire;
 package void loadLabel(GrData data) {
     const defLabel = data.addUserType("Label");
     const defFont = grGetUserType("Font");
-    const defVec2f = grGetTupleType("Vec2f");
 
     data.addPrimitive(&_makeLabel, "Label", ["font", "text"], [defFont, grString], [defLabel]); 
-    data.addPrimitive(&_setText, "label_setText", ["label", "text"], [defLabel, grString]); 
-    data.addPrimitive(&_setFont, "label_setFont", ["label", "font"], [defLabel, defFont]); 
-    data.addPrimitive(&_setPosition, "label_setPosition", ["label", "pos"], [defLabel, defVec2f]); 
-    data.addPrimitive(&_draw, "label_draw", ["label"], [defLabel]); 
+    data.addPrimitive(&_setText, "setText", ["label", "text"], [defLabel, grString]); 
+    data.addPrimitive(&_setFont, "setFont", ["label", "font"], [defLabel, defFont]);  
+    data.addPrimitive(&_draw, "draw", ["label", "x", "y"], [defLabel, grFloat, grFloat]); 
 }
 
 private void _makeLabel(GrCall call) {
@@ -37,13 +35,9 @@ private void _setFont(GrCall call) {
     label.font = call.getUserData!Font("font");
 }
 
-private void _setPosition(GrCall call) {
-    Label label = call.getUserData!Label("label");
-    Vec2f pos = Vec2f(call.getFloat("pos.x"), call.getFloat("pos.y"));
-    label.position = pos;
-}
-
 private void _draw(GrCall call) {
-    Label label = call.getUserData!Label("label");
-    label.draw();
+    /*Label label = call.getUserData!Label("label");
+    label.position = Vec2f(call.getFloat("x"), call.getFloat("y"));
+    label. = label.position;
+    label.draw();*/
 }

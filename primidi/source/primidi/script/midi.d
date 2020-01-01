@@ -5,9 +5,9 @@
  */
 module primidi.script.midi;
 
-import std.conv;
+import std.conv, std.path;
 import grimoire, atelier;
-import primidi.midi;
+import primidi.midi, primidi.player;
 
 package void loadMidi(GrData data) {
     auto grNote = data.addUserType("Note");
@@ -16,6 +16,8 @@ package void loadMidi(GrData data) {
     data.addPrimitive(&seq_setInterval, "setInterval", ["size"], [grInt]);
     data.addPrimitive(&seq_setHitRatio, "setRatio", ["ratio"], [grFloat]);
     data.addPrimitive(&seq_getHitRatio, "getRatio", [], [], [grFloat]);
+    data.addPrimitive(&seq_getMidiName, "getMidiName", [], [], [grString]);
+    data.addPrimitive(&seq_isMidiPlaying, "isMidiPlaying", [], [], [grBool]);
 
     data.addPrimitive(&note_getChannel, "getChannel", ["note"], [grNote], [grInt]);
     data.addPrimitive(&note_getTick, "getTick", ["note"], [grNote], [grInt]);
@@ -30,7 +32,7 @@ package void loadMidi(GrData data) {
     data.addPrimitive(&note_isAlive, "isAlive", ["note"], [grNote], [grBool]);
 
 
-    data.addPrimitive(&note_getPitchBend, "getPitchBend", ["chan"], [grInt], [grFloat]);
+    data.addPrimitive(&chan_getPitchBend, "getPitchBend", ["chan"], [grInt], [grFloat]);
 }
 
 private void clock_getTime(GrCall call) {
@@ -51,6 +53,14 @@ private void seq_setHitRatio(GrCall call) {
 
 private void seq_getHitRatio(GrCall call) {
     call.setFloat(getInternalSequencerHitRatio());
+}
+
+private void seq_getMidiName(GrCall call) {
+    call.setString(to!dstring(baseName(stripExtension(getMidiFilePath()))));
+}
+
+private void seq_isMidiPlaying(GrCall call) {
+    call.setBool(isMidiPlaying());
 }
 
 private void note_getChannel(GrCall call) {
@@ -104,7 +114,7 @@ private void note_isPlaying(GrCall call) {
     call.setBool(note.playTime >= 0f && note.playTime <= 1f);
 }
 
-private void note_getPitchBend(GrCall call) {
+private void chan_getPitchBend(GrCall call) {
     auto chan = call.getInt("chan");
     if(chan >= 16 || chan < 0) {
         call.raise("Channel index out of bounds");

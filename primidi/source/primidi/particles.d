@@ -7,19 +7,21 @@ module primidi.particles;
 
 import atelier;
 
-private final class Particle  {
-	Color startColor = Color.white;
-	Color endColor = Color.white;
+/// Simple particle.
+final class Particle  {
+	Color color = Color.white;
 	Vec2f position = Vec2f.zero;
     float time = 0f;
 	float timeToLive = 60f;
 	float angle = 0f;
 	float speed = 0f;
 	float angleSpeed = 0f;
+    Sprite sprite;
 
+    /// Update the particle, returns true if dead.
 	bool update(float deltaTime) {
 		time += deltaTime;
-		if(time > timeToLive)
+		if(time > timeToLive && timeToLive > 0f)
 			return true;
 
 		const Vec2f direction = Vec2f(1f, 0f).rotated(angle) * speed;
@@ -29,8 +31,10 @@ private final class Particle  {
 		return false;
 	}
 
-	void draw() const {
-		drawFilledRect(position, Vec2f.one, lerp(startColor, endColor, time / timeToLive));
+    /// Render the particle
+	void draw() {
+        sprite.color = color;
+        sprite.draw(position);
 	}
 }
 
@@ -43,6 +47,10 @@ void initializeParticles() {
     _particles = new ParticleArray;
 }
 
+void resetParticles() {
+    _particles.reset();
+}
+
 void updateParticles(float deltaTime) {
     foreach(Particle particle, uint index; _particles) {
         if(particle.update(deltaTime))
@@ -52,22 +60,21 @@ void updateParticles(float deltaTime) {
 }
 
 void drawParticles() {
-    foreach(const Particle particle; _particles)
+    foreach(Particle particle; _particles)
         particle.draw();
 }
 
-void createParticle(Vec2f position, float angle, float speed, float angleSpeed, int timeToLive, Color startColor, Color endColor) {
+Particle createParticle(Vec2f position, float angle, float speed, int timeToLive) {
     if((_particles.length + 1u) == _particles.capacity)
-        return;
+        return null;
 
     Particle particle = new Particle;
     particle.position = position;
     particle.angle = angle;
     particle.speed = speed;
-    particle.angleSpeed = angleSpeed;
     particle.timeToLive = timeToLive;
-    particle.startColor = startColor;
-    particle.endColor = endColor;
+    particle.sprite = fetch!Sprite("texel");
     _particles.push(particle);
+    return particle;
 }
 

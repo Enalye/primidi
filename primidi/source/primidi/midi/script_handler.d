@@ -8,7 +8,7 @@ module primidi.midi.script_handler;
 import std.stdio, core.thread;
 import minuit, grimoire, atelier;
 import primidi.midi.internal_sequencer;
-import primidi.script, primidi.gui.logger, primidi.gui;
+import primidi.script, primidi.gui.logger, primidi.gui, primidi.particles;
 
 private final class ScriptHandler {
     private final class TimeoutThread: Thread {
@@ -59,6 +59,7 @@ private final class ScriptHandler {
     this() {}
 
     void cleanup() {
+        resetParticles();
         _isProcessing = false;
         if(_engine)
             _engine.isRunning = false;
@@ -97,6 +98,9 @@ private final class ScriptHandler {
 
             _onNoteExitEventName = grMangleNamedFunction("onNoteExit", [grGetUserType("Note")]);
             setNoteExitCallback(_handler._engine.hasEvent(_onNoteExitEventName) ? &onNoteExit : null);
+
+            _onStartEventName = grMangleNamedFunction("onStart", []);
+            setStartCallback(_handler._engine.hasEvent(_onStartEventName) ? &onStart : null);
         }
         catch(Exception e) {
             logMessage(e.msg);
@@ -182,7 +186,7 @@ private final class ScriptHandler {
 
 private {
     ScriptHandler _handler;
-    dstring _onNoteEnterEventName, _onNoteHitEventName, _onNoteExitEventName;
+    dstring _onNoteEnterEventName, _onNoteHitEventName, _onNoteExitEventName, _onStartEventName;
     Logger _logger;
 }
 
@@ -258,4 +262,9 @@ private void onNoteHit(Note note) {
 private void onNoteExit(Note note) {
     auto context = _handler._engine.spawnEvent(_onNoteExitEventName);
     context.setUserData(note);
+}
+
+///Called when a midi file is starting.
+private void onStart() {
+    _handler._engine.spawnEvent(_onStartEventName);
 }

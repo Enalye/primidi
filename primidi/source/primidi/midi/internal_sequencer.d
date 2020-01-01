@@ -140,6 +140,7 @@ double getInternalSequencerTick() {
     return 0uL;
 }
 
+// -- CALLBACKS --
 alias NoteCallback = void function(Note);
 private NoteCallback _onNoteEnterCallback, _onNoteHitCallback, _onNoteExitCallback;
 void setNoteEnterCallback(NoteCallback callback) {
@@ -154,6 +155,13 @@ void setNoteExitCallback(NoteCallback callback) {
     _onNoteExitCallback = callback;
 }
 
+alias GlobalMidiCallback = void function();
+private GlobalMidiCallback _onStartCallback;
+void setStartCallback(GlobalMidiCallback callback) {
+	_onStartCallback = callback;
+}
+
+///Visual sequencer
 private final class Sequencer {
 	struct Channel {
 		Note[] notes;
@@ -339,6 +347,8 @@ private final class Sequencer {
 				//trackId ++;
 			}
 		}
+		if(_onStartCallback)
+			_onStartCallback();
 	}
 
 	void start() {
@@ -350,23 +360,21 @@ private final class Sequencer {
 	}
 
 	void update() {
-		//Just copied from pianoroll for now
-
-		double currentTime = getMidiTime();
+		const double currentTime = getMidiTime();
 
 		checkTempo:
-		double msDeltaTime = currentTime - timeAtLastChange; //The time since last tempo change.
+		const double msDeltaTime = currentTime - timeAtLastChange; //The time since last tempo change.
 		ticksElapsedSinceLastChange = msDeltaTime * tickPerMs;
 
 		totalTicksElapsed = tickAtLastChange + ticksElapsedSinceLastChange;
 
 		if(tempoEvents.length > tempoEventsTop) {
-			long tickThreshold = tempoEvents[tempoEventsTop].tick;
+			const long tickThreshold = tempoEvents[tempoEventsTop].tick;
 			if(totalTicksElapsed > tickThreshold) {
-				long tickDelta = tickThreshold - tickAtLastChange;
-				double finalDeltaTime = tickDelta * msPerTick;
+				const long tickDelta = tickThreshold - tickAtLastChange;
+				const double finalDeltaTime = tickDelta * msPerTick;
 
-				long usPerQuarter = tempoEvents[tempoEventsTop].usPerQuarter;
+				const long usPerQuarter = tempoEvents[tempoEventsTop].usPerQuarter;
 				tempoEventsTop ++;
 
 				ticksElapsedSinceLastChange = 0;

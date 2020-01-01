@@ -7,6 +7,7 @@ module primidi.script.font;
 
 import std.conv;
 import atelier, grimoire;
+import primidi.script.util;
 
 package void loadFont(GrData data) {
     const defFont = data.addUserType("Font");
@@ -15,6 +16,6 @@ package void loadFont(GrData data) {
 }
 
 private void _makeFont(GrCall call) {
-    Font font = new TrueTypeFont(to!string(call.getString("path")), call.getInt("size"));
+    Font font = new TrueTypeFont(getResourcePath(call.getString("path")), call.getInt("size"));
     call.setUserData!Font(font);
 }

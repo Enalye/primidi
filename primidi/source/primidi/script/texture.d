@@ -5,9 +5,9 @@
  */
 module primidi.script.texture;
 
-import std.conv, std.file, std.path;
+import std.conv: to;
 import grimoire, atelier;
-import primidi.midi;
+import primidi.script.util;
 
 package void loadTexture(GrData data) {
     auto defTexture = data.addUserType("Texture");
@@ -19,7 +19,7 @@ package void loadTexture(GrData data) {
 }
 
 private void _makeTexture(GrCall call) {
-    auto tex = new Texture(buildNormalizedPath(buildPath(dirName(getScriptFilePath()),  to!string(call.getString("path")))));
+    auto tex = new Texture(getResourcePath(call.getString("path")));
     call.setUserData(tex);
 }
 

@@ -87,6 +87,17 @@
             "flip": "none",
             "name": "default_cover",
             "type": "sprite"
+        },
+        {
+            "clip": {
+                "h": 1,
+                "w": 1,
+                "x": 32,
+                "y": 10
+            },
+            "flip": "none",
+            "name": "texel",
+            "type": "sprite"
         }
     ],
     "texture": "..\/..\/media\/gui\/gui.png",
