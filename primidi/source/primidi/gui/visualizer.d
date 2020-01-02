@@ -54,7 +54,7 @@ final class Visualizer: GuiElement {
         switch(event.type) with(EventType) {
         case resize:
             if(_isVisible)
-                size(screenSize - Vec2f(0f, -70f));
+                size(screenSize - Vec2f(0f, 70f));
             else
                 size(screenSize);
             _canvas.renderSize = cast(Vec2u) size;
@@ -65,7 +65,7 @@ final class Visualizer: GuiElement {
                 if(_isVisible)
                     size(screenSize);
                 else
-                    size(screenSize - Vec2f(0f, -70f));
+                    size(screenSize - Vec2f(0f, 70f));
                 _canvas.renderSize = cast(Vec2u) size;
                 _isVisible = !_isVisible;
             }
