@@ -101,6 +101,9 @@ private final class ScriptHandler {
 
             _onStartEventName = grMangleNamedFunction("onStart", []);
             setStartCallback(_handler._engine.hasEvent(_onStartEventName) ? &onStart : null);
+
+            _onEndEventName = grMangleNamedFunction("onEnd", []);
+            setEndCallback(_handler._engine.hasEvent(_onEndEventName) ? &onEnd : null);
         }
         catch(Exception e) {
             logMessage(e.msg);
@@ -186,7 +189,7 @@ private final class ScriptHandler {
 
 private {
     ScriptHandler _handler;
-    dstring _onNoteEnterEventName, _onNoteHitEventName, _onNoteExitEventName, _onStartEventName;
+    dstring _onNoteEnterEventName, _onNoteHitEventName, _onNoteExitEventName, _onStartEventName, _onEndEventName;
     Logger _logger;
 }
 
@@ -267,4 +270,9 @@ private void onNoteExit(Note note) {
 ///Called when a midi file is starting.
 private void onStart() {
     _handler._engine.spawnEvent(_onStartEventName);
+}
+
+///Called when a midi file is ending.
+private void onEnd() {
+    _handler._engine.spawnEvent(_onEndEventName);
 }

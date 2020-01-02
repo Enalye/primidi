@@ -34,6 +34,8 @@ void playMidi(string path) {
     startMidiOutSequencer();
     startInternalSequencer();
     startMidiClock();
+    if(_isMidiFilePlaying)
+        notifyEndInternalSequencer();
     _isMidiFilePlaying = true;
     setWindowTitle("Primidi - " ~ baseName(_midiFilePath));
 }
@@ -49,6 +51,8 @@ void stopMidi() {
 	stopMidiOutSequencer();
     stopInternalSequencer();
     _midiFile = null;
+    if(_isMidiFilePlaying)
+        notifyEndInternalSequencer();
     _isMidiFilePlaying = false;
     setWindowTitle("Primidi");
 }
@@ -86,6 +90,8 @@ void rewindMidi() {
     startInternalSequencer();
     if(wasClockRunning)
         startMidiClock();
+    if(_isMidiFilePlaying)
+        notifyEndInternalSequencer();
 }
 
 void pauseMidi() {
@@ -101,6 +107,7 @@ void updateMidi() {
         if(getMidiTime() > getMidiDuration()) {
             setWindowTitle("Primidi");
             stopMidiOutSequencer();
+            notifyEndInternalSequencer();
             _midiFile = null;
             _isMidiFilePlaying = false;
         }

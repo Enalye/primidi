@@ -43,7 +43,12 @@ void stopInternalSequencer() {
 	if(!_sequencer)
 		return;
     _sequencer.cleanUp();
-	_sequencer = null;	
+	_sequencer = null;
+}
+
+void notifyEndInternalSequencer() {
+	if(_onEndCallback)
+		_onEndCallback();
 }
 
 void playInternalSequencer(MidiFile midiFile) {
@@ -156,9 +161,13 @@ void setNoteExitCallback(NoteCallback callback) {
 }
 
 alias GlobalMidiCallback = void function();
-private GlobalMidiCallback _onStartCallback;
+private GlobalMidiCallback _onStartCallback, _onEndCallback;
 void setStartCallback(GlobalMidiCallback callback) {
 	_onStartCallback = callback;
+}
+
+void setEndCallback(GlobalMidiCallback callback) {
+	_onEndCallback = callback;
 }
 
 ///Visual sequencer
