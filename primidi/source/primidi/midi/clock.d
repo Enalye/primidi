@@ -34,12 +34,9 @@ bool isMidiClockRunning() {
 }
 
 long getMidiTime() {
-    import std.stdio;
-    //writeln("Time: ", midiClock.peek.total!"msecs");
     return midiClock.peek.total!"msecs";
 }
 
 void setMidiTime(long time) {
-    import std.datetime;
     midiClock.setTimeElapsed(dur!"msecs"(time));
 }

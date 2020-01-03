@@ -18,6 +18,8 @@ package void loadMidi(GrData data) {
     data.addPrimitive(&seq_getHitRatio, "getRatio", [], [], [grFloat]);
     data.addPrimitive(&seq_getMidiName, "getMidiName", [], [], [grString]);
     data.addPrimitive(&seq_isMidiPlaying, "isMidiPlaying", [], [], [grBool]);
+    data.addPrimitive(&seq_getMidiDuration, "getMidiDuration", [], [], [grFloat]);
+    data.addPrimitive(&seq_getMidiTime, "getMidiTime", [], [], [grFloat]);
 
     data.addPrimitive(&note_getChannel, "getChannel", ["note"], [grNote], [grInt]);
     data.addPrimitive(&note_getTick, "getTick", ["note"], [grNote], [grInt]);
@@ -61,6 +63,14 @@ private void seq_getMidiName(GrCall call) {
 
 private void seq_isMidiPlaying(GrCall call) {
     call.setBool(isMidiPlaying());
+}
+
+private void seq_getMidiDuration(GrCall call) {
+    call.setFloat(getMidiDuration());
+}
+
+private void seq_getMidiTime(GrCall call) {
+    call.setFloat(getMidiTime());
 }
 
 private void note_getChannel(GrCall call) {
