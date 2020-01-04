@@ -3,14 +3,11 @@
  * License: Zlib
  * Authors: Enalye
  */
-array(Canvas) canvases;
-Canvas mainCanvas;
-Texture spriteSheet;
-let width, height = 1280f, 720f;
-let barWidth, barFactor = 2f, 0f;
-Color barColor;
-float barX;
 
+// Canvas size
+let width, height = 1280f, 720f;
+
+// Channels' color
 let colors = [
     [109, 247, 193],
     [17, 173, 193],
@@ -30,6 +27,14 @@ let colors = [
     [49, 122, 215]
 ];
 
+array(Canvas) canvases;
+Canvas mainCanvas;
+Texture noteTexture;
+let barWidth, barFactor = 2f, 0f;
+Color barColor;
+float barX;
+
+// Init
 main {
     let centerX, centerY = width / 2f, height / 2f;
     Color baseBarColor;
@@ -60,7 +65,7 @@ main {
         canvas::setColorMod(Color(1f, 1f, 1f), 3);
         canvases ~= canvas;
     }
-    spriteSheet = Texture("test.png");
+    noteTexture = Texture("note.png");
 
     mainCanvas = Canvas(width, height);
     mainCanvas::setPosition(centerX, centerY);
@@ -95,9 +100,8 @@ main {
 // Called for each note entering the Interval window.
 event onNoteEnter(Note note) {
     bool wasHit = false;
-    let centerSprite = spriteSheet as Sprite;
-    centerSprite::setClip(16, 0, 1, 1);
-    centerSprite::setAnchor(0f, 0f);
+    let noteSprite = noteTexture as Sprite;
+    noteSprite::setAnchor(0f, 0f);
 
     Color color = colors[note::getChannel];
 
@@ -116,7 +120,7 @@ event onNoteEnter(Note note) {
         if(w < 4f)
             w = 4f;
         
-        centerSprite::setSize(w, h);
+        noteSprite::setSize(w, h);
         
         let x, y =
             width * (1f - note::getTime),
@@ -125,26 +129,25 @@ event onNoteEnter(Note note) {
         if(note::isPlaying) {
             let factor = note::getPlayTime;
             let c = lerp(Color(1f, 1f, 1f, 1f), color, factor);
-            centerSprite::setColor(c);
+            noteSprite::setColor(c);
 
             // Particles
             let particleX = barX + barWidth;
             unless(wasHit) {
                 wasHit = true;
-                loop(i, 17) {
-                    createParticle(particleX, y + h / 2f, -85f + i as float * 10f + random(-6f, 6f), random(1.1f, 1.7f), random(-0.2f, 0.2f), random(5, 30), color, c);
-                }
+                loop(i, 17)
+                    spark(particleX, y + h / 2f, -85f + (10f * i) + random(-6f, 6f), random(1.1f, 1.7f), random(5, 30), color, c);
             }
             else if((time % 5) == 0) {
-                createParticle(particleX, y, random(-85f, 5f), random(0.2f, 1.5f), random(-0.2f, 0.2f), random(5, 20), color, c);
-                createParticle(particleX, y + h, random(5f, 85f), random(0.2f, 1.5f), random(-0.2f, 0.2f), random(5, 20), color, c);
+                spark(particleX, y, random(-85f, 5f), random(0.2f, 1.5f), random(5, 20), color, c);
+                spark(particleX, y + h, random(5f, 85f), random(0.2f, 1.5f), random(5, 20), color, c);
             }
             barColor = mix(barColor, c);
             barFactor += (1f - factor) * 0.2f;
         }
         else {
             if(note::getPlayTime > 0f) {
-                centerSprite::setColor(lerp(Color(1f, 1f, 1f, 0f), color, fadeOut));
+                noteSprite::setColor(lerp(Color(1f, 1f, 1f, 0f), color, fadeOut));
                 if(fadeOut > 0f) {
                     fadeOut -= 0.025f;
                     if(fadeOut < 0f) {
@@ -153,12 +156,30 @@ event onNoteEnter(Note note) {
                 }
             }
             else {
-                centerSprite::setColor(Color(1f, 1f, 1f, 0.5f));
+                noteSprite::setColor(Color(1f, 1f, 1f, 0.5f));
             }
         }
         pushCanvas(canvases[note::getChannel]);
-        centerSprite::draw(x, y);
+        noteSprite::draw(x, y);
         popCanvas();
+        time ++;
+        yield
+    }
+}
+
+// Create a single particle
+task spark(float x, float y, float angle, float speed, int ttl, Color startColor, Color endColor) {
+    let particle = createParticle(x, y, angle, speed, ttl);
+    unless(particle) kill
+
+    let sprite = particle::getSprite;
+    sprite::setBlend(2);
+    startColor:a = 1f;
+    endColor:a = 1f;
+    particle::setColor(startColor);
+    float time = 0f;
+    while(particle::isAlive) {
+        particle::setColor(lerp(startColor, endColor, time / ttl));
         time ++;
         yield
     }

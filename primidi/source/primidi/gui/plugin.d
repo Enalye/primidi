@@ -57,15 +57,15 @@ final class SelectPluginModal: GuiElement {
             box.setAlign(GuiAlignX.right, GuiAlignY.bottom);
             addChildGui(box);
 
-            auto closeBtn = new TextButton(getDefaultFont(), getLocalizedText("cancel"));
-            closeBtn.size = Vec2f(80f, 35f);
-            closeBtn.setCallback(this, "close");
-            box.addChildGui(closeBtn);
-
             auto applyBtn = new TextButton(getDefaultFont(), getLocalizedText("apply"));
             applyBtn.size = Vec2f(80f, 35f);
             applyBtn.setCallback(this, "apply");
             box.addChildGui(applyBtn);
+
+            auto closeBtn = new TextButton(getDefaultFont(), getLocalizedText("cancel"));
+            closeBtn.size = Vec2f(80f, 35f);
+            closeBtn.setCallback(this, "close");
+            box.addChildGui(closeBtn);
         }
         reload();
 

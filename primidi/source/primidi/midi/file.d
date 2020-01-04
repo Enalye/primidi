@@ -280,8 +280,6 @@ class MidiFile {
 		}
 		const long tickDelta = lastTick - tickAtLastChange;
 		duration += tickDelta * msPerTick;
-		import std.stdio;
-		writeln("Midi duration: ", duration);
 	}
 
 	int format;

@@ -14,7 +14,7 @@ final class ScriptErrorModal: GuiElement {
     /// Ctor
     this(GrError error) {
         setAlign(GuiAlignX.center, GuiAlignY.center);
-        size(Vec2f(600f, 250f));
+        size(Vec2f(800f, 250f));
 
         { //Error display
             auto box = new VContainer;

@@ -3,12 +3,11 @@
  * License: Zlib
  * Authors: Enalye
  */
-array(Canvas) canvases;
-Texture spriteSheet;
-let width, height = 1280f, 720f;
-let barWidth = 6f;
-float barX;
 
+// Canvas size
+let width, height = 1280f, 720f;
+
+// Channels' color
 let colors = [
     [109, 247, 193],
     [17, 173, 193],
@@ -28,6 +27,12 @@ let colors = [
     [49, 122, 215]
 ];
 
+array(Canvas) canvases;
+Texture noteTexture;
+let barWidth = 6f;
+float barX;
+
+// Init
 main {
     let centerX, centerY = width / 2f, height / 2f;
 
@@ -56,7 +61,7 @@ main {
         canvas::setColorMod(Color(1f, 1f, 1f), 3);
         canvases ~= canvas;
     }
-    spriteSheet = Texture("test.png");
+    noteTexture = Texture("note.png");
 
     let mainCanvas = Canvas(width, height);
     mainCanvas::setPosition(centerX, centerY);
@@ -80,9 +85,8 @@ main {
 
 // Called for each note entering the Interval window.
 event onNoteEnter(Note note) {
-    let centerSprite = spriteSheet as Sprite;
-    centerSprite::setClip(16, 0, 1, 1);
-    centerSprite::setAnchor(0f, 0f);
+    let noteSprite = noteTexture as Sprite;
+    noteSprite::setAnchor(0f, 0f);
 
     Color color = colors[note::getChannel];
 
@@ -100,7 +104,7 @@ event onNoteEnter(Note note) {
         if(w < 4f)
             w = 4f;
         
-        centerSprite::setSize(w, h);
+        noteSprite::setSize(w, h);
         
         let x, y =
             width * (1f - note::getTime),
@@ -109,11 +113,11 @@ event onNoteEnter(Note note) {
         if(note::isPlaying) {
             let factor = note::getPlayTime;
             let c = lerp(Color(1f, 1f, 1f, 1f), color, factor);
-            centerSprite::setColor(c);
+            noteSprite::setColor(c);
         }
         else {
             if(note::getPlayTime > 0f) {
-                centerSprite::setColor(lerp(Color(1f, 1f, 1f, 0f), color, fadeOut));
+                noteSprite::setColor(lerp(Color(1f, 1f, 1f, 0f), color, fadeOut));
                 if(fadeOut > 0f) {
                     fadeOut -= 0.025f;
                     if(fadeOut < 0f) {
@@ -122,11 +126,11 @@ event onNoteEnter(Note note) {
                 }
             }
             else {
-                centerSprite::setColor(Color(1f, 1f, 1f, 0.5f));
+                noteSprite::setColor(Color(1f, 1f, 1f, 0.5f));
             }
         }
         pushCanvas(canvases[note::getChannel]);
-        centerSprite::draw(x, y);
+        noteSprite::draw(x, y);
         popCanvas();
         yield
     }
