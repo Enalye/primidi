@@ -107,7 +107,7 @@ private final class MidiSequencer: Thread {
 			timeAtLastChange = 0;
 
 			isRunning = true;
-					writeln("tempo: ", tempoEvents.length, ", ", tempoEventsTop);
+			//writeln("tempo: ", tempoEvents.length, ", ", tempoEventsTop);
 
 			while(isRunning) {
 				//Time handling.
@@ -167,7 +167,7 @@ private final class MidiSequencer: Thread {
 						}
 						else {
 							if(skippedEvents.length) {
-								writeln("skipped: ", skippedEvents.length);
+								//writeln("skipped: ", skippedEvents.length);
 							}
 							foreach(skippedEvent; skippedEvents) {
 								sendEvent(midiOut, skippedEvent);

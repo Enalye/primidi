@@ -20,7 +20,7 @@ final class SelectPluginModal: GuiElement {
 
 	this() {
 		setAlign(GuiAlignX.center, GuiAlignY.center);
-        size(Vec2f(700f, 600f));
+        size(Vec2f(800f, 600f));
 
 		{ //Port
 			_pluginList = new PluginList;
@@ -32,9 +32,9 @@ final class SelectPluginModal: GuiElement {
 
         {
             auto box = new VContainer;
-            box.position(Vec2f(125f, 250f));
+            box.position(Vec2f(384f + 25f + 5f, 250f));
             box.setChildAlign(GuiAlignX.left);
-            box.setAlign(GuiAlignX.right, GuiAlignY.top);
+            box.setAlign(GuiAlignX.left, GuiAlignY.top);
             addChildGui(box);
 
             _nameLabel = new Label;
