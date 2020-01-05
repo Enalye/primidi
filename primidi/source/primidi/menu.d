@@ -72,6 +72,10 @@ void setupApplication(string[] args) {
 		setWindowMinSize(Vec2u(500, 200));
 		setWindowClearColor(Color.black);
 
+		const string iconPath = buildNormalizedPath(dirName(thisExePath()), "media", "gui", "icon.png");
+		if(exists(iconPath))
+			setWindowIcon(iconPath);
+
 		if(!processArguments(args)) {
 			closeLock();
 			return;

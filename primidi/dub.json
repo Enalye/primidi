@@ -51,13 +51,13 @@
 		{
 			"name": "windows-release",
 			"platforms": ["windows"],
-			"targetPath": "../bin",
+			"targetPath": "../release$ARCH",
 			"lflags":[
 				"-subsystem:windows",
 				"-entry:mainCRTStartup"
 			],
 			"postBuildCommands": [
-				"copy ..\\lib$ARCH\\*.dll ..\\bin"
+				"copy ..\\lib$ARCH\\*.dll ..\\release$ARCH"
 			]
 		}
 	]
