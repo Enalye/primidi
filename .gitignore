@@ -11,3 +11,5 @@ __dummy.html
 *.sublime-workspace
 build/primidi/primidi
 config.json
+releasex86
+releasex86_64
