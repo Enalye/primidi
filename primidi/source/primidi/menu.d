@@ -57,10 +57,10 @@ Where:
 void setupApplication(string[] args) {
 	_lockFileName = buildNormalizedPath(dirName(thisExePath()), _lockFileName);
 	_msgFileName = buildNormalizedPath(dirName(thisExePath()), _msgFileName);
-	if(!exists(_lockFileName)) {
+	//if(!exists(_lockFileName)) {
 		// If the file exists, Primidi is already launched... or it crashed, we can never know.
 		_isMainApplication = true;
-	}
+	//}
 	if(_isMainApplication) {
 		_lockFile = File(_lockFileName, "w");
 		_lockFile.lock();

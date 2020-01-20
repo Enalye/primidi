@@ -82,6 +82,7 @@ private final class ScriptHandler {
                 cleanup();
                 return;
             }
+            writeln("Bytecode Dump: \n", grDump(_data, _bytecode));
             _engine = new GrEngine;
             _engine.load(_data, _bytecode);
             _engine.spawn();

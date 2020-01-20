@@ -48,10 +48,14 @@ void initializeParticles() {
 }
 
 void resetParticles() {
+    if(!_particles)
+        return;
     _particles.reset();
 }
 
 void updateParticles(float deltaTime) {
+    if(!_particles)
+        return;
     foreach(Particle particle, uint index; _particles) {
         if(particle.update(deltaTime))
             _particles.markInternalForRemoval(index);
@@ -60,11 +64,15 @@ void updateParticles(float deltaTime) {
 }
 
 void drawParticles() {
+    if(!_particles)
+        return;
     foreach(Particle particle; _particles)
         particle.draw();
 }
 
 Particle createParticle(Vec2f position, float angle, float speed, int timeToLive) {
+    if(!_particles)
+        return null;
     if((_particles.length + 1u) == _particles.capacity)
         return null;
 
