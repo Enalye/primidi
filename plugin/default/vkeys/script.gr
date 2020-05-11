@@ -9,27 +9,27 @@ let width, height = 1280f, 720f;
 
 // Channels' color
 let colors = [
-    Color(109, 247, 193),
-    Color(17, 173, 193),
-    Color(96, 108, 129),
-    Color(57, 52, 87),
-    Color(30, 136, 117),
-    Color(91, 179, 97),
-    Color(161, 229, 90),
-    Color(247, 228, 118),
-    Color(249, 146, 82),
-    Color(203, 77, 104),
-    Color(106, 55, 113),
-    Color(201, 36, 100),
-    Color(244, 140, 182),
-    Color(247, 182, 158),
-    Color(155, 156, 130),
-    Color(49, 122, 21)
+    [109, 247, 193],
+    [17, 173, 193],
+    [96, 108, 129],
+    [57, 52, 87],
+    [30, 136, 117],
+    [91, 179, 97],
+    [161, 229, 90],
+    [247, 228, 118],
+    [249, 146, 82],
+    [203, 77, 104],
+    [106, 55, 113],
+    [201, 36, 100],
+    [244, 140, 182],
+    [247, 182, 158],
+    [155, 156, 130],
+    [49, 122, 215]
 ];
 
 array(Canvas) canvases;
 Canvas mainCanvas;
-Texture noteTexture;
+Texture texture;
 let barWidth, barFactor = 2f, 0f;
 Color barColor;
 float barX;
@@ -49,38 +49,38 @@ main {
         Default interval of ticks to be displayed.
         A too large value can cause slowdowns.
     */
-    setInterval(6000);
+    setInterval(3_000);
     /*
         0 = note are hit on the right side of the screen.
         0.5 = in the center.
         1 = left side.
     */
-    setRatio(0.8f);
+    setRatio(1f);
 
     // We render each channel on a separate canvas.
     canvases = array(Canvas)[];
     loop(16) {
         let canvas = Canvas(width, height);
-        canvas:setPosition(centerX, centerY);
-        canvas:setColorMod(Color(1f, 1f, 1f), Blend.alpha);
+        canvas::setPosition(centerX, centerY);
+        canvas::setColorMod(Color(1f, 1f, 1f), 3);
         canvases ~= canvas;
     }
-    noteTexture = Texture("note.png");
+    texture = Texture("note.png");
 
     mainCanvas = Canvas(width, height);
-    mainCanvas:setPosition(centerX, centerY);
-    mainCanvas:setColorMod(Color(1f, 1f, 1f), Blend.alpha);
+    mainCanvas::setPosition(centerX, centerY);
+    mainCanvas::setColorMod(Color(1f, 1f, 1f), 3);
 
     barX = width * (1f - getRatio()) - (barWidth / 2f);
     loop {
         for(canvas, canvases) {
-            canvas:draw(centerX, centerY);
-            canvas:clear;
+            canvas::draw(centerX, centerY);
+            canvas::clear;
         }
         // Middle bar
         if(barFactor > 1f)
             barFactor = 1f;
-        barColor.a = 0.6f;
+        barColor:a = 0.6f;
         pushCanvas(mainCanvas);
         fillRect(barX, 0f, barWidth, height, lerp(baseBarColor, barColor, barFactor));
         popCanvas();
@@ -91,8 +91,8 @@ main {
             barFactor -= 0.1f;
         }
         
-        mainCanvas:draw(centerX, centerY);
-        mainCanvas:clear;
+        mainCanvas::draw(centerX, centerY);
+        mainCanvas::clear;
         yield
     }
 }
@@ -100,36 +100,39 @@ main {
 // Called for each note entering the Interval window.
 event onNoteEnter(Note note) {
     bool wasHit = false;
-    let noteSprite = noteTexture as Sprite;
-    noteSprite:setAnchor(0f, 0f);
+    let noteSprite = texture as Sprite;
+    noteSprite::setAnchor(0f, 0f);
+    noteSprite::setClip(55, 0, 1, 1);
 
-    Color color = colors[note:getChannel];
+    Color color = colors[note::getChannel];
 
-    let pitch = 1f - (note:getPitch as float / 128f);
+    let pitch = 1f - (note::getPitch as float / 128f);
     float fadeOut = 1f;
     int time = 0;
 
     loop {
-        unless(note:isAlive)
+        unless(note::isAlive)
             kill
 
         let w, h =
-            width * note:getDuration,
-            height / 128f;
+            width / 128f,
+            height * note::getDuration;
 
         if(w < 4f)
             w = 4f;
         
-        noteSprite:setSize(w, h);
+        noteSprite::setSize(w, h);
         
         let x, y =
-            width * (1f - note:getTime),
-            height * pitch - getPitchBend(note:getChannel) * h * 2f;;
+            width * pitch - getPitchBend(note::getChannel) * w * 2f,
+            height * (1f - note::getTime);
 
-        if(note:isPlaying) {
-            let factor = note:getPlayTime;
+        if(note::isPlaying) {
+            let factor = note::getPlayTime;
             let c = lerp(Color(1f, 1f, 1f, 1f), color, factor);
-            noteSprite:setColor(c);
+            noteSprite::setColor(c);
+
+            notes[note::getPitch] = note::getChannel;
 
             // Particles
             let particleX = barX + barWidth;
@@ -146,21 +149,13 @@ event onNoteEnter(Note note) {
             barFactor += (1f - factor) * 0.2f;
         }
         else {
-            if(note:getPlayTime > 0f) {
-                noteSprite:setColor(lerp(Color(1f, 1f, 1f, 0f), color, fadeOut));
-                if(fadeOut > 0f) {
-                    fadeOut -= 0.025f;
-                    if(fadeOut < 0f) {
-                        fadeOut = 0f;
-                    }
-                }
-            }
-            else {
-                noteSprite:setColor(Color(1f, 1f, 1f, 0.5f));
-            }
+            if(note::getPlayTime > 0f)
+                kill
+            else
+                noteSprite::setColor(Color(1f, 1f, 1f, 0.5f));
         }
-        pushCanvas(canvases[note:getChannel]);
-        noteSprite:draw(x, y);
+        pushCanvas(canvases[note::getChannel]);
+        noteSprite::draw(x, y);
         popCanvas();
         time ++;
         yield
@@ -169,17 +164,17 @@ event onNoteEnter(Note note) {
 
 // Create a single particle
 task spark(float x, float y, float angle, float speed, int ttl, Color startColor, Color endColor) {
-    let particle = Particle(x, y, angle, speed, ttl);
+    let particle = createParticle(x, y, angle, speed, ttl);
     unless(particle) kill
 
-    let sprite = particle:getSprite;
-    sprite:setBlend(Blend.additive);
-    startColor.a = 1f;
-    endColor.a = 1f;
-    particle:setColor(startColor);
+    let sprite = particle::getSprite;
+    sprite::setBlend(2);
+    startColor:a = 1f;
+    endColor:a = 1f;
+    particle::setColor(startColor);
     float time = 0f;
-    while(particle:isAlive) {
-        particle:setColor(lerp(startColor, endColor, time / ttl));
+    while(particle::isAlive) {
+        particle::setColor(lerp(startColor, endColor, time / ttl));
         time ++;
         yield
     }

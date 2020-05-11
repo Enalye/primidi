@@ -9,22 +9,22 @@ let width, height = 1280f, 720f;
 
 // Channels' color
 let colors = [
-    [109, 247, 193],
-    [17, 173, 193],
-    [96, 108, 129],
-    [57, 52, 87],
-    [30, 136, 117],
-    [91, 179, 97],
-    [161, 229, 90],
-    [247, 228, 118],
-    [249, 146, 82],
-    [203, 77, 104],
-    [106, 55, 113],
-    [201, 36, 100],
-    [244, 140, 182],
-    [247, 182, 158],
-    [155, 156, 130],
-    [49, 122, 215]
+    Color(109, 247, 193),
+    Color(17, 173, 193),
+    Color(96, 108, 129),
+    Color(57, 52, 87),
+    Color(30, 136, 117),
+    Color(91, 179, 97),
+    Color(161, 229, 90),
+    Color(247, 228, 118),
+    Color(249, 146, 82),
+    Color(203, 77, 104),
+    Color(106, 55, 113),
+    Color(201, 36, 100),
+    Color(244, 140, 182),
+    Color(247, 182, 158),
+    Color(155, 156, 130),
+    Color(49, 122, 21)
 ];
 
 array(Canvas) canvases;
@@ -57,28 +57,28 @@ main {
     canvases = array(Canvas)[];
     loop(16) {
         let canvas = Canvas(width, height);
-        canvas::setPosition(centerX, centerY);
-        canvas::setColorMod(Color(1f, 1f, 1f), 3);
+        canvas:setPosition(centerX, centerY);
+        canvas:setColorMod(Color(1f, 1f, 1f), Blend.alpha);
         canvases ~= canvas;
     }
     noteTexture = Texture("note.png");
 
     let mainCanvas = Canvas(width, height);
-    mainCanvas::setPosition(centerX, centerY);
-    mainCanvas::setColorMod(Color(1f, 1f, 1f), 3);
+    mainCanvas:setPosition(centerX, centerY);
+    mainCanvas:setColorMod(Color(1f, 1f, 1f), Blend.alpha);
 
     barX = width * (1f - getRatio()) - (barWidth / 2f);
     loop {
         for(canvas, canvases) {
-            canvas::draw(centerX, centerY);
-            canvas::clear;
+            canvas:draw(centerX, centerY);
+            canvas:clear;
         }
         // Middle bar
         pushCanvas(mainCanvas);
         fillRect(barX, 0f, barWidth, height, Color(1f, 1f, 1f, 0.2f));
         popCanvas();
-        mainCanvas::draw(centerX, centerY);
-        mainCanvas::clear;
+        mainCanvas:draw(centerX, centerY);
+        mainCanvas:clear;
         yield
     }
 }
@@ -86,38 +86,38 @@ main {
 // Called for each note entering the Interval window.
 event onNoteEnter(Note note) {
     let noteSprite = noteTexture as Sprite;
-    noteSprite::setAnchor(0f, 0f);
+    noteSprite:setAnchor(0f, 0f);
 
-    Color color = colors[note::getChannel];
+    Color color = colors[note:getChannel];
 
-    let pitch = 1f - (note::getPitch as float / 128f);
+    let pitch = 1f - (note:getPitch as float / 128f);
     float fadeOut = 1f;
 
     loop {
-        unless(note::isAlive)
+        unless(note:isAlive)
             kill
 
         let w, h =
-            width * note::getDuration,
+            width * note:getDuration,
             height / 128f;
 
         if(w < 4f)
             w = 4f;
         
-        noteSprite::setSize(w, h);
+        noteSprite:setSize(w, h);
         
         let x, y =
-            width * (1f - note::getTime),
-            height * pitch - getPitchBend(note::getChannel) * h * 2f;
+            width * (1f - note:getTime),
+            height * pitch - getPitchBend(note:getChannel) * h * 2f;
 
-        if(note::isPlaying) {
-            let factor = note::getPlayTime;
+        if(note:isPlaying) {
+            let factor = note:getPlayTime;
             let c = lerp(Color(1f, 1f, 1f, 1f), color, factor);
-            noteSprite::setColor(c);
+            noteSprite:setColor(c);
         }
         else {
-            if(note::getPlayTime > 0f) {
-                noteSprite::setColor(lerp(Color(1f, 1f, 1f, 0f), color, fadeOut));
+            if(note:getPlayTime > 0f) {
+                noteSprite:setColor(lerp(Color(1f, 1f, 1f, 0f), color, fadeOut));
                 if(fadeOut > 0f) {
                     fadeOut -= 0.025f;
                     if(fadeOut < 0f) {
@@ -126,11 +126,11 @@ event onNoteEnter(Note note) {
                 }
             }
             else {
-                noteSprite::setColor(Color(1f, 1f, 1f, 0.5f));
+                noteSprite:setColor(Color(1f, 1f, 1f, 0.5f));
             }
         }
-        pushCanvas(canvases[note::getChannel]);
-        noteSprite::draw(x, y);
+        pushCanvas(canvases[note:getChannel]);
+        noteSprite:draw(x, y);
         popCanvas();
         yield
     }

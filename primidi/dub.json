@@ -35,18 +35,12 @@
 		{
 			"name": "linux-build",
 			"platforms": ["linux"],
-			"targetPath": "../bin",
-			"postBuildCommands": [
-				"cp ../lib$ARCH/*.dll ../bin"
-			]
+			"targetPath": "../bin"
 		},
 		{
 			"name": "windows-build",
 			"platforms": ["windows"],
-			"targetPath": "../bin",
-			"postBuildCommands": [
-				"copy ..\\lib$ARCH\\*.dll ..\\bin"
-			]
+			"targetPath": "../bin"
 		},
 		{
 			"name": "windows-release",
@@ -55,9 +49,6 @@
 			"lflags":[
 				"-subsystem:windows",
 				"-entry:mainCRTStartup"
-			],
-			"postBuildCommands": [
-				"copy ..\\lib$ARCH\\*.dll ..\\release$ARCH"
 			]
 		}
 	]

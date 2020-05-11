@@ -100,6 +100,6 @@
             "type": "sprite"
         }
     ],
-    "texture": "..\/..\/media\/gui\/gui.png",
+    "texture": "gui.png",
     "type": "spritesheet"
 }

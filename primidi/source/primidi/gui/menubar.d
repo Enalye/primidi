@@ -310,7 +310,7 @@ private final class MenuButton: GuiElement {
     }
 
     override void drawOverlay() {
-        _list.position = origin + Vec2f(0f, _size.y);
+        _list.position = origin + Vec2f(0f, size.y);
 
         foreach(changeTrigger; _changeTriggers) {
             float x = 0f;

@@ -4,6 +4,9 @@
             "path": "../primidi"
         },
 	{
+            "path": "../assets"
+        },
+	{
             "path": "../minuit"
         },
 	{

@@ -2,8 +2,8 @@
 	"fileVersion": 1,
 	"versions": {
 		"atelier": {"path":"../atelier"},
-		"derelict-sdl2": "2.1.4",
-		"derelict-util": "2.0.6",
+		"bindbc-loader": "0.2.1",
+		"bindbc-sdl": "0.15.0",
 		"grimoire": {"path":"../grimoire"},
 		"minuit": {"path":"../minuit"}
 	}

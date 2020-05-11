@@ -10,16 +10,16 @@ import grimoire, atelier;
 import primidi.script.util;
 
 package void loadTexture(GrData data) {
-    auto defTexture = data.addUserType("Texture");
-    auto defSprite = grGetUserType("Sprite");
-
+    auto defTexture = data.addForeign("Texture");
+    auto defSprite = grGetForeignType("Sprite");
+    data.addEnum("Blend", ["none", "modular", "additive", "alpha"]);
     data.addPrimitive(&_makeTexture, "Texture", ["path"], [grString], [defTexture]);
 
     data.addCast(&_castTextureToSprite, "tex", defTexture, defSprite, true);
 }
 
 private void _makeTexture(GrCall call) {
-    auto tex = new Texture(getResourcePath(call.getString("path")));
+    auto tex = new Texture(getResourcePath(call.getString!string("path")));
     call.setUserData(tex);
 }
 

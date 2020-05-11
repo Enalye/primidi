@@ -29,26 +29,36 @@ void closeMidiDevices() {
 }
 
 void selectMidiOutDevice(MnOutputPort port) {
-    if(!_midiOut || !port)
+    import primidi.config: saveConfig;
+    if(!_midiOut)
         return;
+    if(!port) {
+        _midiOut.close();
+        _midiOut.port = null;
+        saveConfig();
+        return;
+    }
     _midiOut.close();
     _midiOut.port = port;
     if(port)
         _midiOut.open(port);
-
-    import primidi.config: saveConfig;
     saveConfig();
 }
 
 void selectMidiInDevice(MnInputPort port) {
-    if(!_midiIn || !port)
+    import primidi.config: saveConfig;
+    if(!_midiIn)
         return;
+    if(!port) {
+        _midiIn.close();
+        _midiIn.port = null;
+        saveConfig();
+        return;
+    }
     _midiIn.close();
     _midiIn.port = port;
     if(port)
         _midiIn.open();
-
-    import primidi.config: saveConfig;
     saveConfig();
 }
 

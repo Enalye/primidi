@@ -10,7 +10,7 @@ import grimoire, atelier;
 import primidi.midi, primidi.player;
 
 package void loadMidi(GrData data) {
-    auto grNote = data.addUserType("Note");
+    auto grNote = data.addForeign("Note");
     data.addPrimitive(&clock_getTime, "getTime", [], [], [grFloat]);
     data.addPrimitive(&seq_getTick, "getTick", [], [], [grInt]);
     data.addPrimitive(&seq_setInterval, "setInterval", ["size"], [grInt]);

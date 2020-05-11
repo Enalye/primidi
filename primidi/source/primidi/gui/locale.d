@@ -5,7 +5,7 @@
  */
 module primidi.gui.locale;
 
-import std.path, std.file, std.string;
+import std.path, std.file, std.string, std.exception;
 import atelier;
 import primidi.locale;
 
@@ -96,7 +96,10 @@ private final class SelectLocaleGui: DropDownList {
 	private void reload() {
 		removeChildrenGuis();
         _locales.length = 0uL;
-        foreach(file; dirEntries(buildNormalizedPath(dirName(thisExePath()), "data", "locale"), SpanMode.shallow)) {
+        
+        auto path = buildNormalizedPath(dirName(thisExePath()), "locale");
+        enforce(exists(path), "Missing locale folder");
+        foreach(file; dirEntries(path, SpanMode.shallow)) {
             const string filePath = absolutePath(buildNormalizedPath(file));
             if(extension(filePath).toLower() != ".json")
                 continue;

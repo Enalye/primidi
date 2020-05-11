@@ -9,8 +9,8 @@ import std.conv;
 import atelier, grimoire;
 
 package void loadLabel(GrData data) {
-    const defLabel = data.addUserType("Label");
-    const defFont = grGetUserType("Font");
+    const defLabel = data.addForeign("Label");
+    const defFont = grGetForeignType("Font");
 
     data.addPrimitive(&_makeLabel, "Label", ["font", "text"], [defFont, grString], [defLabel]); 
     data.addPrimitive(&_setText, "setText", ["label", "text"], [defLabel, grString]); 
@@ -21,13 +21,13 @@ package void loadLabel(GrData data) {
 private void _makeLabel(GrCall call) {
     Label label = new Label(
         call.getUserData!Font("font"),
-        to!string(call.getString("text")));
+        call.getString!string("text"));
     call.setUserData!Label(label);
 }
 
 private void _setText(GrCall call) {
     Label label = call.getUserData!Label("label");
-    label.text = to!string(call.getString("text"));
+    label.text = call.getString!string("text");
 }
 
 private void _setFont(GrCall call) {

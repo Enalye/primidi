@@ -95,6 +95,13 @@ void rewindMidi() {
 }
 
 void pauseMidi() {
+    //All notes off.
+    MnOutput midiOut = getMidiOut();
+    if(midiOut && midiOut.isOpen) {
+        foreach(ubyte c; 0 .. 16) {
+            midiOut.send(0xB0 | c, 0x7B, 0x0);
+        }
+    }
     if(isMidiClockRunning())
         pauseMidiClock();
     else

@@ -32,7 +32,7 @@ bool processArguments(string[] args) {
 		break;
 	case "-h":
 	case "--help":
-		writeln("Primidi (c) 2016~2019 by Enalye.
+		writeln("Primidi (c) 2016~2020 by Enalye.
 Primidi is a free software and comes with ABSOLUTELY NO WARRANTY.
 
 Usage:
@@ -57,10 +57,10 @@ Where:
 void setupApplication(string[] args) {
 	_lockFileName = buildNormalizedPath(dirName(thisExePath()), _lockFileName);
 	_msgFileName = buildNormalizedPath(dirName(thisExePath()), _msgFileName);
-	//if(!exists(_lockFileName)) {
+	if(!exists(_lockFileName)) {
 		// If the file exists, Primidi is already launched... or it crashed, we can never know.
 		_isMainApplication = true;
-	//}
+	}
 	if(_isMainApplication) {
 		_lockFile = File(_lockFileName, "w");
 		_lockFile.lock();
@@ -72,7 +72,7 @@ void setupApplication(string[] args) {
 		setWindowMinSize(Vec2u(500, 200));
 		setWindowClearColor(Color.black);
 
-		const string iconPath = buildNormalizedPath(dirName(thisExePath()), "media", "gui", "icon.png");
+		const string iconPath = buildNormalizedPath(dirName(thisExePath()), "img", "icon.png");
 		if(exists(iconPath))
 			setWindowIcon(iconPath);
 

@@ -10,7 +10,7 @@ import std.file;
 import std.algorithm;
 import core.thread;
 
-import derelict.sdl2.sdl;
+import bindbc.sdl;
 import minuit;
 
 import primidi.midi.file;

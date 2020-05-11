@@ -9,12 +9,12 @@ import atelier, grimoire;
 import primidi.particles;
 
 package void loadParticles(GrData data) {
-    const GrType defColor = grGetTupleType("Color");
-    const GrType defSprite = grGetUserType("Sprite");
-    const GrType defParticle = data.addUserType("Particle");
+    const GrType defColor = grGetClassType("Color");
+    const GrType defSprite = grGetForeignType("Sprite");
+    const GrType defParticle = data.addForeign("Particle");
 
-    data.addPrimitive(&_createParticle,
-        "createParticle",
+    data.addPrimitive(&_makeParticle,
+        "Particle",
         ["x", "y", "angle", "speed", "timeToLive"],
         [grFloat, grFloat, grFloat, grFloat, grInt], [defParticle]);
 
@@ -39,7 +39,7 @@ package void loadParticles(GrData data) {
     data.addPrimitive(&_isAlive, "isAlive", ["p"], [defParticle], [grBool]);
 }
 
-private void _createParticle(GrCall call) {
+private void _makeParticle(GrCall call) {
     call.setUserData!Particle(createParticle(
         Vec2f(
             call.getFloat("x"),
@@ -62,19 +62,22 @@ private void _getSprite(GrCall call) {
 
 private void _setColor(GrCall call) {
     Particle particle = call.getUserData!Particle("p");
+    auto color = call.getObject("c");
     particle.color = Color(
-        call.getFloat("c:r"),
-        call.getFloat("c:g"),
-        call.getFloat("c:b"),
-        call.getFloat("c:a"));
+        color.getFloat("r"),
+        color.getFloat("g"),
+        color.getFloat("b"),
+        color.getFloat("a"));
 }
 
 private void _getColor(GrCall call) {
     Particle particle = call.getUserData!Particle("p");
-    call.setFloat(particle.color.r);
-    call.setFloat(particle.color.g);
-    call.setFloat(particle.color.b);
-    call.setFloat(particle.color.a);
+    auto c = call.createObject("Color");
+    c.setFloat("r", particle.color.r);
+    c.setFloat("g", particle.color.g);
+    c.setFloat("b", particle.color.b);
+    c.setFloat("a", particle.color.a);
+    call.setObject(c);
 }
 
 private void _setPosition(GrCall call) {

@@ -29,7 +29,7 @@ void setLocale(string filePath) {
 
     sendCustomEvent("locale");
 
-    import primidi.config;
+    import primidi.config: saveConfig;
     saveConfig();
 }
 

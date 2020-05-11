@@ -9,10 +9,10 @@ import std.conv: to;
 import grimoire, atelier;
 
 package void loadSprite(GrData data) {
-    auto defSprite = data.addUserType("Sprite");
-    auto defTex = grGetUserType("Texture");
-    auto defColor = grGetTupleType("Color");
-    auto defFont = grGetUserType("Font");
+    auto defSprite = data.addForeign("Sprite");
+    auto defTex = grGetForeignType("Texture");
+    auto defColor = grGetClassType("Color");
+    auto defBlend = grGetEnumType("Blend");
 
     data.addPrimitive(&_makeSpriteT, "Sprite", ["tex"], [defTex], [defSprite]);
     data.addPrimitive(&_makeSpriteS, "Sprite", ["sprite"], [defSprite], [defSprite]);
@@ -32,13 +32,13 @@ package void loadSprite(GrData data) {
     data.addPrimitive(&_setSpriteFlip, "setFlip", ["sprite", "flip"], [defSprite, grInt]);
     data.addPrimitive(&_getSpriteFlip, "setFlip", ["sprite"], [defSprite], [grInt]);
 
-    data.addPrimitive(&_setSpriteBlend, "setBlend", ["sprite", "blend"], [defSprite, grInt]);
+    data.addPrimitive(&_setSpriteBlend, "setBlend", ["sprite", "blend"], [defSprite, defBlend]);
     data.addPrimitive(&_getSpriteBlend, "getBlend", ["sprite"], [defSprite], [grInt]);
 
     data.addPrimitive(&_spriteFit, "fit", ["sprite", "w", "h"], [defSprite, grFloat, grFloat]);
     data.addPrimitive(&_drawSprite, "draw", ["sprite", "x", "y"], [defSprite, grFloat, grFloat]);
 
-    data.addPrimitive(&_createText, "createText", ["font", "text"], [defFont, grString], [defSprite]);  
+    //data.addPrimitive(&_createText, "createText", ["font", "text"], [defFont, grString], [defSprite]);  
 }
 
 private void _makeSpriteT(GrCall call) {
@@ -71,9 +71,13 @@ private void _setSpriteAnchor(GrCall call) {
 
 private void _setSpriteColor(GrCall call) {
     Sprite sprite = call.getUserData!Sprite("sprite");
-    sprite.color = Color(
-        call.getFloat("color:r"), call.getFloat("color:g"),
-        call.getFloat("color:b"), call.getFloat("color:a"));
+    auto c = call.getObject("color");
+    Color color = Color(
+        c.getFloat("r"),
+        c.getFloat("g"),
+        c.getFloat("b"),
+        c.getFloat("a"));
+    sprite.color = color;
 }
 
 private void _setSpriteSize(GrCall call) {
@@ -123,10 +127,7 @@ private void _getSpriteFlip(GrCall call) {
 
 private void _setSpriteBlend(GrCall call) {
     Sprite sprite = call.getUserData!Sprite("sprite");
-    auto blend = call.getInt("blend");
-    if(blend >= 4 || blend < 0)
-        blend = 0;
-    sprite.blend = cast(Blend) blend;
+    sprite.blend = call.getEnum!Blend("blend");
 }
 
 private void _getSpriteBlend(GrCall call) {
@@ -143,10 +144,10 @@ private void _drawSprite(GrCall call) {
     Sprite sprite = call.getUserData!Sprite("sprite");
     sprite.draw(Vec2f(call.getFloat("x"), call.getFloat("y")));
 }
-
+/*
 private void _createText(GrCall call) {
     auto font = call.getUserData!Font("font");
     auto texture = font.render(to!string(call.getString("text")));
 	auto sprite = new Sprite(texture);
     call.setUserData!Sprite(sprite);
-}
+}*/

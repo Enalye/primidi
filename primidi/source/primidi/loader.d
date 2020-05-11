@@ -5,7 +5,7 @@
  */
 module primidi.loader;
 
-import std.path, std.file, std.conv;
+import std.path, std.file, std.conv, std.exception;
 import atelier;
 
 private {
@@ -25,9 +25,10 @@ class LoaderGui: GuiElement {
         OnLoadCompleteCallback _callback;
     }
 
+    /// Ctor
     this(OnLoadCompleteCallback callback) {
         _callback = callback;
-        auto startTime = MonoTime.currTime();
+        //const auto startTime = MonoTime.currTime();
         loadTextures();
         loadFonts();
         //auto deltaTime = MonoTime.currTime() - startTime;
@@ -46,7 +47,7 @@ class LoaderGui: GuiElement {
     }
 }
 
-
+/// Load texture atlases in img folder
 void loadTextures() {
     auto textureCache = new ResourceCache!Texture;
     auto spriteCache = new ResourceCache!Sprite;
@@ -58,7 +59,9 @@ void loadTextures() {
     setResourceCache!Tileset(tilesetCache);
     setResourceCache!NinePatch(ninePathCache);
 
-	auto files = dirEntries(buildNormalizedPath(dirName(thisExePath()), "data/images/"), "{*.json}", SpanMode.depth);
+    auto path = buildNormalizedPath(dirName(thisExePath()), "img");
+    enforce(exists(path), "Missing img folder");
+	auto files = dirEntries(path, "{*.json}", SpanMode.depth);
     foreach(file; files) {
         JSONValue json = parseJSON(readText(file));
 
@@ -121,11 +124,14 @@ void loadTextures() {
     }
 }
 
+/// Load fonts in font folder
 void loadFonts() {
     auto fontCache = new ResourceCache!TrueTypeFont;
 	setResourceCache!TrueTypeFont(fontCache);
 
-    auto files = dirEntries(buildNormalizedPath(dirName(thisExePath()), "media/font/"), "{*.ttf}", SpanMode.depth);
+    auto path = buildNormalizedPath(dirName(thisExePath()), "font");
+    enforce(exists(path), "Missing font folder");
+    auto files = dirEntries(path, "{*.ttf}", SpanMode.depth);
     foreach(file; files) {
         fontCache.set(new TrueTypeFont(file, 12u), baseName(file, ".ttf"));
     }

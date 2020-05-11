@@ -7,7 +7,7 @@ module primidi.midi.internal_sequencer;
 
 import std.algorithm;
 import std.stdio;
-import derelict.sdl2.sdl;
+import bindbc.sdl;
 
 import atelier;
 import primidi.midi;

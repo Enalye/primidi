@@ -82,7 +82,7 @@ private final class ScriptHandler {
                 cleanup();
                 return;
             }
-            writeln("Bytecode Dump: \n", grDump(_data, _bytecode));
+            //writeln("Bytecode Dump: \n", grDump(_data, _bytecode));
             _engine = new GrEngine;
             _engine.load(_data, _bytecode);
             _engine.spawn();
@@ -91,13 +91,13 @@ private final class ScriptHandler {
             _isLoaded = true;
 
             // Events
-            _onNoteEnterEventName = grMangleNamedFunction("onNoteEnter", [grGetUserType("Note")]);
+            _onNoteEnterEventName = grMangleNamedFunction("onNoteEnter", [grGetForeignType("Note")]);
             setNoteEnterCallback(_handler._engine.hasEvent(_onNoteEnterEventName) ? &onNoteEnter : null);
 
-            _onNoteHitEventName = grMangleNamedFunction("onNoteHit", [grGetUserType("Note")]);
+            _onNoteHitEventName = grMangleNamedFunction("onNoteHit", [grGetForeignType("Note")]);
             setNoteHitCallback(_handler._engine.hasEvent(_onNoteHitEventName) ? &onNoteHit : null);
 
-            _onNoteExitEventName = grMangleNamedFunction("onNoteExit", [grGetUserType("Note")]);
+            _onNoteExitEventName = grMangleNamedFunction("onNoteExit", [grGetForeignType("Note")]);
             setNoteExitCallback(_handler._engine.hasEvent(_onNoteExitEventName) ? &onNoteExit : null);
 
             _onStartEventName = grMangleNamedFunction("onStart", []);

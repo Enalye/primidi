@@ -10,12 +10,12 @@ import atelier, grimoire;
 import primidi.script.util;
 
 package void loadFont(GrData data) {
-    const defFont = data.addUserType("Font");
+    const defFont = data.addForeign("Font");
 
     data.addPrimitive(&_makeFont, "Font", ["path", "size"], [grString, grInt], [defFont]);
 }
 
 private void _makeFont(GrCall call) {
-    Font font = new TrueTypeFont(getResourcePath(call.getString("path")), call.getInt("size"));
+    Font font = new TrueTypeFont(getResourcePath(call.getString!string("path")), call.getInt("size"));
     call.setUserData!Font(font);
 }
