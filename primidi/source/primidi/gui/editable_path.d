@@ -5,6 +5,7 @@
  */
 module primidi.gui.editable_path;
 
+import std.path;
 import atelier;
 
 final class EditablePathGui: GuiElement {
@@ -49,21 +50,12 @@ final class EditablePathGui: GuiElement {
         isEditingName = false;
         isFirstClick = true;
 
-        label.text = inputField.text;
+        auto path = inputField.text;
+        path = buildNormalizedPath(path);
+        label.text = path;
         removeChildrenGuis();
         addChildGui(label);
         triggerCallback();
-    }
-
-    override void onFocus() {
-        if(!hasCanvas) {
-            isEditingName = false;
-            isFirstClick = true;
-
-            label.text = inputField.text;
-            removeChildrenGuis();
-            addChildGui(label);
-        }
     }
 
     override void onSubmit() {
