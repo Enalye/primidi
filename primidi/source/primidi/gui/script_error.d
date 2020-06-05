@@ -8,6 +8,7 @@ module primidi.gui.script_error;
 import std.conv: to;
 import atelier, grimoire;
 import primidi.locale;
+import primidi.gui.buttons;
 
 /// Error popup for compilation problems.
 final class ScriptErrorModal: GuiElement {
@@ -76,11 +77,20 @@ final class ScriptErrorModal: GuiElement {
         }
 
 		{ //Close
-            auto closeBtn = new TextButton(getDefaultFont(), getLocalizedText("close"));
+            auto closeBtn = new ConfirmationButton(getLocalizedText("close"));
             closeBtn.setAlign(GuiAlignX.right, GuiAlignY.bottom);
-            closeBtn.size = Vec2f(80f, 35f);
+            closeBtn.position = Vec2f(10f, 10f);
+            closeBtn.size = Vec2f(70f, 20f);
             closeBtn.setCallback(this, "close");
             addChildGui(closeBtn);
+        }
+
+        { //Exit
+            auto exitBtn = new ExitButton;
+            exitBtn.setAlign(GuiAlignX.right, GuiAlignY.top);
+            exitBtn.position = Vec2f(10f, 10f);
+            exitBtn.setCallback(this, "cancel");
+            addChildGui(exitBtn);
         }
 
         GuiState hiddenState = {
@@ -108,6 +118,11 @@ final class ScriptErrorModal: GuiElement {
             break;
         }
 	}
+
+    override void update(float deltaTime) {
+        if(getButtonDown(KeyButton.escape) || getButtonDown(KeyButton.enter) || getButtonDown(KeyButton.enter2))
+            onCallback("close");
+    }
 
     override void draw() {
         drawFilledRect(origin, size, Color(.11f, .08f, .15f));

@@ -8,7 +8,7 @@ module primidi.gui.open_file;
 import std.file, std.path, std.string;
 import atelier;
 import primidi.locale;
-import primidi.gui.editable_path;
+import primidi.gui.editable_path, primidi.gui.buttons;
 
 final class OpenModal: GuiElement {
     final class DirListGui: VList {
@@ -17,7 +17,7 @@ final class OpenModal: GuiElement {
         }
 
         this() {
-            super(Vec2f(400f, 300f));
+            super(Vec2f(434f, 334f));
         }
 
         override void onCallback(string id) {
@@ -28,12 +28,11 @@ final class OpenModal: GuiElement {
         }
 
         override void draw() {
-            drawFilledRect(origin, size, Color(.08f, .09f, .11f));
+            drawFilledRect(origin, size, Color.white);
         }
 
         void add(string subDir, Color color) {
-            auto btn = new TextButton(getDefaultFont(), subDir);
-            btn.label.color = color;
+            auto btn = new DirButton(subDir, color);
             addChildGui(btn);
             _subDirs ~= subDir;
         }
@@ -70,26 +69,36 @@ final class OpenModal: GuiElement {
 
         size(Vec2f(500f, 500f));
         setAlign(GuiAlignX.center, GuiAlignY.center);
-
-        Font font = getDefaultFont();
+        isMovable(true);
 
         { //Title
-            auto title = new Label(font, getLocalizedText("file_to_open") ~ ":");
+            auto title = new Label(getLocalizedText("file_to_open") ~ ":");
+            title.color = Color.black;
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
             addChildGui(title);
         }
 
         {
+            auto hbox = new HContainer;
+            hbox.position = Vec2f(0f, 50f);
+            hbox.setAlign(GuiAlignX.center, GuiAlignY.top);
+            hbox.spacing = Vec2f(10f, 0f);
+            addChildGui(hbox);
+
             _pathLabel = new EditablePathGui(_path);
             _pathLabel.setAlign(GuiAlignX.left, GuiAlignY.top);
-            _pathLabel.position = Vec2f(20f, 50f);
             _pathLabel.setCallback(this, "path");
-            addChildGui(_pathLabel);
+            hbox.addChildGui(_pathLabel);
+
+            auto parentBtn = new ParentButton;
+            parentBtn.setCallback(this, "parent_folder");
+            hbox.addChildGui(parentBtn);
         }
 
         {
-            _filePathLabel = new Label(font, getLocalizedText("file") ~ ": ---");
+            _filePathLabel = new Label(getLocalizedText("file") ~ ": ---");
+            _filePathLabel.color = Color.black;
             _filePathLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
             _filePathLabel.position = Vec2f(20f, 30f);
             addChildGui(_filePathLabel);
@@ -98,41 +107,36 @@ final class OpenModal: GuiElement {
         { //Validation
             auto box = new HContainer;
             box.setAlign(GuiAlignX.right, GuiAlignY.bottom);
-            box.spacing = Vec2f(25f, 15f);
+            box.position = Vec2f(10f, 10f);
+            box.spacing = Vec2f(8f, 0f);
             addChildGui(box);
 
-            auto applyBtn = new TextButton(font, getLocalizedText("open"));
-            applyBtn.size = Vec2f(80f, 35f);
+            auto applyBtn = new ConfirmationButton(getLocalizedText("open"));
+            applyBtn.size = Vec2f(70f, 20f);
             applyBtn.setCallback(this, "apply");
             applyBtn.isLocked = true;
             box.addChildGui(applyBtn);
             _applyBtn = applyBtn;
 
-            auto cancelBtn = new TextButton(font, getLocalizedText("cancel"));
-            cancelBtn.size = Vec2f(80f, 35f);
+            auto cancelBtn = new ConfirmationButton(getLocalizedText("cancel"));
+            cancelBtn.size = Vec2f(70f, 20f);
             cancelBtn.setCallback(this, "cancel");
             box.addChildGui(cancelBtn);
         }
 
-        { //List
-            auto vbox = new VContainer;
-            vbox.setAlign(GuiAlignX.center, GuiAlignY.center);
-            vbox.position = Vec2f(0f, 0f);
-            addChildGui(vbox);
+        { //Exit
+            auto exitBtn = new ExitButton;
+            exitBtn.setAlign(GuiAlignX.right, GuiAlignY.top);
+            exitBtn.position = Vec2f(10f, 10f);
+            exitBtn.setCallback(this, "cancel");
+            addChildGui(exitBtn);
+        }
 
-            {
-                auto hbox = new HContainer;
-                vbox.addChildGui(hbox);
-
-                auto parentBtn = new TextButton(getDefaultFont(), "Parent");
-                parentBtn.setCallback(this, "parent_folder");
-                hbox.addChildGui(parentBtn);
-            }
-            {
-                _list = new DirListGui;
-                _list.setCallback(this, "file");
-                vbox.addChildGui(_list);
-            }
+        {
+            _list = new DirListGui;
+            _list.setAlign(GuiAlignX.center, GuiAlignY.center);
+            _list.setCallback(this, "file");
+            addChildGui(_list);
         }
 
         reloadList();
@@ -237,10 +241,10 @@ final class OpenModal: GuiElement {
             const auto type = getFileType(file);
             final switch(type) with(FileType) {
             case DirectoryType:
-                _list.add(baseName(file), Color.gray);
+                _list.add(baseName(file), Color(20, 20, 20));
                 continue;
             case MidiFileType:
-                _list.add(baseName(file), Color.green);
+                _list.add(baseName(file), Color.blue);
                 continue;
             case InvalidType:
                 continue;
@@ -248,11 +252,47 @@ final class OpenModal: GuiElement {
         }
     }
 
+    override void update(float deltaTime) {
+        if(getButtonDown(KeyButton.escape))
+            onCallback("cancel");
+        else if(!_applyBtn.isLocked) {
+            if(getButtonDown(KeyButton.enter) || getButtonDown(KeyButton.enter2))
+                onCallback("apply");
+        }
+    }
+
     override void draw() {
-        drawFilledRect(origin, size, Color(.11f, .08f, .15f));
+        drawFilledRect(origin, size, Color(240, 240, 240));
     }
 
     override void drawOverlay() {
-        drawRect(origin, size, Color.gray);
+        drawRect(origin, size, Color(20, 20, 20));
+    }
+}
+
+final class ParentButton: Button {
+    private {
+        Sprite _parentSprite;
+    }
+
+    this() {
+        _parentSprite = fetch!Sprite("parent");
+        size = Vec2f(24f, 24f);
+    }
+
+    override void draw() {
+        if(isClicked) {
+            drawFilledRect(origin, size, Color(204, 228, 247));
+            drawRect(origin, size, Color(0, 84, 153));
+        }
+        else if(isHovered) {
+            drawFilledRect(origin, size, Color(229, 241, 251));
+            drawRect(origin, size, Color(0, 120, 215));
+        }
+        else {
+            drawFilledRect(origin, size, Color(225, 225, 225));
+            drawRect(origin, size, Color(173, 173, 173));
+        }
+        _parentSprite.draw(center);
     }
 }

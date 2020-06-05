@@ -24,6 +24,7 @@ final class EditablePathGui: GuiElement {
 
     this(string path = "untitled") {
         label = new Label(path);
+        label.color = Color(20, 20, 20);
         label.setAlign(GuiAlignX.left, GuiAlignY.center);
         addChildGui(label);
         size = label.size;
@@ -64,6 +65,7 @@ final class EditablePathGui: GuiElement {
                 isEditingName = true;
                 removeChildrenGuis();
                 inputField = new InputField(size, label.text != "untitled" ? label.text : "");
+                inputField.color = Color(20, 20, 20);
                 inputField.setAlign(GuiAlignX.center, GuiAlignY.center);
                 inputField.setCallback(this, "editname");
                 inputField.size = Vec2f(400f, label.size.y);
@@ -76,6 +78,6 @@ final class EditablePathGui: GuiElement {
     }
 
     override void draw() {
-        drawFilledRect(origin, size, Color.gray);
+        drawFilledRect(origin, size, Color(204, 204, 204));
     }
 }

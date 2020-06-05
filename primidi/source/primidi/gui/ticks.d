@@ -8,6 +8,7 @@ module primidi.gui.ticks;
 import std.conv: to;
 import atelier;
 import primidi.locale, primidi.midi;
+import primidi.gui.buttons;
 
 final class SelectTicksIntervalModal: GuiElement {
 	private {
@@ -19,6 +20,7 @@ final class SelectTicksIntervalModal: GuiElement {
 	this() {
 		setAlign(GuiAlignX.center, GuiAlignY.center);
         size(Vec2f(400f, 200f));
+        isMovable(true);
 
 		{ //Slider
             auto box = new VContainer;
@@ -38,11 +40,13 @@ final class SelectTicksIntervalModal: GuiElement {
 			box.addChildGui(_slider);
 
             _ticksLabel = new Label(getLocalizedText("range_ticks") ~ ": " ~ to!string(_defaultValue));
+            _ticksLabel.color = Color(20, 20, 20);
             box.addChildGui(_ticksLabel);
 		}
 
 		{ //Title
             auto title = new Label(getLocalizedText("select_ticks") ~ ":");
+            title.color = Color(20, 20, 20);
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
             addChildGui(title);
@@ -51,19 +55,27 @@ final class SelectTicksIntervalModal: GuiElement {
 		{ //Validation
             auto box = new HContainer;
             box.setAlign(GuiAlignX.right, GuiAlignY.bottom);
-            box.spacing = Vec2f(25f, 15f);
+            box.position = Vec2f(10f, 10f);
+            box.spacing = Vec2f(8f, 0f);
             addChildGui(box);
 
-            Font font = getDefaultFont();
-            auto applyBtn = new TextButton(font, getLocalizedText("apply"));
-            applyBtn.size = Vec2f(80f, 35f);
+            auto applyBtn = new ConfirmationButton(getLocalizedText("apply"));
+            applyBtn.size = Vec2f(70f, 20f);
             applyBtn.setCallback(this, "apply");
             box.addChildGui(applyBtn);
 
-            auto cancelBtn = new TextButton(font, getLocalizedText("cancel"));
-            cancelBtn.size = Vec2f(80f, 35f);
+            auto cancelBtn = new ConfirmationButton(getLocalizedText("cancel"));
+            cancelBtn.size = Vec2f(70f, 20f);
             cancelBtn.setCallback(this, "cancel");
             box.addChildGui(cancelBtn);
+        }
+
+        { //Exit
+            auto exitBtn = new ExitButton;
+            exitBtn.setAlign(GuiAlignX.right, GuiAlignY.top);
+            exitBtn.position = Vec2f(10f, 10f);
+            exitBtn.setCallback(this, "cancel");
+            addChildGui(exitBtn);
         }
 
 		GuiState hiddenState = {
@@ -83,6 +95,8 @@ final class SelectTicksIntervalModal: GuiElement {
 	}
 
 	override void onCallback(string id) {
+        if(!isModalGui())
+            return;
 		switch(id) {
         case "slider":
             _ticksLabel.text = getLocalizedText("range_ticks") ~ ": " ~ to!string(_slider.ivalue);
@@ -101,11 +115,18 @@ final class SelectTicksIntervalModal: GuiElement {
         }
 	}
 
+    override void update(float deltaTime) {
+        if(getButtonDown(KeyButton.escape))
+            onCallback("cancel");
+        else if(getButtonDown(KeyButton.enter) || getButtonDown(KeyButton.enter2))
+            onCallback("apply");
+    }
+
 	override void draw() {
-        drawFilledRect(origin, size, Color(.11f, .08f, .15f));
+        drawFilledRect(origin, size, Color(240, 240, 240));
     }
 
     override void drawOverlay() {
-        drawRect(origin, size, Color.gray);
+        drawRect(origin, size, Color(20, 20, 20));
     }
 }

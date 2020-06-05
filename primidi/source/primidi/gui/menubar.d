@@ -203,6 +203,12 @@ private final class MenuButton: GuiElement {
             onCallback("plugin.reload");
         if(getButtonDown(KeyButton.f6))
             onCallback("plugin.restart");
+        if(isButtonDown(KeyButton.leftControl) || isButtonDown(KeyButton.rightControl)) {
+            if(getButtonDown(KeyButton.o))
+                onCallback("media.open");
+            if(getButtonDown(KeyButton.q))
+                onCallback("media.quit");
+        }
     }
 
     override void onCallback(string id) {

@@ -8,6 +8,7 @@ module primidi.gui.locale;
 import std.path, std.file, std.string, std.exception;
 import atelier;
 import primidi.locale;
+import primidi.gui.buttons;
 
 final class SelectLocaleModal: GuiElement {
 	private {
@@ -17,6 +18,7 @@ final class SelectLocaleModal: GuiElement {
 	this() {
 		setAlign(GuiAlignX.center, GuiAlignY.center);
         size(Vec2f(250f, 150f));
+        isMovable(true);
 
 		{ //Port
 			_localeSelector = new SelectLocaleGui;
@@ -26,17 +28,27 @@ final class SelectLocaleModal: GuiElement {
 
 		{ //Title
             auto title = new Label(getLocalizedText("select_language") ~ ":");
+            title.color = Color(20, 20, 20);
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
             addChildGui(title);
         }
 
 		{ //Close
-            auto closeBtn = new TextButton(getDefaultFont(), getLocalizedText("close"));
+            auto closeBtn = new ConfirmationButton(getLocalizedText("close"));
             closeBtn.setAlign(GuiAlignX.right, GuiAlignY.bottom);
-            closeBtn.size = Vec2f(80f, 35f);
+            closeBtn.position = Vec2f(10f, 10f);
+            closeBtn.size = Vec2f(70f, 20f);
             closeBtn.setCallback(this, "close");
             addChildGui(closeBtn);
+        }
+
+        { //Exit
+            auto exitBtn = new ExitButton;
+            exitBtn.setAlign(GuiAlignX.right, GuiAlignY.top);
+            exitBtn.position = Vec2f(10f, 10f);
+            exitBtn.setCallback(this, "close");
+            addChildGui(exitBtn);
         }
 
 		GuiState hiddenState = {
@@ -66,12 +78,17 @@ final class SelectLocaleModal: GuiElement {
         }
 	}
 
+    override void update(float deltaTime) {
+        if(getButtonDown(KeyButton.escape) || getButtonDown(KeyButton.enter) || getButtonDown(KeyButton.enter2))
+            onCallback("close");
+    }
+
 	override void draw() {
-        drawFilledRect(origin, size, Color(.11f, .08f, .15f));
+        drawFilledRect(origin, size, Color(240, 240, 240));
     }
 
     override void drawOverlay() {
-        drawRect(origin, size, Color.gray);
+        drawRect(origin, size, Color(20, 20, 20));
     }
 }
 

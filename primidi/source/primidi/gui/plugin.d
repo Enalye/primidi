@@ -8,6 +8,7 @@ module primidi.gui.plugin;
 import std.path, std.file, std.string;
 import atelier;
 import primidi.config, primidi.locale;
+import primidi.gui.buttons;
 
 final class SelectPluginModal: GuiElement {
 	private {
@@ -21,6 +22,7 @@ final class SelectPluginModal: GuiElement {
 	this() {
 		setAlign(GuiAlignX.center, GuiAlignY.center);
         size(Vec2f(800f, 600f));
+        isMovable(true);
 
 		{ //Port
 			_pluginList = new PluginList;
@@ -38,34 +40,48 @@ final class SelectPluginModal: GuiElement {
             addChildGui(box);
 
             _nameLabel = new Label;
+            _nameLabel.color = Color(20, 20, 20);
             box.addChildGui(_nameLabel);
             _infoLabel = new Label;
+            _infoLabel.color = Color(20, 20, 20);
             box.addChildGui(_infoLabel);
             _authorLabel = new Label;
+            _authorLabel.color = Color(20, 20, 20);
             box.addChildGui(_authorLabel);
         }
 
 		{ //Title
             auto title = new Label(getLocalizedText("select_plugin") ~ ":");
+            title.color = Color(20, 20, 20);
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
             addChildGui(title);
         }
 
-		{ //Close
+		{ //Validation
             auto box = new HContainer;
             box.setAlign(GuiAlignX.right, GuiAlignY.bottom);
+            box.position = Vec2f(10f, 10f);
+            box.spacing = Vec2f(8f, 0f);
             addChildGui(box);
 
-            auto applyBtn = new TextButton(getDefaultFont(), getLocalizedText("apply"));
-            applyBtn.size = Vec2f(80f, 35f);
+            auto applyBtn = new ConfirmationButton(getLocalizedText("apply"));
+            applyBtn.size = Vec2f(70f, 20f);
             applyBtn.setCallback(this, "apply");
             box.addChildGui(applyBtn);
 
-            auto closeBtn = new TextButton(getDefaultFont(), getLocalizedText("cancel"));
-            closeBtn.size = Vec2f(80f, 35f);
-            closeBtn.setCallback(this, "close");
-            box.addChildGui(closeBtn);
+            auto cancelBtn = new ConfirmationButton(getLocalizedText("cancel"));
+            cancelBtn.size = Vec2f(70f, 20f);
+            cancelBtn.setCallback(this, "close");
+            box.addChildGui(cancelBtn);
+        }
+
+        { //Exit
+            auto exitBtn = new ExitButton;
+            exitBtn.setAlign(GuiAlignX.right, GuiAlignY.top);
+            exitBtn.position = Vec2f(10f, 10f);
+            exitBtn.setCallback(this, "close");
+            addChildGui(exitBtn);
         }
         reload();
 
@@ -113,14 +129,21 @@ final class SelectPluginModal: GuiElement {
         }
 	}
 
+    override void update(float deltaTime) {
+        if(getButtonDown(KeyButton.escape))
+            onCallback("close");
+        else if(getButtonDown(KeyButton.enter) || getButtonDown(KeyButton.enter2))
+            onCallback("apply");
+    }
+
 	override void draw() {
-        drawFilledRect(origin, size, Color(.11f, .08f, .15f));
+        drawFilledRect(origin, size, Color(240, 240, 240));
         if(_cover)
             _cover.draw(origin + Vec2f(size.x - (_cover.size.x / 2f + 80f), 40f + _cover.size.y / 2f));
     }
 
     override void drawOverlay() {
-        drawRect(origin, size, Color.gray);
+        drawRect(origin, size, Color(20, 20, 20));
     }
 
     void reload() {
@@ -193,10 +216,10 @@ private final class PluginItem: Button {
     }
 
     override void draw() {
-        drawFilledRect(origin, size, Color.blue);
+        drawFilledRect(origin, size, Color(20, 20, 20));
         _cover.draw(center + (isClicked ? Vec2f(1f, 2f) : Vec2f.zero));
         if(isSelected)
-            drawRect(origin, size, Color.blue);
+            drawRect(origin, size, Color.cyan);
     }
 }
 
@@ -221,6 +244,6 @@ private final class PluginList: GridList {
     }
 
     override void draw() {
-        drawFilledRect(origin, size, Color(.08f, .09f, .11f));
+        drawFilledRect(origin, size, Color(204, 204, 204));
     }
 }
