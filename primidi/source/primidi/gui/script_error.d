@@ -12,18 +12,16 @@ import primidi.gui.buttons;
 
 /// Error popup for compilation problems.
 final class ScriptErrorModal: GuiElement {
+    private {
+        Text _text;
+    }
+
     /// Ctor
     this(GrError error) {
         setAlign(GuiAlignX.center, GuiAlignY.center);
-        size(Vec2f(800f, 250f));
+        isMovable(true);
 
         { //Error display
-            auto box = new VContainer;
-            box.setChildAlign(GuiAlignX.left);
-            box.setAlign(GuiAlignX.center, GuiAlignY.center);
-            //box.position = Vec2f(20f, 50f);
-            addChildGui(box);
-
             string lineNumber = to!string(error.line) ~ "| ";
             string snippet, underline, extra, space;
 
@@ -35,7 +33,7 @@ final class ScriptErrorModal: GuiElement {
             snippet ~= " " ~ lineNumber ~ error.lineText;
 
             //Underline
-            underline ~= "|";
+            underline ~= "{c:blue}|{c:red}";
             foreach(x; 0 .. error.column)
                 underline ~= " ";
             foreach(x; 0 .. error.textLength)
@@ -45,32 +43,21 @@ final class ScriptErrorModal: GuiElement {
 
             extra ~= "|";
 
-            //Labels
-            foreach (line; [
-                "error: " ~ error.message,
-                " ",
-                "-----",
-                space ~ "-> "
-                ~ error.filePath
-                ~ "(" ~ to!string(error.line)
-                ~ "," ~ to!string(error.column)
-                ~ ")",
-                extra,
-                snippet,
-                underline,
-                extra,
-                "-----",
-                " ",
-                "Compilation aborted..."
-                ]) {
-                Label label = new Label(line);
-                box.addChildGui(label);
-            }
-            
+            string line = "{c:red}error:{c:black} " ~ error.message ~
+                "\n" ~ space ~ "{c:blue}->{c:black} "
+                ~ error.filePath ~ "(" ~ to!string(error.line)
+                ~ "," ~ to!string(error.column) ~ ")\n{c:blue}" ~
+                extra ~ "\n" ~ snippet ~ "\n" ~ underline ~"\n{c:blue}" ~ extra ~
+                "\n{c:black}Compilation aborted...";
+            _text = new Text(line);
+            _text.setAlign(GuiAlignX.left, GuiAlignY.top);
+            _text.position = Vec2f(20f, 50f);
+            addChildGui(_text);
         }
 
         { //Title
             auto title = new Label(getLocalizedText("error") ~ ":");
+            title.color = Color(20, 20, 20);
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
             addChildGui(title);
@@ -107,6 +94,7 @@ final class ScriptErrorModal: GuiElement {
 
         setState("hidden");
         doTransitionState("default");
+        size(_text.size + Vec2f(50f, 100f));
     }
 
     override void onCallback(string id) {
@@ -125,10 +113,11 @@ final class ScriptErrorModal: GuiElement {
     }
 
     override void draw() {
-        drawFilledRect(origin, size, Color(.11f, .08f, .15f));
+        drawFilledRect(origin, size, Color(240, 240, 240));
+        drawFilledRect(_text.origin - Vec2f(10f, 10f), _text.size + Vec2f(20f, 20f), Color(204, 204, 204));
     }
 
     override void drawOverlay() {
-        drawRect(origin, size, Color.gray);
+        drawRect(origin, size, Color(20, 20, 20));
     }
 }
