@@ -51,6 +51,11 @@ void notifyEndInternalSequencer() {
 		_onEndCallback();
 }
 
+void notifyFileDrop(string filePath) {
+	if(_onFileDropCallback)
+		_onFileDropCallback(filePath);
+}
+
 void playInternalSequencer(MidiFile midiFile) {
 	if(!_sequencer)
 		return;
@@ -147,7 +152,9 @@ double getInternalSequencerTick() {
 
 // -- CALLBACKS --
 alias NoteCallback = void function(Note);
+alias FileCallback = void function(string);
 private NoteCallback _onNoteEnterCallback, _onNoteHitCallback, _onNoteExitCallback;
+private FileCallback _onFileDropCallback;
 void setNoteEnterCallback(NoteCallback callback) {
     _onNoteEnterCallback = callback;
 }
@@ -168,6 +175,10 @@ void setStartCallback(GlobalMidiCallback callback) {
 
 void setEndCallback(GlobalMidiCallback callback) {
 	_onEndCallback = callback;
+}
+
+void setFileDropCallback(FileCallback callback) {
+    _onFileDropCallback = callback;
 }
 
 ///Visual sequencer

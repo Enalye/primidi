@@ -105,6 +105,9 @@ private final class ScriptHandler {
 
             _onEndEventName = grMangleNamedFunction("onEnd", []);
             setEndCallback(_handler._engine.hasEvent(_onEndEventName) ? &onEnd : null);
+
+            _onFileDropEventName = grMangleNamedFunction("onFileDrop", [grString]);
+            setFileDropCallback(_handler._engine.hasEvent(_onFileDropEventName) ? &onFileDrop : null);
         }
         catch(Exception e) {
             logMessage(e.msg);
@@ -190,7 +193,8 @@ private final class ScriptHandler {
 
 private {
     ScriptHandler _handler;
-    dstring _onNoteEnterEventName, _onNoteHitEventName, _onNoteExitEventName, _onStartEventName, _onEndEventName;
+    dstring _onNoteEnterEventName, _onNoteHitEventName, _onNoteExitEventName,
+        _onStartEventName, _onEndEventName, _onFileDropEventName;
     Logger _logger;
 }
 
@@ -266,6 +270,13 @@ private void onNoteHit(Note note) {
 private void onNoteExit(Note note) {
     auto context = _handler._engine.spawnEvent(_onNoteExitEventName);
     context.setUserData(note);
+}
+
+///Event callback when a file is dropped inside the app.
+private void onFileDrop(string filePath) {
+    import std.conv: to;
+    auto context = _handler._engine.spawnEvent(_onFileDropEventName);
+    context.setString(to!dstring(filePath));
 }
 
 ///Called when a midi file is starting.

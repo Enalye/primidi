@@ -36,6 +36,7 @@ package void loadSprite(GrData data) {
     data.addPrimitive(&_getSpriteBlend, "getBlend", ["sprite"], [defSprite], [grInt]);
 
     data.addPrimitive(&_spriteFit, "fit", ["sprite", "w", "h"], [defSprite, grFloat, grFloat]);
+    data.addPrimitive(&_spriteContain, "contain", ["sprite", "w", "h"], [defSprite, grFloat, grFloat]);
     data.addPrimitive(&_drawSprite, "draw", ["sprite", "x", "y"], [defSprite, grFloat, grFloat]);
 
     //data.addPrimitive(&_createText, "createText", ["font", "text"], [defFont, grString], [defSprite]);  
@@ -138,6 +139,11 @@ private void _getSpriteBlend(GrCall call) {
 private void _spriteFit(GrCall call) {
     Sprite sprite = call.getUserData!Sprite("sprite");
     sprite.fit(Vec2f(call.getFloat("w"), call.getFloat("h")));
+}
+
+private void _spriteContain(GrCall call) {
+    Sprite sprite = call.getUserData!Sprite("sprite");
+    sprite.contain(Vec2f(call.getFloat("w"), call.getFloat("h")));
 }
 
 private void _drawSprite(GrCall call) {

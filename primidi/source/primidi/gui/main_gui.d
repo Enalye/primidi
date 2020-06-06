@@ -63,7 +63,7 @@ final class MainGui: GuiElement {
             else if(ext == ".gr")
                 loadScript(event.drop.filePath);
             else {
-                //Modal window
+                notifyFileDrop(event.drop.filePath);
             }
             break;
         case resize:
