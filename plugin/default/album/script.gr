@@ -1,0 +1,256 @@
+/** 
+ * Copyright: Enalye
+ * License: Zlib
+ * Authors: Enalye
+ */
+
+// Canvas size
+let width, height = 1280f, 720f;
+
+// Channels' color
+let colors = [
+    Color(109, 247, 193),
+    Color(17, 173, 193),
+    Color(96, 108, 129),
+    Color(57, 52, 87),
+    Color(30, 136, 117),
+    Color(91, 179, 97),
+    Color(161, 229, 90),
+    Color(247, 228, 118),
+    Color(249, 146, 82),
+    Color(203, 77, 104),
+    Color(106, 55, 113),
+    Color(201, 36, 100),
+    Color(244, 140, 182),
+    Color(247, 182, 158),
+    Color(155, 156, 130),
+    Color(49, 122, 21)
+];
+
+array(Canvas) canvases;
+Texture rectTex;
+let barWidth = 6f;
+float barX;
+float leftBorder, rightBorder = width / 2f - 200f, width / 2f + 200f;
+int barCount = 128;
+array(Color) barsC1, barsC2;
+Sprite cover, background;
+
+// Init
+main {
+    let centerX, centerY = width / 2f, height / 2f;
+
+    // Rendering canvas.
+    setCameraSize(width, height);
+    setCameraPosition(centerX, centerY);
+    setCameraClearColor(Color(0.051, 0.082, 0.125));
+
+    /*
+        Default interval of ticks to be displayed.
+        A too large value can cause slowdowns.
+    */
+    setInterval(6000);
+    /*
+        0 = note are hit on the right side of the screen.
+        0.5 = in the center.
+        1 = left side.
+    */
+    setRatio(0.5f);
+
+    bars = array(float)[];
+    bars2 = array(float)[];
+    barsC1 = array(Color)[];
+    barsC2 = array(Color)[];
+    loop(barCount) {
+        bars ~= 0f;
+        bars2 ~= 0f;
+        barsC1 ~= Color(1f, 1f, 1f);
+        barsC2 ~= Color(1f, 1f, 1f);
+    }
+
+    // We render each channel on a separate canvas.
+    canvases = array(Canvas)[];
+    loop(16) {
+        let canvas = Canvas(width, height);
+        canvas:setPosition(centerX, centerY);
+        canvas:setColorMod(Color(1f, 1f, 1f), Blend.alpha);
+        canvases ~= canvas;
+    }
+    rectTex = Texture("../note.png");
+
+    let mainCanvas = Canvas(width, height);
+    mainCanvas:setPosition(centerX, centerY);
+    mainCanvas:setColorMod(Color(1f, 1f, 1f), Blend.alpha);
+
+    barX = width * (1f - getRatio()) - (barWidth / 2f);
+
+    let rect = rectTex as Sprite;
+    rect:setAnchor(0f, 0f);
+    rect:setBlend(Blend.additive);
+
+    loop {
+        if(background)
+            background:draw(centerX, centerY);
+        for(canvas, canvases) {
+            canvas:draw(centerX, centerY);
+            canvas:clear;
+        }
+        // Middle bars
+        rect:setSize(400f + barWidth, barWidth);
+        rect:setColor(Color(1f, 1f, 1f, lerp(0.2f, 1f, factors[0])));
+        rect:draw(leftBorder - barWidth / 2f, (centerY - 200f) - barWidth / 2f);
+        rect:setColor(Color(1f, 1f, 1f, lerp(0.2f, 1f, factors[2])));
+        rect:draw(leftBorder - barWidth / 2f, (centerY + 200f) - barWidth / 2f);
+        rect:setSize(barWidth, 400f + barWidth);
+        rect:setColor(Color(1f, 1f, 1f, lerp(0.2f, 1f, factors[3])));
+        rect:draw(leftBorder - barWidth / 2f, (centerY - 200f) - barWidth / 2f);
+        rect:setColor(Color(1f, 1f, 1f, lerp(0.2f, 1f, factors[1])));
+        rect:draw(rightBorder - barWidth / 2f, (centerY - 200f) - barWidth / 2f);
+        if(cover)
+            cover:draw(centerX, centerY);
+        loop(i, 4) {
+            if(factors[i] > 0f)
+                factors[i] -= 0.1f;
+            else
+                factors[i] = 0f;
+        }
+        let barColor = Color(1f, 1f, 1f, 1f);
+        loop(i, barCount) {
+            float neighbors;
+            if(i == 0) {
+                neighbors = bars[1] / 2f;
+                barsC2[i] = lerp(barsC1[0], barsC1[1], clamp(bars[1] - bars[0], 0.1f, 1f));
+            }
+            else if(i == 127) {
+                neighbors = bars[126] / 2f;
+                barsC2[i] = lerp(barsC1[127], barsC1[126], clamp(bars[126] - bars[127], 0.1f, 1f));
+            }
+            else {
+                neighbors = (bars[i - 1] + bars[i + 1]) / 2f;
+                barsC2[i] = lerp(barsC1[i - 1], barsC1[i + 1], (clamp(bars[i + 1] - bars[i - 1], -1f, 1f) + 1f) / 2f);
+                barsC2[i] = lerp(barsC1[i], barsC2[i], clamp(neighbors - bars[i], 0.1f, 1f));
+            }
+            bars2[i] = lerp(bars[i], neighbors, 0.75);
+        }
+        loop(i, barCount) {
+            barsC1[i] = barsC2[i];
+            bars[i] = lerp(bars2[i], 0f, 0.02f);
+            if(bars[i] < 0f)
+                bars[i] = 0f;
+
+            float barSize = lerp(10f, 100f, bars[i]);
+            rect:setSize(5f, barSize + 5f);
+            rect:setColor(barsC1[i]);
+            rect:draw(2.5f + i * 10f, height - barSize);
+            rect:draw(width - (i * 10f) + 7.5f, 0f);
+        }
+        yield
+    }
+}
+
+array(float) factors = [0f, 0f, 0f, 0f];
+array(float) bars, bars2;
+// When the note is played
+event onNoteHit(Note note) {
+    bars[note:getPitch] += (note:getVelocity / 127f) * 1.27f;
+    barsC1[note:getPitch] = colors[note:getChannel];
+    loop(i, 4) {
+        factors[i] += note:getDuration;
+        wait(5);
+    }
+}
+
+func wait(int frames) {
+    loop(frames) yield
+}
+
+// Called for each note entering the Interval window.
+event onNoteEnter(Note note) {
+    let noteSprite = rectTex as Sprite;
+    noteSprite:setAnchor(0f, 0f);
+
+    Color color = colors[note:getChannel];
+
+    let pitch = 1f - (note:getPitch as float / 128f);
+    float fadeOut = 1f;
+
+    loop {
+        unless(note:isAlive)
+            kill
+
+        let w, h =
+            width * note:getDuration,
+            height / 128f;
+        
+        let y = height * pitch - getPitchBend(note:getChannel) * h * 2f;
+        let x = width * (1f - note:getTime);
+        let w2 = 0f;
+
+        if(w < 4f)
+            w = 4f;
+            
+        if(note:getTime < 0.5) {
+            noteSprite:setSize(w, h);
+        }
+        else {
+            let cropX = (width / 2f) - x;
+            if(w > cropX) {
+                w, w2 = cropX, w - cropX;
+            }
+            noteSprite:setSize(w, h);
+        }
+
+        if(note:isPlaying) {
+            let factor = note:getPlayTime;
+            let c = lerp(Color(1f, 1f, 1f, 1f), color, factor);
+            noteSprite:setColor(c);
+
+            if(w2 > 0) {
+                pushCanvas(canvases[note:getChannel]);
+                noteSprite:draw(x - 200f, y);
+                noteSprite:setSize(w2, h);
+                noteSprite:draw(rightBorder, y);
+                popCanvas();
+            }
+            else {
+                pushCanvas(canvases[note:getChannel]);
+                noteSprite:draw(x - 200f, y);
+                popCanvas();
+            }
+        }
+        else {
+            if(note:getPlayTime > 0f) {
+                noteSprite:setColor(lerp(Color(1f, 1f, 1f, 0f), color, fadeOut));
+                if(fadeOut > 0f) {
+                    fadeOut -= 0.025f;
+                    if(fadeOut < 0f) {
+                        fadeOut = 0f;
+                    }
+                }
+                pushCanvas(canvases[note:getChannel]);
+                noteSprite:draw(x - 200f, y);
+                popCanvas();
+            }
+            else {
+                noteSprite:setColor(Color(1f, 1f, 1f, 0.5f));
+                pushCanvas(canvases[note:getChannel]);
+                noteSprite:draw(x + 200f, y);
+                popCanvas();
+            }
+        }
+        yield
+    }
+}
+
+event onFileDrop(string fileName) {
+    let tex = Texture(fileName);
+    unless(tex) return;
+    background = Sprite(tex);
+    background:contain(width, height);
+    background:setColor(Color(0.25f, 0.25f, 0.25f, .75f));
+    background:setBlend(Blend.additive);
+
+    cover = Sprite(tex);
+    cover:setSize(400f, 400f);
+    cover:setBlend(Blend.alpha);
+}

@@ -28,6 +28,7 @@ package void loadCanvas(GrData data) {
     data.addPrimitive(&_renderCanvas, "draw", ["canvas", "x", "y"], [defCanvas, grFloat, grFloat]);
     
     data.addPrimitive(&_setClearColor, "setClearColor", ["canvas", "color"], [defCanvas, defColor]);
+    data.addPrimitive(&_setClearAlpha, "setClearAlpha", ["canvas", "a"], [defCanvas, grFloat]);
     data.addPrimitive(&_setColorMod, "setColorMod", ["canvas", "color", "blend"], [defCanvas, defColor, defBlend]);
     data.addPrimitive(&_setAlpha, "setAlpha", ["canvas", "alpha"], [defCanvas, grInt]);
     data.addPrimitive(&_setPosition, "setPosition", ["canvas", "x", "y"], [defCanvas, grFloat, grFloat]);
@@ -35,7 +36,7 @@ package void loadCanvas(GrData data) {
     data.addPrimitive(&_setCameraSizei, "setCameraSize", ["w", "h"], [grInt, grInt]);
     data.addPrimitive(&_setCameraSizef, "setCameraSize", ["w", "h"], [grFloat, grFloat]);
     data.addPrimitive(&_setCameraPosition, "setCameraPosition", ["x", "y"], [grFloat, grFloat]);
-    data.addPrimitive(&_setCameraClearColor, "setCameraClearColor", ["color"], [defColor]);
+    data.addPrimitive(&_setCameraClearColor, "setCameraClearColor", ["color", "a"], [defColor, grFloat]);
 }
 
 private void _makeCanvasf(GrCall call) {
@@ -67,14 +68,18 @@ private void _renderCanvas(GrCall call) {
 private void _setClearColor(GrCall call) {
     Canvas canvas = call.getUserData!Canvas("canvas");
     auto obj = call.getObject("color");
-    const Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"), obj.getFloat("a"));
-    canvas.clearColor = color;
+    canvas.color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
+}
+
+private void _setClearAlpha(GrCall call) {
+    Canvas canvas = call.getUserData!Canvas("canvas");
+    canvas.alpha = call.getFloat("a");
 }
 
 private void _setColorMod(GrCall call) {
     Canvas canvas = call.getUserData!Canvas("canvas");
     auto obj = call.getObject("color");
-    const Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"), obj.getFloat("a"));
+    const Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
     const Blend blend = call.getEnum!Blend("blend");
     canvas.setColorMod(color, blend);
 }
@@ -104,6 +109,7 @@ private void _setCameraPosition(GrCall call) {
 
 private void _setCameraClearColor(GrCall call) {
     auto obj = call.getObject("color");
-    const Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"), obj.getFloat("a"));
-    _canvas.clearColor = color;
+    const Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
+    _canvas.color = color;
+    _canvas.alpha = call.getFloat("a");
 }

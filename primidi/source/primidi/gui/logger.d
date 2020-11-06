@@ -21,30 +21,30 @@ final class Logger: GuiElement {
         addChildGui(_box);
 
         GuiState hiddenState = {
-            color: Color.clear,
+            alpha: 0f,
             offset: Vec2f(0f, 50f),
             time: 2f,
-            easingFunction: getEasingFunction(EasingAlgorithm.sineIn),
-            callbackId: "hidden"
+            easing: getEasingFunction(Ease.sineIn),
+            callback: "hidden"
         };
         addState("hidden", hiddenState);
 
         GuiState log3State = {
             time: 5f,
-            callbackId: "log3"
+            callback: "log3"
         };
         addState("log3", log3State);
 
         GuiState log2State = {
             time: 1f,
-            easingFunction: getEasingFunction(EasingAlgorithm.sineOut),
-            callbackId: "log2"
+            easing: getEasingFunction(Ease.sineOut),
+            callback: "log2"
         };
         addState("log2", log2State);
 
         GuiState log1State = {
             offset: Vec2f(0f, -10f),
-            color: Color.clear
+            alpha: 0f
         };
         addState("log1", log1State);
     }

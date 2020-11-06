@@ -1,2 +1,2 @@
 cd ../primidi
-dub build --build=release --config=windows-release -a=x86_64
+dub build --build=release-nobounds --config=windows-release -a=x86_64

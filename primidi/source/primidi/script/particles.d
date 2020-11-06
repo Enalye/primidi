@@ -24,6 +24,9 @@ package void loadParticles(GrData data) {
     data.addPrimitive(&_setColor, "setColor", ["p", "c"], [defParticle, defColor]);
     data.addPrimitive(&_getColor, "getColor", ["p"], [defParticle], [defColor]);
 
+    data.addPrimitive(&_setAlpha, "setAlpha", ["p", "a"], [defParticle, grFloat]);
+    data.addPrimitive(&_getAlpha, "getAlpha", ["p"], [defParticle], [grFloat]);
+
     data.addPrimitive(&_setPosition, "setPosition", ["p", "x", "y"], [defParticle, grFloat, grFloat]);
     data.addPrimitive(&_getPosition, "getPosition", ["p"], [defParticle], [grFloat, grFloat]);
 
@@ -66,8 +69,7 @@ private void _setColor(GrCall call) {
     particle.color = Color(
         color.getFloat("r"),
         color.getFloat("g"),
-        color.getFloat("b"),
-        color.getFloat("a"));
+        color.getFloat("b"));
 }
 
 private void _getColor(GrCall call) {
@@ -76,8 +78,17 @@ private void _getColor(GrCall call) {
     c.setFloat("r", particle.color.r);
     c.setFloat("g", particle.color.g);
     c.setFloat("b", particle.color.b);
-    c.setFloat("a", particle.color.a);
     call.setObject(c);
+}
+
+private void _setAlpha(GrCall call) {
+    Particle particle = call.getUserData!Particle("p");
+    particle.alpha = call.getFloat("a");
+}
+
+private void _getAlpha(GrCall call) {
+    Particle particle = call.getUserData!Particle("p");
+    call.setFloat(particle.alpha);
 }
 
 private void _setPosition(GrCall call) {

@@ -30,19 +30,27 @@ final class EditablePathGui: GuiElement {
         size = label.size;
     }
 
-    override void onCallback(string id) {
-        if(id != "editname")
-            return;
-        applyEditedName();        
-    }
-
     override void update(float deltaTime) {
-        if(!hasFocus && isEditingName) {
-            applyEditedName();
+        if(isEditingName) {
+            if(getButtonDown(KeyButton.enter))
+                applyEditedName();
+            else if(!hasFocus)
+                cancelEditedName();
         }
         else if(!hasFocus) {
             isFirstClick = true;
         }
+    }
+
+    void cancelEditedName() {
+        if(!isEditingName)
+            throw new Exception("The element is not in an editing state");
+        isEditingName = false;
+        isFirstClick = true;
+        
+        removeChildrenGuis();
+        addChildGui(label);
+        triggerCallback();
     }
 
     void applyEditedName() {
@@ -67,7 +75,6 @@ final class EditablePathGui: GuiElement {
                 inputField = new InputField(size, label.text != "untitled" ? label.text : "");
                 inputField.color = Color(20, 20, 20);
                 inputField.setAlign(GuiAlignX.center, GuiAlignY.center);
-                inputField.setCallback(this, "editname");
                 inputField.size = Vec2f(400f, label.size.y);
                 inputField.hasFocus = true;
                 addChildGui(inputField);

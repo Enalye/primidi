@@ -16,6 +16,6 @@ package void loadFont(GrData data) {
 }
 
 private void _makeFont(GrCall call) {
-    Font font = new TrueTypeFont(getResourcePath(call.getString!string("path")), call.getInt("size"));
+    Font font = new TrueTypeFont(getResourcePath(call.getString("path")), call.getInt("size"));
     call.setUserData!Font(font);
 }

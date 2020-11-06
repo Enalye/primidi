@@ -47,13 +47,13 @@ final class MenuBar: GuiElement {
         GuiState hiddenState = {
             offset: Vec2f(0f, -20f),
             time: .25f,
-            easingFunction: getEasingFunction(EasingAlgorithm.quadInOut)
+            easing: getEasingFunction(Ease.quadInOut)
         };
         addState("hidden", hiddenState);
 
         GuiState shownState = {
             time: .25f,
-            easingFunction: getEasingFunction(EasingAlgorithm.quadInOut)
+            easing: getEasingFunction(Ease.quadInOut)
         };
         addState("shown", shownState);
         setState("shown");
@@ -233,11 +233,10 @@ private final class MenuButton: GuiElement {
             isHovered = false;
             auto modal = new OpenModal(getMidiFilePath(), [".mid", ".midi"]);
             modal.setCallback(this, "media.open.modal");
-            setModalGui(modal);
+            pushModalGui(modal);
             break;
         case "media.open.modal":
-            auto modal = getModalGui!OpenModal;
-            stopModalGui();
+            auto modal = popModalGui!OpenModal;
             playMidi(modal.getPath());
             break;
         case "media.quit":
@@ -248,19 +247,19 @@ private final class MenuButton: GuiElement {
             stopOverlay();
             isClicked = false;
             isHovered = false;
-            setModalGui(new OutPortModal);
+            pushModalGui(new OutPortModal);
             break;
         case "port.input":
             stopOverlay();
             isClicked = false;
             isHovered = false;
-            setModalGui(new InPortModal);
+            pushModalGui(new InPortModal);
             break;
         case "plugin.open":
             stopOverlay();
             isClicked = false;
             isHovered = false;
-            setModalGui(new SelectPluginModal);
+            pushModalGui(new SelectPluginModal);
             break;
         case "plugin.reload":
             if(isModalGui())
@@ -280,13 +279,13 @@ private final class MenuButton: GuiElement {
             stopOverlay();
             isClicked = false;
             isHovered = false;
-            setModalGui(new SelectTicksIntervalModal);
+            pushModalGui(new SelectTicksIntervalModal);
             break;
         case "view.locale":
             stopOverlay();
             isClicked = false;
             isHovered = false;
-            setModalGui(new SelectLocaleModal);
+            pushModalGui(new SelectLocaleModal);
             break;
         case "view.hide":
             stopOverlay();

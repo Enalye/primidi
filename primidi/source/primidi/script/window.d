@@ -11,12 +11,12 @@ import grimoire, atelier;
 package void loadWindow(GrData data) {
     auto defColor = grGetClassType("Color");
 
-    data.addPrimitive(&_setRenderColor, "setRenderColor", ["color"], [defColor]);
-    data.addPrimitive(&_drawPoint, "drawPoint", ["x", "y", "color"], [grFloat, grFloat, defColor]);
-    data.addPrimitive(&_drawLine, "drawLine", ["x1", "y1", "x2", "y2", "color"], [grFloat, grFloat, grFloat, grFloat, defColor]);
-    data.addPrimitive(&_drawRect, "drawRect", ["x", "y", "w", "h", "color"], [grFloat, grFloat, grFloat, grFloat, defColor]);
-    data.addPrimitive(&_drawFilledRect, "fillRect", ["x", "y", "w", "h", "color"], [grFloat, grFloat, grFloat, grFloat, defColor]);
-    data.addPrimitive(&_drawPixel, "drawPixel", ["x", "y", "color"], [grFloat, grFloat, defColor]);
+    data.addPrimitive(&_setRenderColor, "setRenderColor", ["color", "a"], [defColor, grFloat]);
+    data.addPrimitive(&_drawPoint, "drawPoint", ["x", "y", "color", "a"], [grFloat, grFloat, defColor, grFloat]);
+    data.addPrimitive(&_drawLine, "drawLine", ["x1", "y1", "x2", "y2", "color", "a"], [grFloat, grFloat, grFloat, grFloat, defColor, grFloat]);
+    data.addPrimitive(&_drawRect, "drawRect", ["x", "y", "w", "h", "color", "a"], [grFloat, grFloat, grFloat, grFloat, defColor, grFloat]);
+    data.addPrimitive(&_drawFilledRect, "fillRect", ["x", "y", "w", "h", "color", "a"], [grFloat, grFloat, grFloat, grFloat, defColor, grFloat]);
+    data.addPrimitive(&_drawPixel, "drawPixel", ["x", "y", "color", "a"], [grFloat, grFloat, defColor, grFloat]);
     
     data.addPrimitive(&_screenWidth, "screenWidth", [], [], [grFloat]);
     data.addPrimitive(&_screenHeight, "screenHeight", [], [], [grFloat]);
@@ -29,9 +29,8 @@ private void _setRenderColor(GrCall call) {
     Color color = Color(
         c.getFloat("r"),
         c.getFloat("g"),
-        c.getFloat("b"),
-        c.getFloat("a"));
-    setRenderColor(color);
+        c.getFloat("b"));
+    setRenderColor(color, call.getFloat("a"));
 }
 
 private void _drawPoint(GrCall call) {
@@ -40,9 +39,8 @@ private void _drawPoint(GrCall call) {
     Color color = Color(
         c.getFloat("r"),
         c.getFloat("g"),
-        c.getFloat("b"),
-        c.getFloat("a"));
-    drawPoint(pos, color);
+        c.getFloat("b"));
+    drawPoint(pos, color, call.getFloat("a"));
 }
 
 private void _drawLine(GrCall call) {
@@ -52,20 +50,19 @@ private void _drawLine(GrCall call) {
     Color color = Color(
         c.getFloat("r"),
         c.getFloat("g"),
-        c.getFloat("b"),
-        c.getFloat("a"));
-    drawLine(startPos, endPos, color);
+        c.getFloat("b"));
+    drawLine(startPos, endPos, color, call.getFloat("a"));
 }
 
 private void _drawRect(GrCall call) {
     Vec2f pos = Vec2f(call.getFloat("x"), call.getFloat("y"));
     Vec2f size = Vec2f(call.getFloat("w"), call.getFloat("h"));
+    auto c = call.getObject("color");
     Color color = Color(
-        call.getFloat("color:r"),
-        call.getFloat("color:g"),
-        call.getFloat("color:b"),
-        call.getFloat("color:a"));
-    drawRect(pos, size, color);
+        c.getFloat("r"),
+        c.getFloat("g"),
+        c.getFloat("b"));
+    drawRect(pos, size, color, call.getFloat("a"));
 }
 
 private void _drawFilledRect(GrCall call) {
@@ -75,9 +72,8 @@ private void _drawFilledRect(GrCall call) {
     Color color = Color(
         c.getFloat("r"),
         c.getFloat("g"),
-        c.getFloat("b"),
-        c.getFloat("a"));
-    drawFilledRect(pos, size, color);
+        c.getFloat("b"));
+    drawFilledRect(pos, size, color, call.getFloat("a"));
 }
 
 private void _drawPixel(GrCall call) {
@@ -86,9 +82,8 @@ private void _drawPixel(GrCall call) {
     Color color = Color(
         c.getFloat("r"),
         c.getFloat("g"),
-        c.getFloat("b"),
-        c.getFloat("a"));
-    drawPixel(pos, color);
+        c.getFloat("b"));
+    drawPixel(pos, color, call.getFloat("a"));
 }
 
 private void _screenWidth(GrCall call) {

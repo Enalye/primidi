@@ -18,6 +18,8 @@ final class OpenModal: GuiElement {
 
         this() {
             super(Vec2f(434f, 334f));
+            color = Color.white;
+            _container.canvas.color = Color.white;
         }
 
         override void onCallback(string id) {
@@ -25,10 +27,6 @@ final class OpenModal: GuiElement {
             if(id == "list") {
                 triggerCallback();
             }
-        }
-
-        override void draw() {
-            drawFilledRect(origin, size, Color.white);
         }
 
         void add(string subDir, Color color) {
@@ -143,13 +141,13 @@ final class OpenModal: GuiElement {
 
         GuiState hiddenState = {
             offset: Vec2f(0f, -50f),
-            color: Color.clear
+            alpha: 0f
         };
         addState("hidden", hiddenState);
 
         GuiState defaultState = {
             time: .5f,
-            easingFunction: getEasingFunction(EasingAlgorithm.sineOut)
+            easing: getEasingFunction(Ease.sineOut)
         };
         addState("default", defaultState);
 

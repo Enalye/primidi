@@ -15,11 +15,13 @@ package void loadSprite(GrData data) {
     auto defBlend = grGetEnumType("Blend");
 
     data.addPrimitive(&_makeSpriteT, "Sprite", ["tex"], [defTex], [defSprite]);
+    data.addPrimitive(&_makeSpriteTClip, "Sprite", ["tex", "x", "y", "w", "h"], [defTex, grInt, grInt, grInt, grInt], [defSprite]);
     data.addPrimitive(&_makeSpriteS, "Sprite", ["sprite"], [defSprite], [defSprite]);
     data.addPrimitive(&_setSpriteClip, "setClip", ["sprite", "x", "y", "w", "h"], [defSprite, grInt, grInt, grInt, grInt]);
     data.addPrimitive(&_setSpriteAngle, "setAngle", ["sprite", "angle"], [defSprite, grFloat]);
     data.addPrimitive(&_setSpriteAnchor, "setAnchor", ["sprite", "x", "y"], [defSprite, grFloat, grFloat]);
     data.addPrimitive(&_setSpriteColor, "setColor", ["sprite", "color"], [defSprite, defColor]);
+    data.addPrimitive(&_setSpriteAlpha, "setAlpha", ["sprite", "a"], [defSprite, grFloat]);
 
     data.addPrimitive(&_setSpriteSize, "setSize", ["sprite", "w", "h"], [defSprite, grFloat, grFloat]);
     data.addPrimitive(&_getSpriteSize, "getSize", ["sprite"], [defSprite], [grFloat, grFloat]);
@@ -44,6 +46,18 @@ package void loadSprite(GrData data) {
 
 private void _makeSpriteT(GrCall call) {
     Sprite sprite = new Sprite(call.getUserData!Texture("tex"));
+    call.setUserData(sprite);
+}
+
+private void _makeSpriteTClip(GrCall call) {
+    Sprite sprite = new Sprite(
+        call.getUserData!Texture("tex"),
+        Vec4i(
+            call.getInt("x"),
+            call.getInt("y"),
+            call.getInt("w"),
+            call.getInt("h")
+        ));
     call.setUserData(sprite);
 }
 
@@ -76,9 +90,13 @@ private void _setSpriteColor(GrCall call) {
     Color color = Color(
         c.getFloat("r"),
         c.getFloat("g"),
-        c.getFloat("b"),
-        c.getFloat("a"));
+        c.getFloat("b"));
     sprite.color = color;
+}
+
+private void _setSpriteAlpha(GrCall call) {
+    Sprite sprite = call.getUserData!Sprite("sprite");
+    sprite.alpha = call.getFloat("a");
 }
 
 private void _setSpriteSize(GrCall call) {

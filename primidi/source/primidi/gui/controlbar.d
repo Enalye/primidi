@@ -48,13 +48,13 @@ final class ControlBar: GuiElement {
         GuiState hiddenState = {
             offset: Vec2f(0f, -50f),
             time: .25f,
-            easingFunction: getEasingFunction(EasingAlgorithm.quadInOut)
+            easing: getEasingFunction(Ease.quadInOut)
         };
         addState("hidden", hiddenState);
 
         GuiState shownState = {
             time: .25f,
-            easingFunction: getEasingFunction(EasingAlgorithm.quadInOut)
+            easing: getEasingFunction(Ease.quadInOut)
         };
         addState("shown", shownState);
         setState("shown");

@@ -53,13 +53,13 @@ final class SelectLocaleModal: GuiElement {
 
 		GuiState hiddenState = {
             offset: Vec2f(0f, -50f),
-            color: Color.clear
+            alpha: 0f
         };
         addState("hidden", hiddenState);
 
         GuiState defaultState = {
             time: .5f,
-            easingFunction: getEasingFunction(EasingAlgorithm.sineOut)
+            easing: getEasingFunction(Ease.sineOut)
         };
         addState("default", defaultState);
 

@@ -33,17 +33,18 @@ Texture noteTexture;
 let barWidth, barFactor = 2f, 0f;
 Color barColor;
 float barX;
+Sprite background;
 
 // Init
 main {
     let centerX, centerY = width / 2f, height / 2f;
     Color baseBarColor;
-    baseBarColor, barColor = Color(1f, 1f, 1f, 0.2f);
+    baseBarColor, barColor = Color(1f, 1f, 1f);
 
     // Rendering canvas.
     setCameraSize(width, height);
     setCameraPosition(centerX, centerY);
-    setCameraClearColor(Color(0.051, 0.082, 0.125));
+    setCameraClearColor(Color(0.051, 0.082, 0.125), 1f);
 
     /*
         Default interval of ticks to be displayed.
@@ -65,7 +66,7 @@ main {
         canvas:setColorMod(Color(1f, 1f, 1f), Blend.alpha);
         canvases ~= canvas;
     }
-    noteTexture = Texture("note.png");
+    noteTexture = Texture("../note.png");
 
     mainCanvas = Canvas(width, height);
     mainCanvas:setPosition(centerX, centerY);
@@ -73,6 +74,8 @@ main {
 
     barX = width * (1f - getRatio()) - (barWidth / 2f);
     loop {
+        if(background)
+            background:draw(centerX, centerY);
         for(canvas, canvases) {
             canvas:draw(centerX, centerY);
             canvas:clear;
@@ -80,9 +83,8 @@ main {
         // Middle bar
         if(barFactor > 1f)
             barFactor = 1f;
-        barColor.a = 0.6f;
         pushCanvas(mainCanvas);
-        fillRect(barX, 0f, barWidth, height, lerp(baseBarColor, barColor, barFactor));
+        fillRect(barX, 0f, barWidth, height, lerp(baseBarColor, barColor, barFactor), lerp(0.2f, 0.6f, barFactor));
         popCanvas();
         if(barFactor < 0f) {
             barFactor = 0f;
@@ -128,8 +130,9 @@ event onNoteEnter(Note note) {
 
         if(note:isPlaying) {
             let factor = note:getPlayTime;
-            let c = lerp(Color(1f, 1f, 1f, 1f), color, factor);
+            let c = lerp(Color(1f, 1f, 1f), color, factor);
             noteSprite:setColor(c);
+            noteSprite:setAlpha(1f);
 
             // Particles
             let particleX = barX + barWidth;
@@ -147,7 +150,8 @@ event onNoteEnter(Note note) {
         }
         else {
             if(note:getPlayTime > 0f) {
-                noteSprite:setColor(lerp(Color(1f, 1f, 1f, 0f), color, fadeOut));
+                noteSprite:setColor(lerp(Color(1f, 1f, 1f), color, fadeOut));
+                noteSprite:setAlpha(fadeOut);
                 if(fadeOut > 0f) {
                     fadeOut -= 0.025f;
                     if(fadeOut < 0f) {
@@ -156,7 +160,8 @@ event onNoteEnter(Note note) {
                 }
             }
             else {
-                noteSprite:setColor(Color(1f, 1f, 1f, 0.5f));
+                noteSprite:setColor(Color(1f, 1f, 1f));
+                noteSprite:setAlpha(0.5f);
             }
         }
         pushCanvas(canvases[note:getChannel]);
@@ -174,13 +179,19 @@ task spark(float x, float y, float angle, float speed, int ttl, Color startColor
 
     let sprite = particle:getSprite;
     sprite:setBlend(Blend.additive);
-    startColor.a = 1f;
-    endColor.a = 1f;
     particle:setColor(startColor);
+    particle:setAlpha(1f);
     float time = 0f;
     while(particle:isAlive) {
         particle:setColor(lerp(startColor, endColor, time / ttl));
         time ++;
         yield
     }
+}
+
+event onFileDrop(string fileName) {
+    let tex = Texture(fileName);
+    unless(tex) return;
+    background = Sprite(tex);
+    background:contain(width, height);
 }

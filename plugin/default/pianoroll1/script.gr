@@ -31,6 +31,7 @@ array(Canvas) canvases;
 Texture noteTexture;
 let barWidth = 6f;
 float barX;
+Sprite background;
 
 // Init
 main {
@@ -39,7 +40,7 @@ main {
     // Rendering canvas.
     setCameraSize(width, height);
     setCameraPosition(centerX, centerY);
-    setCameraClearColor(Color(0.051, 0.082, 0.125));
+    setCameraClearColor(Color(0.051, 0.082, 0.125), 1f);
 
     /*
         Default interval of ticks to be displayed.
@@ -61,7 +62,7 @@ main {
         canvas:setColorMod(Color(1f, 1f, 1f), Blend.alpha);
         canvases ~= canvas;
     }
-    noteTexture = Texture("note.png");
+    noteTexture = Texture("../note.png");
 
     let mainCanvas = Canvas(width, height);
     mainCanvas:setPosition(centerX, centerY);
@@ -69,13 +70,15 @@ main {
 
     barX = width * (1f - getRatio()) - (barWidth / 2f);
     loop {
+        if(background)
+            background:draw(centerX, centerY);
         for(canvas, canvases) {
             canvas:draw(centerX, centerY);
             canvas:clear;
         }
         // Middle bar
         pushCanvas(mainCanvas);
-        fillRect(barX, 0f, barWidth, height, Color(1f, 1f, 1f, 0.2f));
+        fillRect(barX, 0f, barWidth, height, Color(1f, 1f, 1f), 0.2f);
         popCanvas();
         mainCanvas:draw(centerX, centerY);
         mainCanvas:clear;
@@ -112,12 +115,14 @@ event onNoteEnter(Note note) {
 
         if(note:isPlaying) {
             let factor = note:getPlayTime;
-            let c = lerp(Color(1f, 1f, 1f, 1f), color, factor);
+            let c = lerp(Color(1f, 1f, 1f), color, factor);
             noteSprite:setColor(c);
+            noteSprite:setAlpha(1f);
         }
         else {
             if(note:getPlayTime > 0f) {
-                noteSprite:setColor(lerp(Color(1f, 1f, 1f, 0f), color, fadeOut));
+                noteSprite:setColor(lerp(Color(1f, 1f, 1f), color, fadeOut));
+                noteSprite:setAlpha(fadeOut);
                 if(fadeOut > 0f) {
                     fadeOut -= 0.025f;
                     if(fadeOut < 0f) {
@@ -126,7 +131,8 @@ event onNoteEnter(Note note) {
                 }
             }
             else {
-                noteSprite:setColor(Color(1f, 1f, 1f, 0.5f));
+                noteSprite:setColor(Color(1f, 1f, 1f));
+                noteSprite:setAlpha(0.5f);
             }
         }
         pushCanvas(canvases[note:getChannel]);
@@ -134,4 +140,11 @@ event onNoteEnter(Note note) {
         popCanvas();
         yield
     }
+}
+
+event onFileDrop(string fileName) {
+    let tex = Texture(fileName);
+    unless(tex) return;
+    background = Sprite(tex);
+    background:contain(width, height);
 }

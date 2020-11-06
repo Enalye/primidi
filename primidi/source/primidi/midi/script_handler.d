@@ -156,7 +156,7 @@ private final class ScriptHandler {
     void run() {
         import std.conv: to;
         if(_error) {
-            setModalGui(new ScriptErrorModal(_error));
+            pushModalGui(new ScriptErrorModal(_error));
             _error = null;
         }
         if(!_isLoaded)
@@ -193,7 +193,7 @@ private final class ScriptHandler {
 
 private {
     ScriptHandler _handler;
-    dstring _onNoteEnterEventName, _onNoteHitEventName, _onNoteExitEventName,
+    string _onNoteEnterEventName, _onNoteHitEventName, _onNoteExitEventName,
         _onStartEventName, _onEndEventName, _onFileDropEventName;
     Logger _logger;
 }
@@ -276,7 +276,7 @@ private void onNoteExit(Note note) {
 private void onFileDrop(string filePath) {
     import std.conv: to;
     auto context = _handler._engine.spawnEvent(_onFileDropEventName);
-    context.setString(to!dstring(filePath));
+    context.setString(filePath);
 }
 
 ///Called when a midi file is starting.

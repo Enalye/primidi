@@ -19,7 +19,7 @@ package void loadTexture(GrData data) {
 }
 
 private void _makeTexture(GrCall call) {
-    auto tex = new Texture(getResourcePath(call.getString!string("path")));
+    auto tex = new Texture(getResourcePath(call.getString("path")));
     call.setUserData(tex);
 }
 

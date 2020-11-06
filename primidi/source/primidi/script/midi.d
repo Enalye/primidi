@@ -58,7 +58,7 @@ private void seq_getHitRatio(GrCall call) {
 }
 
 private void seq_getMidiName(GrCall call) {
-    call.setString(to!dstring(baseName(stripExtension(getMidiFilePath()))));
+    call.setString(baseName(stripExtension(getMidiFilePath())));
 }
 
 private void seq_isMidiPlaying(GrCall call) {

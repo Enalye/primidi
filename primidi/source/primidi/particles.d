@@ -16,6 +16,7 @@ final class Particle  {
 	float angle = 0f;
 	float speed = 0f;
 	float angleSpeed = 0f;
+    float alpha = 1f;
     Sprite sprite;
 
     /// Update the particle, returns true if dead.
@@ -34,6 +35,7 @@ final class Particle  {
     /// Render the particle
 	void draw() {
         sprite.color = color;
+        sprite.alpha = alpha;
         sprite.draw(position);
 	}
 }

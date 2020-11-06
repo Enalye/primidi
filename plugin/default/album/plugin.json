@@ -1,0 +1,7 @@
+{
+    "name": "Album",
+    "script": "script.gr",
+    "cover": "cover.png",
+    "info": "Piano roll with an album cover in the\ncenter. Drag&drop an image to set it as as the album\ncover/background.",
+    "author": "Enalye"
+}
