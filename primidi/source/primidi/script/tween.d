@@ -7,7 +7,7 @@ module primidi.script.tween;
 
 import grimoire, atelier;
 
-package void loadTween(GrData data) {
+package void loadTween(GrLibrary library) {
     static foreach(value; 
         [
         "InSine",
@@ -40,10 +40,10 @@ package void loadTween(GrData data) {
         "InBounce",
         "OutBounce",
         "InOutBounce"]) {
-        mixin("data.addPrimitive(&_ease!(\"" ~ value ~ "\"), \"ease" ~ value ~ "\", [\"t\"], [grFloat], [grFloat]);");
+        mixin("library.addPrimitive(&_ease!(\"" ~ value ~ "\"), \"ease" ~ value ~ "\", [grFloat], [grFloat]);");
     }
 }
 
 private void _ease(string value)(GrCall call) {
-    mixin("call.setFloat(ease" ~ value ~ "(call.getFloat(\"t\")));");
+    mixin("call.setFloat(ease" ~ value ~ "(call.getFloat(0)));");
 }

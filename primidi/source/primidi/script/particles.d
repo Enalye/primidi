@@ -8,64 +8,63 @@ module primidi.script.particles;
 import atelier, grimoire;
 import primidi.particles;
 
-package void loadParticles(GrData data) {
+package void loadParticles(GrLibrary library) {
     const GrType defColor = grGetClassType("Color");
     const GrType defSprite = grGetForeignType("Sprite");
-    const GrType defParticle = data.addForeign("Particle");
+    const GrType defParticle = library.addForeign("Particle");
 
-    data.addPrimitive(&_makeParticle,
+    library.addPrimitive(&_makeParticle,
         "Particle",
-        ["x", "y", "angle", "speed", "timeToLive"],
         [grFloat, grFloat, grFloat, grFloat, grInt], [defParticle]);
 
-    data.addPrimitive(&_setSprite, "setSprite", ["p", "s"], [defParticle, defSprite]);
-    data.addPrimitive(&_getSprite, "getSprite", ["p"], [defParticle], [defSprite]);
+    library.addPrimitive(&_setSprite, "setSprite", [defParticle, defSprite]);
+    library.addPrimitive(&_getSprite, "getSprite", [defParticle], [defSprite]);
 
-    data.addPrimitive(&_setColor, "setColor", ["p", "c"], [defParticle, defColor]);
-    data.addPrimitive(&_getColor, "getColor", ["p"], [defParticle], [defColor]);
+    library.addPrimitive(&_setColor, "setColor", [defParticle, defColor]);
+    library.addPrimitive(&_getColor, "getColor", [defParticle], [defColor]);
 
-    data.addPrimitive(&_setAlpha, "setAlpha", ["p", "a"], [defParticle, grFloat]);
-    data.addPrimitive(&_getAlpha, "getAlpha", ["p"], [defParticle], [grFloat]);
+    library.addPrimitive(&_setAlpha, "setAlpha", [defParticle, grFloat]);
+    library.addPrimitive(&_getAlpha, "getAlpha", [defParticle], [grFloat]);
 
-    data.addPrimitive(&_setPosition, "setPosition", ["p", "x", "y"], [defParticle, grFloat, grFloat]);
-    data.addPrimitive(&_getPosition, "getPosition", ["p"], [defParticle], [grFloat, grFloat]);
+    library.addPrimitive(&_setPosition, "setPosition", [defParticle, grFloat, grFloat]);
+    library.addPrimitive(&_getPosition, "getPosition", [defParticle], [grFloat, grFloat]);
 
-    data.addPrimitive(&_setAngle, "setAngle", ["p", "v"], [defParticle, grFloat]);
-    data.addPrimitive(&_getAngle, "getAngle", ["p"], [defParticle], [grFloat]);
+    library.addPrimitive(&_setAngle, "setAngle", [defParticle, grFloat]);
+    library.addPrimitive(&_getAngle, "getAngle", [defParticle], [grFloat]);
 
-    data.addPrimitive(&_setSpeed, "setSpeed", ["p", "v"], [defParticle, grFloat]);
-    data.addPrimitive(&_getSpeed, "getSpeed", ["p"], [defParticle], [grFloat]);
+    library.addPrimitive(&_setSpeed, "setSpeed", [defParticle, grFloat]);
+    library.addPrimitive(&_getSpeed, "getSpeed", [defParticle], [grFloat]);
 
-    data.addPrimitive(&_setAngleSpeed, "setAngleSpeed", ["p", "v"], [defParticle, grFloat]);
-    data.addPrimitive(&_getAngleSpeed, "getAngleSpeed", ["p"], [defParticle], [grFloat]);
+    library.addPrimitive(&_setAngleSpeed, "setAngleSpeed", [defParticle, grFloat]);
+    library.addPrimitive(&_getAngleSpeed, "getAngleSpeed", [defParticle], [grFloat]);
 
-    data.addPrimitive(&_isAlive, "isAlive", ["p"], [defParticle], [grBool]);
+    library.addPrimitive(&_isAlive, "isAlive", [defParticle], [grBool]);
 }
 
 private void _makeParticle(GrCall call) {
-    call.setUserData!Particle(createParticle(
+    call.setForeign!Particle(createParticle(
         Vec2f(
-            call.getFloat("x"),
-            call.getFloat("y")),
-        call.getFloat("angle"),
-        call.getFloat("speed"),
-        call.getInt("timeToLive")));
+            call.getFloat(0),
+            call.getFloat(1)),
+        call.getFloat(2),
+        call.getFloat(3),
+        call.getInt(4)));
 }
 
 private void _setSprite(GrCall call) {
-    Particle particle = call.getUserData!Particle("p");
-    Sprite sprite = call.getUserData!Sprite("s");
+    Particle particle = call.getForeign!Particle(0);
+    Sprite sprite = call.getForeign!Sprite(1);
     particle.sprite = sprite;
 }
 
 private void _getSprite(GrCall call) {
-    Particle particle = call.getUserData!Particle("p");
-    call.setUserData!Sprite(particle.sprite);
+    Particle particle = call.getForeign!Particle(0);
+    call.setForeign!Sprite(particle.sprite);
 }
 
 private void _setColor(GrCall call) {
-    Particle particle = call.getUserData!Particle("p");
-    auto color = call.getObject("c");
+    Particle particle = call.getForeign!Particle(0);
+    auto color = call.getObject(1);
     particle.color = Color(
         color.getFloat("r"),
         color.getFloat("g"),
@@ -73,7 +72,7 @@ private void _setColor(GrCall call) {
 }
 
 private void _getColor(GrCall call) {
-    Particle particle = call.getUserData!Particle("p");
+    Particle particle = call.getForeign!Particle(0);
     auto c = call.createObject("Color");
     c.setFloat("r", particle.color.r);
     c.setFloat("g", particle.color.g);
@@ -82,57 +81,57 @@ private void _getColor(GrCall call) {
 }
 
 private void _setAlpha(GrCall call) {
-    Particle particle = call.getUserData!Particle("p");
-    particle.alpha = call.getFloat("a");
+    Particle particle = call.getForeign!Particle(0);
+    particle.alpha = call.getFloat(1);
 }
 
 private void _getAlpha(GrCall call) {
-    Particle particle = call.getUserData!Particle("p");
+    Particle particle = call.getForeign!Particle(0);
     call.setFloat(particle.alpha);
 }
 
 private void _setPosition(GrCall call) {
-    Particle particle = call.getUserData!Particle("p");
-    particle.position = Vec2f(call.getFloat("x"), call.getFloat("y"));
+    Particle particle = call.getForeign!Particle(0);
+    particle.position = Vec2f(call.getFloat(1), call.getFloat(2));
 }
 
 private void _getPosition(GrCall call) {
-    Particle particle = call.getUserData!Particle("p");
+    Particle particle = call.getForeign!Particle(0);
     call.setFloat(particle.position.x);
     call.setFloat(particle.position.y);
 }
 
 private void _setAngle(GrCall call) {
-    Particle particle = call.getUserData!Particle("p");
-    particle.angle = call.getFloat("v");
+    Particle particle = call.getForeign!Particle(0);
+    particle.angle = call.getFloat(1);
 }
 
 private void _getAngle(GrCall call) {
-    Particle particle = call.getUserData!Particle("p");
+    Particle particle = call.getForeign!Particle(0);
     call.setFloat(particle.angle);
 }
 
 private void _setSpeed(GrCall call) {
-    Particle particle = call.getUserData!Particle("p");
-    particle.speed = call.getFloat("v");
+    Particle particle = call.getForeign!Particle(0);
+    particle.speed = call.getFloat(1);
 }
 
 private void _getSpeed(GrCall call) {
-    Particle particle = call.getUserData!Particle("p");
+    Particle particle = call.getForeign!Particle(0);
     call.setFloat(particle.speed);
 }
 
 private void _setAngleSpeed(GrCall call) {
-    Particle particle = call.getUserData!Particle("p");
-    particle.angleSpeed = call.getFloat("v");
+    Particle particle = call.getForeign!Particle(0);
+    particle.angleSpeed = call.getFloat(1);
 }
 
 private void _getAngleSpeed(GrCall call) {
-    Particle particle = call.getUserData!Particle("p");
+    Particle particle = call.getForeign!Particle(0);
     call.setFloat(particle.angleSpeed);
 }
 
 private void _isAlive(GrCall call) {
-    Particle particle = call.getUserData!Particle("p");
+    Particle particle = call.getForeign!Particle(0);
     call.setBool(particle.time <= particle.timeToLive);
 }

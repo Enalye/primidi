@@ -15,20 +15,20 @@ final class ControlBar: GuiElement {
     }
 
     this() {
-        size(Vec2f(screenWidth, 50f));
+        size(Vec2f(getWindowWidth(), 50f));
         setAlign(GuiAlignX.center, GuiAlignY.bottom);
 
         {
             auto hbox = new HContainer;
-            addChildGui(hbox);
-            hbox.addChildGui(new CurrentTimeGui);
-            hbox.addChildGui(new ProgressBar);
-            hbox.addChildGui(new TotalTimeGui);
+            appendChild(hbox);
+            hbox.appendChild(new CurrentTimeGui);
+            hbox.appendChild(new ProgressBar);
+            hbox.appendChild(new TotalTimeGui);
         }
 
         {
             auto playBtn = new PlayButton;
-            addChildGui(playBtn);
+            appendChild(playBtn);
         }
 
         {
@@ -36,13 +36,13 @@ final class ControlBar: GuiElement {
             hbox.setAlign(GuiAlignX.left, GuiAlignY.bottom);
             hbox.position = Vec2f(48f, 5f);
             hbox.spacing = Vec2f(2f, 0f);
-            addChildGui(hbox);
+            appendChild(hbox);
 
             auto rewindBtn = new RewindButton;
-            hbox.addChildGui(rewindBtn);
+            hbox.appendChild(rewindBtn);
 
             auto stopBtn = new StopButton;
-            hbox.addChildGui(stopBtn);
+            hbox.appendChild(stopBtn);
         }
 
         GuiState hiddenState = {
@@ -61,7 +61,7 @@ final class ControlBar: GuiElement {
     }
 
     override void onEvent(Event event) {
-        switch(event.type) with(EventType) {
+        switch(event.type) with(Event.Type) {
         case resize:
             size(Vec2f(event.window.size.x, 50f));
             break;
@@ -218,7 +218,7 @@ final class ProgressBar: GuiElement {
     }
 
     this() {
-        size(Vec2f(screenWidth - 100f, 25f));
+        size(Vec2f(getWindowWidth() - 100f, 25f));
         _cursorSprite = fetch!Sprite("cursor");
         _circleSprite = fetch!Sprite("circle");
         _backgroundColor = Color(0.70f, 0.75f, 0.76f);
@@ -226,7 +226,7 @@ final class ProgressBar: GuiElement {
     }
 
     override void onEvent(Event event) {
-        switch(event.type) with(EventType) {
+        switch(event.type) with(Event.Type) {
         case mouseDown:
             _factor = clamp(rlerp(origin.x, origin.x + size.x, event.mouse.position.x), 0f, 1f);
             setMidiPosition(cast(long) (getMidiDuration() * _factor));
@@ -289,7 +289,7 @@ final class CurrentTimeGui: GuiElement {
         _label.setAlign(GuiAlignX.center, GuiAlignY.bottom);
         _label.position(Vec2f(0f, 8f));
         size(Vec2f(50f, 25f));
-        addChildGui(_label);
+        appendChild(_label);
     }
 
     override void update(float deltaTime) {
@@ -325,7 +325,7 @@ final class TotalTimeGui: GuiElement {
         _label.setAlign(GuiAlignX.center, GuiAlignY.bottom);
         _label.position(Vec2f(0f, 8f));
         size(Vec2f(50f, 25f));
-        addChildGui(_label);
+        appendChild(_label);
     }
 
     override void update(float deltaTime) {

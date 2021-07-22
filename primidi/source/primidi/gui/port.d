@@ -22,7 +22,7 @@ final class OutPortModal: GuiElement {
 		{ //Port
 			_outPort = new OutPortGui;
 			_outPort.setAlign(GuiAlignX.center, GuiAlignY.center);
-			addChildGui(_outPort);
+			appendChild(_outPort);
 		}
 
 		{ //Title
@@ -30,7 +30,7 @@ final class OutPortModal: GuiElement {
             title.color = Color(20, 20, 20);
 			title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
-            addChildGui(title);
+            appendChild(title);
         }
 
 		{ //Close
@@ -39,7 +39,7 @@ final class OutPortModal: GuiElement {
             closeBtn.position = Vec2f(10f, 10f);
             closeBtn.size = Vec2f(70f, 20f);
             closeBtn.setCallback(this, "close");
-            addChildGui(closeBtn);
+            appendChild(closeBtn);
         }
 
 		{ //Exit
@@ -47,7 +47,7 @@ final class OutPortModal: GuiElement {
             exitBtn.setAlign(GuiAlignX.right, GuiAlignY.top);
             exitBtn.position = Vec2f(10f, 10f);
             exitBtn.setCallback(this, "close");
-            addChildGui(exitBtn);
+            appendChild(exitBtn);
         }
 
 		GuiState hiddenState = {
@@ -69,7 +69,7 @@ final class OutPortModal: GuiElement {
 	override void onCallback(string id) {
 		switch(id) {
 		case "close":
-            stopModalGui();
+            stopModal();
             break;
         default:
             break;
@@ -103,7 +103,7 @@ final class InPortModal: GuiElement {
 		{ //Port
 			_inPort = new InPortGui;
 			_inPort.setAlign(GuiAlignX.center, GuiAlignY.center);
-			addChildGui(_inPort);
+			appendChild(_inPort);
 		}
 
 		{ //Title
@@ -111,7 +111,7 @@ final class InPortModal: GuiElement {
 			title.color = Color(20, 20, 20);
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
-            addChildGui(title);
+            appendChild(title);
         }
 
 		{ //Close
@@ -120,7 +120,7 @@ final class InPortModal: GuiElement {
             closeBtn.position = Vec2f(10f, 10f);
             closeBtn.size = Vec2f(70f, 20f);
             closeBtn.setCallback(this, "close");
-            addChildGui(closeBtn);
+            appendChild(closeBtn);
         }
 
 		{ //Exit
@@ -128,7 +128,7 @@ final class InPortModal: GuiElement {
             exitBtn.setAlign(GuiAlignX.right, GuiAlignY.top);
             exitBtn.position = Vec2f(10f, 10f);
             exitBtn.setCallback(this, "close");
-            addChildGui(exitBtn);
+            appendChild(exitBtn);
         }
 
 		GuiState hiddenState = {
@@ -150,7 +150,7 @@ final class InPortModal: GuiElement {
 	override void onCallback(string id) {
 		switch(id) {
 		case "close":
-            stopModalGui();
+            stopModal();
             break;
         default:
             break;
@@ -190,7 +190,7 @@ final class OutPortGui: DropDownList {
     }
 
 	private void reload() {
-		removeChildrenGuis();
+		removeChildren();
         _ports.length = 0uL;
         _ports = [null];
 		_ports ~= mnFetchOutputs();
@@ -230,7 +230,7 @@ final class InPortGui: DropDownList {
     }
 
 	private void reload() {
-		removeChildrenGuis();
+		removeChildren();
         _ports.length = 0uL;
         _ports = [null];
 		_ports ~= mnFetchInputs();

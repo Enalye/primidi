@@ -18,12 +18,12 @@ final class Visualizer: GuiElement {
     this() {
         import primidi.script: setScriptCanvas;
 
-        size(screenSize - Vec2f(0f, 70f));
+        size(getWindowSize() - Vec2f(0f, 70f));
         position(Vec2f(0f, 20f));
         setAlign(GuiAlignX.left, GuiAlignY.top);
 
         _canvas = new Canvas(size);
-        _canvas.position = centerScreen;
+        _canvas.position = getWindowCenter();
         setScriptCanvas(_canvas);
 
         initializeParticles();
@@ -51,22 +51,22 @@ final class Visualizer: GuiElement {
     }
 
     override void onEvent(Event event) {
-        switch(event.type) with(EventType) {
+        switch(event.type) with(Event.Type) {
         case resize:
             if(_isVisible)
-                size(screenSize - Vec2f(0f, 70f));
+                size(getWindowSize() - Vec2f(0f, 70f));
             else
-                size(screenSize);
-            _canvas.renderSize = cast(Vec2u) size;
+                size(getWindowSize());
+            _canvas.renderSize = cast(Vec2i) size;
             break;
         case custom:
             if(event.custom.id == "hide") {
                 doTransitionState(_isVisible ? "hidden" : "shown");
                 if(_isVisible)
-                    size(screenSize);
+                    size(getWindowSize());
                 else
-                    size(screenSize - Vec2f(0f, 70f));
-                _canvas.renderSize = cast(Vec2u) size;
+                    size(getWindowSize() - Vec2f(0f, 70f));
+                _canvas.renderSize = cast(Vec2i) size;
                 _isVisible = !_isVisible;
             }
             break;

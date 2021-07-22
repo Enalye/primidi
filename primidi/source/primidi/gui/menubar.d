@@ -25,9 +25,9 @@ final class MenuBar: GuiElement {
     }
 
     this() {
-        size(Vec2f(screenWidth, 20f));
+        size(Vec2f(getWindowWidth(), 20f));
         auto box = new HContainer;
-        addChildGui(box);
+        appendChild(box);
 
         const auto menuNames = ["media", "ports", "plugin", "view"];
         const auto menuItems = [
@@ -40,7 +40,7 @@ final class MenuBar: GuiElement {
         for(size_t i = 0uL; i < menuNames.length; ++ i) {
             auto menuBtn = new MenuButton(menuNames[i], menuItems[i], cast(uint) i, cast(uint) menuNames.length);
             menuBtn.setCallback(this, "menu");
-            box.addChildGui(menuBtn);
+            box.appendChild(menuBtn);
             _buttons ~= menuBtn;
         }
 
@@ -60,7 +60,7 @@ final class MenuBar: GuiElement {
     }
 
     override void onEvent(Event event) {
-        switch(event.type) with(EventType) {
+        switch(event.type) with(Event.Type) {
         case resize:
             size(Vec2f(event.window.size.x, 20f));
             break;
@@ -106,7 +106,7 @@ final class MenuBar: GuiElement {
 
 private final class MenuCancel: GuiElement {
     this() {
-        size(screenSize);
+        size(getWindowSize());
     }
 
     override void onSubmit() {
@@ -145,7 +145,7 @@ private final class MenuButton: GuiElement {
         _label = new Label(getLocalizedText(_nameId));
         _label.setAlign(GuiAlignX.center, GuiAlignY.center);
         _label.color = Color.black;
-        addChildGui(_label);
+        appendChild(_label);
         size(Vec2f(_label.size.x + 20f, 20f));
         _menuSizes[_menuId] = size.x;
 
@@ -164,7 +164,7 @@ private final class MenuButton: GuiElement {
     }
 
     override void onEvent(Event event) {
-        switch(event.type) with(EventType) {
+        switch(event.type) with(Event.Type) {
         case resize:
             _cancelTrigger.size = cast(Vec2f) event.window.size;
             break;
@@ -233,10 +233,10 @@ private final class MenuButton: GuiElement {
             isHovered = false;
             auto modal = new OpenModal(getMidiFilePath(), [".mid", ".midi"]);
             modal.setCallback(this, "media.open.modal");
-            pushModalGui(modal);
+            pushModal(modal);
             break;
         case "media.open.modal":
-            auto modal = popModalGui!OpenModal;
+            auto modal = popModal!OpenModal;
             playMidi(modal.getPath());
             break;
         case "media.quit":
@@ -247,23 +247,23 @@ private final class MenuButton: GuiElement {
             stopOverlay();
             isClicked = false;
             isHovered = false;
-            pushModalGui(new OutPortModal);
+            pushModal(new OutPortModal);
             break;
         case "port.input":
             stopOverlay();
             isClicked = false;
             isHovered = false;
-            pushModalGui(new InPortModal);
+            pushModal(new InPortModal);
             break;
         case "plugin.open":
             stopOverlay();
             isClicked = false;
             isHovered = false;
-            pushModalGui(new SelectPluginModal);
+            pushModal(new SelectPluginModal);
             break;
         case "plugin.reload":
-            if(isModalGui())
-                stopModalGui();
+            if(isModal())
+                stopModal();
             stopOverlay();
             isClicked = false;
             isHovered = false;
@@ -279,13 +279,13 @@ private final class MenuButton: GuiElement {
             stopOverlay();
             isClicked = false;
             isHovered = false;
-            pushModalGui(new SelectTicksIntervalModal);
+            pushModal(new SelectTicksIntervalModal);
             break;
         case "view.locale":
             stopOverlay();
             isClicked = false;
             isHovered = false;
-            pushModalGui(new SelectLocaleModal);
+            pushModal(new SelectLocaleModal);
             break;
         case "view.hide":
             stopOverlay();
@@ -338,7 +338,7 @@ private final class MenuList: VContainer {
         foreach(option; options) {
             auto btn = new MenuItem(option);
             btn.setCallback(callbackObject, option);
-            addChildGui(btn);
+            appendChild(btn);
         }
     }
 
@@ -372,7 +372,7 @@ private final class MenuItem: GuiElement {
         _label.position(Vec2f(50f, 0f));
         _label.setAlign(GuiAlignX.left, GuiAlignY.center);
         _label.color = Color.black;
-        addChildGui(_label);
+        appendChild(_label);
         size(Vec2f(_label.size.x + 100f, 30f));
     }
 

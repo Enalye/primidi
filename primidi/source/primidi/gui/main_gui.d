@@ -20,7 +20,7 @@ final class MainGui: GuiElement {
 
     this(string startingFilePath) {
         position(Vec2f.zero);
-        size(screenSize);
+        size(getWindowSize());
         setAlign(GuiAlignX.left, GuiAlignY.top);
         _logger = new Logger;
         setScriptLogger(_logger);
@@ -30,15 +30,15 @@ final class MainGui: GuiElement {
         loadConfig();
 
         _visualizer = new Visualizer;
-        addChildGui(_visualizer);
+        appendChild(_visualizer);
 
-        addChildGui(_logger);
+        appendChild(_logger);
 
         _controlBar = new ControlBar;
-        addChildGui(_controlBar);
+        appendChild(_controlBar);
 
         _menuBar = new MenuBar;
-        addChildGui(_menuBar);
+        appendChild(_menuBar);
 
         if(startingFilePath.length)
             playMidi(startingFilePath);
@@ -55,7 +55,7 @@ final class MainGui: GuiElement {
     override void onEvent(Event event) {
         super.onEvent(event);
 
-		switch(event.type) with(EventType) {
+		switch(event.type) with(Event.Type) {
         case dropFile:
             const string ext = extension(event.drop.filePath).toLower;
             if(ext == ".mid" || ext == ".midi")

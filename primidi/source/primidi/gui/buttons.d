@@ -11,7 +11,7 @@ final class ConfirmationButton: Button {
         _label = new Label(txt);
         _label.setAlign(GuiAlignX.center, GuiAlignY.center);
 		size = _label.size;
-        addChildGui(_label);
+        appendChild(_label);
     }
 
     override void update(float deltaTime) {
@@ -51,7 +51,7 @@ final class DirButton: Button {
         _label.color = color;
         _label.setAlign(GuiAlignX.center, GuiAlignY.center);
 		size = _label.size;
-        addChildGui(_label);
+        appendChild(_label);
     }
 
     override void update(float deltaTime) {

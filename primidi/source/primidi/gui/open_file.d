@@ -31,7 +31,7 @@ final class OpenModal: GuiElement {
 
         void add(string subDir, Color color) {
             auto btn = new DirButton(subDir, color);
-            addChildGui(btn);
+            appendChild(btn);
             _subDirs ~= subDir;
         }
 
@@ -42,7 +42,7 @@ final class OpenModal: GuiElement {
         }
 
         void reset() {
-            removeChildrenGuis();
+            removeChildren();
             _subDirs.length = 0;
         }
     }
@@ -74,7 +74,7 @@ final class OpenModal: GuiElement {
             title.color = Color.black;
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
-            addChildGui(title);
+            appendChild(title);
         }
 
         {
@@ -82,16 +82,16 @@ final class OpenModal: GuiElement {
             hbox.position = Vec2f(0f, 50f);
             hbox.setAlign(GuiAlignX.center, GuiAlignY.top);
             hbox.spacing = Vec2f(10f, 0f);
-            addChildGui(hbox);
+            appendChild(hbox);
 
             _pathLabel = new EditablePathGui(_path);
             _pathLabel.setAlign(GuiAlignX.left, GuiAlignY.top);
             _pathLabel.setCallback(this, "path");
-            hbox.addChildGui(_pathLabel);
+            hbox.appendChild(_pathLabel);
 
             auto parentBtn = new ParentButton;
             parentBtn.setCallback(this, "parent_folder");
-            hbox.addChildGui(parentBtn);
+            hbox.appendChild(parentBtn);
         }
 
         {
@@ -99,7 +99,7 @@ final class OpenModal: GuiElement {
             _filePathLabel.color = Color.black;
             _filePathLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
             _filePathLabel.position = Vec2f(20f, 30f);
-            addChildGui(_filePathLabel);
+            appendChild(_filePathLabel);
         }
 
         { //Validation
@@ -107,19 +107,19 @@ final class OpenModal: GuiElement {
             box.setAlign(GuiAlignX.right, GuiAlignY.bottom);
             box.position = Vec2f(10f, 10f);
             box.spacing = Vec2f(8f, 0f);
-            addChildGui(box);
+            appendChild(box);
 
             auto applyBtn = new ConfirmationButton(getLocalizedText("open"));
             applyBtn.size = Vec2f(70f, 20f);
             applyBtn.setCallback(this, "apply");
             applyBtn.isLocked = true;
-            box.addChildGui(applyBtn);
+            box.appendChild(applyBtn);
             _applyBtn = applyBtn;
 
             auto cancelBtn = new ConfirmationButton(getLocalizedText("cancel"));
             cancelBtn.size = Vec2f(70f, 20f);
             cancelBtn.setCallback(this, "cancel");
-            box.addChildGui(cancelBtn);
+            box.appendChild(cancelBtn);
         }
 
         { //Exit
@@ -127,14 +127,14 @@ final class OpenModal: GuiElement {
             exitBtn.setAlign(GuiAlignX.right, GuiAlignY.top);
             exitBtn.position = Vec2f(10f, 10f);
             exitBtn.setCallback(this, "cancel");
-            addChildGui(exitBtn);
+            appendChild(exitBtn);
         }
 
         {
             _list = new DirListGui;
             _list.setAlign(GuiAlignX.center, GuiAlignY.center);
             _list.setCallback(this, "file");
-            addChildGui(_list);
+            appendChild(_list);
         }
 
         reloadList();
@@ -196,7 +196,7 @@ final class OpenModal: GuiElement {
             triggerCallback();
             break;
         case "cancel":
-            stopModalGui();
+            stopModal();
             break;
         default:
             break;

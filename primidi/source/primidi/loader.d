@@ -13,7 +13,7 @@ private {
 }
 
 void onStartupLoad(OnLoadCompleteCallback callback) {
-    addRootGui(new LoaderGui(callback));
+    appendRoot(new LoaderGui(callback));
     
 }
 import std.stdio: writeln, write;
@@ -34,7 +34,7 @@ class LoaderGui: GuiElement {
         //auto deltaTime = MonoTime.currTime() - startTime;
         //writeln(deltaTime);
         //Load completed
-        removeRootGuis();
+        removeRoots();
         callback();
     }
 

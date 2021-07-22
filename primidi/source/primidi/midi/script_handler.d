@@ -54,9 +54,13 @@ private final class ScriptHandler {
         GrBytecode _bytecode;
         string _filePath;
         GrError _error;
+        GrLibrary _stdLib, _primidiLib;
     }
 
-    this() {}
+    this() {
+        _stdLib = grLoadStdLibrary();
+        _primidiLib = loadPrimidiLibrary();
+    }
 
     void cleanup() {
         resetParticles();
@@ -72,20 +76,24 @@ private final class ScriptHandler {
     void load(string filePath) {
         try {
             _filePath = filePath;
-            _data = new GrData;
-            grLoadStdLibrary(_data);
-            loadScriptDefinitions(_data);
-            GrCompiler compiler = new GrCompiler(_data);
-            if(!compiler.compileFile(_bytecode, filePath)) {
+            
+            GrCompiler compiler = new GrCompiler;
+            compiler.addLibrary(_stdLib);
+            compiler.addLibrary(_primidiLib);
+            _bytecode = compiler.compileFile(_filePath, GrCompiler.Flags.none);
+            if (!_bytecode) {
                 _isLoaded = false;
                 _error = compiler.getError();
                 cleanup();
                 return;
             }
-            //writeln("Bytecode Dump: \n", grDump(_data, _bytecode));
+
             _engine = new GrEngine;
-            _engine.load(_data, _bytecode);
+            _engine.addLibrary(_stdLib);
+            _engine.addLibrary(_primidiLib);
+            _engine.load(_bytecode);
             _engine.spawn();
+
             _timeout = new TimeoutThread(this);      
             _timeout.start();
             _isLoaded = true;
@@ -137,7 +145,7 @@ private final class ScriptHandler {
         try {
             _isLoaded = false;
             _engine = new GrEngine;
-            _engine.load(_data, _bytecode);
+            _engine.load(_bytecode);
             _engine.spawn();
             _isLoaded = true;
         }
@@ -156,7 +164,7 @@ private final class ScriptHandler {
     void run() {
         import std.conv: to;
         if(_error) {
-            pushModalGui(new ScriptErrorModal(_error));
+            pushModal(new ScriptErrorModal(_error));
             _error = null;
         }
         if(!_isLoaded)

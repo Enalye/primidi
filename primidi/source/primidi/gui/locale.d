@@ -23,7 +23,7 @@ final class SelectLocaleModal: GuiElement {
 		{ //Port
 			_localeSelector = new SelectLocaleGui;
 			_localeSelector.setAlign(GuiAlignX.center, GuiAlignY.center);
-			addChildGui(_localeSelector);
+			appendChild(_localeSelector);
 		}
 
 		{ //Title
@@ -31,7 +31,7 @@ final class SelectLocaleModal: GuiElement {
             title.color = Color(20, 20, 20);
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
-            addChildGui(title);
+            appendChild(title);
         }
 
 		{ //Close
@@ -40,7 +40,7 @@ final class SelectLocaleModal: GuiElement {
             closeBtn.position = Vec2f(10f, 10f);
             closeBtn.size = Vec2f(70f, 20f);
             closeBtn.setCallback(this, "close");
-            addChildGui(closeBtn);
+            appendChild(closeBtn);
         }
 
         { //Exit
@@ -48,7 +48,7 @@ final class SelectLocaleModal: GuiElement {
             exitBtn.setAlign(GuiAlignX.right, GuiAlignY.top);
             exitBtn.position = Vec2f(10f, 10f);
             exitBtn.setCallback(this, "close");
-            addChildGui(exitBtn);
+            appendChild(exitBtn);
         }
 
 		GuiState hiddenState = {
@@ -70,7 +70,7 @@ final class SelectLocaleModal: GuiElement {
 	override void onCallback(string id) {
 		switch(id) {
 		case "close":
-            stopModalGui();
+            stopModal();
             sendCustomEvent("locale");
             break;
         default:
@@ -111,7 +111,7 @@ private final class SelectLocaleGui: DropDownList {
     }
 
 	private void reload() {
-		removeChildrenGuis();
+		removeChildren();
         _locales.length = 0uL;
         
         auto path = buildNormalizedPath(dirName(thisExePath()), "locale");

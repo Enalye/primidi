@@ -18,7 +18,7 @@ final class Logger: GuiElement {
         isInteractable(false);
 
         _box = new VContainer;
-        addChildGui(_box);
+        appendChild(_box);
 
         GuiState hiddenState = {
             alpha: 0f,
@@ -51,7 +51,7 @@ final class Logger: GuiElement {
     
     override void onCallback(string id) {
         if(id == "hidden") {
-            _box.removeChildrenGuis();
+            _box.removeChildren();
         }
         else if(id == "log2") {
             doTransitionState("log3");
@@ -69,7 +69,7 @@ final class Logger: GuiElement {
     void add(string message) {
         import std.string: splitLines;
         foreach(line; splitLines(message))
-            _box.addChildGui(new Label(line));
+            _box.appendChild(new Label(line));
         setState("log1");
         doTransitionState("log2");
     }

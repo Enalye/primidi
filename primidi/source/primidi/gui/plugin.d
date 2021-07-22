@@ -29,7 +29,7 @@ final class SelectPluginModal: GuiElement {
             _pluginList.position(Vec2f(15f, 0f));
 			_pluginList.setAlign(GuiAlignX.left, GuiAlignY.center);
             _pluginList.setCallback(this, "list");
-			addChildGui(_pluginList);
+			appendChild(_pluginList);
 		}
 
         {
@@ -37,17 +37,17 @@ final class SelectPluginModal: GuiElement {
             box.position(Vec2f(384f + 25f + 5f, 250f));
             box.setChildAlign(GuiAlignX.left);
             box.setAlign(GuiAlignX.left, GuiAlignY.top);
-            addChildGui(box);
+            appendChild(box);
 
             _nameLabel = new Label;
             _nameLabel.color = Color(20, 20, 20);
-            box.addChildGui(_nameLabel);
+            box.appendChild(_nameLabel);
             _infoLabel = new Label;
             _infoLabel.color = Color(20, 20, 20);
-            box.addChildGui(_infoLabel);
+            box.appendChild(_infoLabel);
             _authorLabel = new Label;
             _authorLabel.color = Color(20, 20, 20);
-            box.addChildGui(_authorLabel);
+            box.appendChild(_authorLabel);
         }
 
 		{ //Title
@@ -55,7 +55,7 @@ final class SelectPluginModal: GuiElement {
             title.color = Color(20, 20, 20);
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
-            addChildGui(title);
+            appendChild(title);
         }
 
 		{ //Validation
@@ -63,17 +63,17 @@ final class SelectPluginModal: GuiElement {
             box.setAlign(GuiAlignX.right, GuiAlignY.bottom);
             box.position = Vec2f(10f, 10f);
             box.spacing = Vec2f(8f, 0f);
-            addChildGui(box);
+            appendChild(box);
 
             auto applyBtn = new ConfirmationButton(getLocalizedText("apply"));
             applyBtn.size = Vec2f(70f, 20f);
             applyBtn.setCallback(this, "apply");
-            box.addChildGui(applyBtn);
+            box.appendChild(applyBtn);
 
             auto cancelBtn = new ConfirmationButton(getLocalizedText("cancel"));
             cancelBtn.size = Vec2f(70f, 20f);
             cancelBtn.setCallback(this, "close");
-            box.addChildGui(cancelBtn);
+            box.appendChild(cancelBtn);
         }
 
         { //Exit
@@ -81,7 +81,7 @@ final class SelectPluginModal: GuiElement {
             exitBtn.setAlign(GuiAlignX.right, GuiAlignY.top);
             exitBtn.position = Vec2f(10f, 10f);
             exitBtn.setCallback(this, "close");
-            addChildGui(exitBtn);
+            appendChild(exitBtn);
         }
         reload();
 
@@ -117,12 +117,12 @@ final class SelectPluginModal: GuiElement {
             setCurrentPlugin(_pluginList._selectedItem);
             break;
 		case "close":
-            stopModalGui();
+            stopModal();
             break;
         case "apply":
             if(_currentItem)
                 setPlugin(_currentItem._pluginPath);
-            stopModalGui();
+            stopModal();
             break;
         default:
             break;
@@ -156,7 +156,7 @@ final class SelectPluginModal: GuiElement {
             if(extension(filePath).toLower() != ".json")
                 continue;
             JSONValue json = parseJSON(readText(filePath));
-            _pluginList.addChildGui(new PluginItem(
+            _pluginList.appendChild(new PluginItem(
                 filePath,
                 getJsonStr(json, "cover", ""),
                 getJsonStr(json, "name", "Untitled"),
@@ -168,7 +168,7 @@ final class SelectPluginModal: GuiElement {
         
         const string pluginPath = getPluginPath();
         if(exists(pluginPath)) {
-            auto list = cast(PluginItem[]) _pluginList.getList();
+            auto list = cast(PluginItem[]) _pluginList.children;
             for(size_t i = 0u; i < list.length; ++ i) {
 				if(list[i]._pluginPath == pluginPath) {
 					_pluginList.selected(cast(uint) i);
@@ -236,7 +236,7 @@ private final class PluginList: GridList {
     override void onCallback(string id) {
         super.onCallback(id);
         if(id == "list") {
-            _selectedItem = cast(PluginItem) getList()[selected()];
+            _selectedItem = cast(PluginItem) children[selected()];
             if(!_selectedItem)
                 throw new Exception("Plugin grid null item");
             triggerCallback();

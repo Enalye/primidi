@@ -8,85 +8,85 @@ module primidi.script.sprite;
 import std.conv: to;
 import grimoire, atelier;
 
-package void loadSprite(GrData data) {
-    auto defSprite = data.addForeign("Sprite");
+package void loadSprite(GrLibrary library) {
+    auto defSprite = library.addForeign("Sprite");
     auto defTex = grGetForeignType("Texture");
     auto defColor = grGetClassType("Color");
     auto defBlend = grGetEnumType("Blend");
 
-    data.addPrimitive(&_makeSpriteT, "Sprite", ["tex"], [defTex], [defSprite]);
-    data.addPrimitive(&_makeSpriteTClip, "Sprite", ["tex", "x", "y", "w", "h"], [defTex, grInt, grInt, grInt, grInt], [defSprite]);
-    data.addPrimitive(&_makeSpriteS, "Sprite", ["sprite"], [defSprite], [defSprite]);
-    data.addPrimitive(&_setSpriteClip, "setClip", ["sprite", "x", "y", "w", "h"], [defSprite, grInt, grInt, grInt, grInt]);
-    data.addPrimitive(&_setSpriteAngle, "setAngle", ["sprite", "angle"], [defSprite, grFloat]);
-    data.addPrimitive(&_setSpriteAnchor, "setAnchor", ["sprite", "x", "y"], [defSprite, grFloat, grFloat]);
-    data.addPrimitive(&_setSpriteColor, "setColor", ["sprite", "color"], [defSprite, defColor]);
-    data.addPrimitive(&_setSpriteAlpha, "setAlpha", ["sprite", "a"], [defSprite, grFloat]);
+    library.addPrimitive(&_makeSpriteT, "Sprite", [defTex], [defSprite]);
+    library.addPrimitive(&_makeSpriteTClip, "Sprite", [defTex, grInt, grInt, grInt, grInt], [defSprite]);
+    library.addPrimitive(&_makeSpriteS, "Sprite", [defSprite], [defSprite]);
+    library.addPrimitive(&_setSpriteClip, "setClip", [defSprite, grInt, grInt, grInt, grInt]);
+    library.addPrimitive(&_setSpriteAngle, "setAngle", [defSprite, grFloat]);
+    library.addPrimitive(&_setSpriteAnchor, "setAnchor", [defSprite, grFloat, grFloat]);
+    library.addPrimitive(&_setSpriteColor, "setColor", [defSprite, defColor]);
+    library.addPrimitive(&_setSpriteAlpha, "setAlpha", [defSprite, grFloat]);
 
-    data.addPrimitive(&_setSpriteSize, "setSize", ["sprite", "w", "h"], [defSprite, grFloat, grFloat]);
-    data.addPrimitive(&_getSpriteSize, "getSize", ["sprite"], [defSprite], [grFloat, grFloat]);
-    data.addPrimitive(&_getSpriteWidth, "getWidth", ["sprite"], [defSprite], [grFloat]);
-    data.addPrimitive(&_getSpriteHeight, "getHeight", ["sprite"], [defSprite], [grFloat]);
+    library.addPrimitive(&_setSpriteSize, "setSize", [defSprite, grFloat, grFloat]);
+    library.addPrimitive(&_getSpriteSize, "getSize", [defSprite], [grFloat, grFloat]);
+    library.addPrimitive(&_getSpriteWidth, "getWidth", [defSprite], [grFloat]);
+    library.addPrimitive(&_getSpriteHeight, "getHeight", [defSprite], [grFloat]);
 
-    data.addPrimitive(&_setSpriteScale, "setScale", ["sprite", "x", "y"], [defSprite, grFloat, grFloat]);
-    data.addPrimitive(&_getSpriteScale, "getScale", ["sprite"], [defSprite], [grFloat, grFloat]);
+    library.addPrimitive(&_setSpriteScale, "setScale", [defSprite, grFloat, grFloat]);
+    library.addPrimitive(&_getSpriteScale, "getScale", [defSprite], [grFloat, grFloat]);
 
-    data.addPrimitive(&_setSpriteFlip, "setFlip", ["sprite", "flip"], [defSprite, grInt]);
-    data.addPrimitive(&_getSpriteFlip, "setFlip", ["sprite"], [defSprite], [grInt]);
+    library.addPrimitive(&_setSpriteFlip, "setFlip", [defSprite, grInt]);
+    library.addPrimitive(&_getSpriteFlip, "setFlip", [defSprite], [grInt]);
 
-    data.addPrimitive(&_setSpriteBlend, "setBlend", ["sprite", "blend"], [defSprite, defBlend]);
-    data.addPrimitive(&_getSpriteBlend, "getBlend", ["sprite"], [defSprite], [grInt]);
+    library.addPrimitive(&_setSpriteBlend, "setBlend", [defSprite, defBlend]);
+    library.addPrimitive(&_getSpriteBlend, "getBlend", [defSprite], [grInt]);
 
-    data.addPrimitive(&_spriteFit, "fit", ["sprite", "w", "h"], [defSprite, grFloat, grFloat]);
-    data.addPrimitive(&_spriteContain, "contain", ["sprite", "w", "h"], [defSprite, grFloat, grFloat]);
-    data.addPrimitive(&_drawSprite, "draw", ["sprite", "x", "y"], [defSprite, grFloat, grFloat]);
+    library.addPrimitive(&_spriteFit, "fit", [defSprite, grFloat, grFloat]);
+    library.addPrimitive(&_spriteContain, "contain", [defSprite, grFloat, grFloat]);
+    library.addPrimitive(&_drawSprite, "draw", [defSprite, grFloat, grFloat]);
 
-    //data.addPrimitive(&_createText, "createText", ["font", "text"], [defFont, grString], [defSprite]);  
+    //library.addPrimitive(&_createText, "createText", ["font", "text"], [defFont, grString], [defSprite]);  
 }
 
 private void _makeSpriteT(GrCall call) {
-    Sprite sprite = new Sprite(call.getUserData!Texture("tex"));
-    call.setUserData(sprite);
+    Sprite sprite = new Sprite(call.getForeign!Texture(0));
+    call.setForeign(sprite);
 }
 
 private void _makeSpriteTClip(GrCall call) {
     Sprite sprite = new Sprite(
-        call.getUserData!Texture("tex"),
+        call.getForeign!Texture(0),
         Vec4i(
-            call.getInt("x"),
-            call.getInt("y"),
-            call.getInt("w"),
-            call.getInt("h")
+            call.getInt(1),
+            call.getInt(2),
+            call.getInt(3),
+            call.getInt(4)
         ));
-    call.setUserData(sprite);
+    call.setForeign(sprite);
 }
 
 private void _makeSpriteS(GrCall call) {
-    Sprite sprite = new Sprite(call.getUserData!Sprite("sprite"));
-    call.setUserData(sprite);
+    Sprite sprite = new Sprite(call.getForeign!Sprite(0));
+    call.setForeign(sprite);
 }
 
 private void _setSpriteClip(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
-    sprite.clip.x = call.getInt("x");
-    sprite.clip.y = call.getInt("y");
-    sprite.clip.z = call.getInt("w");
-    sprite.clip.w = call.getInt("h");
+    Sprite sprite = call.getForeign!Sprite(0);
+    sprite.clip.x = call.getInt(1);
+    sprite.clip.y = call.getInt(2);
+    sprite.clip.z = call.getInt(3);
+    sprite.clip.w = call.getInt(4);
 }
 
 private void _setSpriteAngle(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
-    sprite.angle = call.getFloat("angle");
+    Sprite sprite = call.getForeign!Sprite(0);
+    sprite.angle = call.getFloat(1);
 }
 
 private void _setSpriteAnchor(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
-    sprite.anchor = Vec2f(call.getFloat("x"), call.getFloat("y"));
+    Sprite sprite = call.getForeign!Sprite(0);
+    sprite.anchor = Vec2f(call.getFloat(1), call.getFloat(2));
 }
 
 private void _setSpriteColor(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
-    auto c = call.getObject("color");
+    Sprite sprite = call.getForeign!Sprite(0);
+    auto c = call.getObject(1);
     Color color = Color(
         c.getFloat("r"),
         c.getFloat("g"),
@@ -95,83 +95,83 @@ private void _setSpriteColor(GrCall call) {
 }
 
 private void _setSpriteAlpha(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
-    sprite.alpha = call.getFloat("a");
+    Sprite sprite = call.getForeign!Sprite(0);
+    sprite.alpha = call.getFloat(1);
 }
 
 private void _setSpriteSize(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
-    sprite.size = Vec2f(call.getFloat("w"), call.getFloat("h"));
+    Sprite sprite = call.getForeign!Sprite(0);
+    sprite.size = Vec2f(call.getFloat(1), call.getFloat(2));
 }
 
 private void _getSpriteSize(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
+    Sprite sprite = call.getForeign!Sprite(0);
     call.setFloat(sprite.size.x);
     call.setFloat(sprite.size.y);
 }
 
 private void _getSpriteWidth(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
+    Sprite sprite = call.getForeign!Sprite(0);
     call.setFloat(sprite.size.x);
 }
 
 private void _getSpriteHeight(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
+    Sprite sprite = call.getForeign!Sprite(0);
     call.setFloat(sprite.size.y);
 }
 
 private void _setSpriteScale(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
-    sprite.scale = Vec2f(call.getFloat("w"), call.getFloat("h"));
+    Sprite sprite = call.getForeign!Sprite(0);
+    sprite.scale = Vec2f(call.getFloat(1), call.getFloat(2));
 }
 
 private void _getSpriteScale(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
+    Sprite sprite = call.getForeign!Sprite(0);
     call.setFloat(sprite.scale.x);
     call.setFloat(sprite.scale.y);
 }
 
 private void _setSpriteFlip(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
-    auto flip = call.getInt("flip");
+    Sprite sprite = call.getForeign!Sprite(0);
+    auto flip = call.getInt(1);
     if(flip >= 4 || flip < 0)
         flip = 0;
     sprite.flip = cast(Flip) flip;
 }
 
 private void _getSpriteFlip(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
+    Sprite sprite = call.getForeign!Sprite(0);
     call.setInt(sprite.flip);
 }
 
 private void _setSpriteBlend(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
-    sprite.blend = call.getEnum!Blend("blend");
+    Sprite sprite = call.getForeign!Sprite(0);
+    sprite.blend = call.getEnum!Blend(1);
 }
 
 private void _getSpriteBlend(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
+    Sprite sprite = call.getForeign!Sprite(0);
     call.setInt(sprite.blend);
 }
 
 private void _spriteFit(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
-    sprite.fit(Vec2f(call.getFloat("w"), call.getFloat("h")));
+    Sprite sprite = call.getForeign!Sprite(0);
+    sprite.fit(Vec2f(call.getFloat(1), call.getFloat(2)));
 }
 
 private void _spriteContain(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
-    sprite.contain(Vec2f(call.getFloat("w"), call.getFloat("h")));
+    Sprite sprite = call.getForeign!Sprite(0);
+    sprite.contain(Vec2f(call.getFloat(1), call.getFloat(2)));
 }
 
 private void _drawSprite(GrCall call) {
-    Sprite sprite = call.getUserData!Sprite("sprite");
-    sprite.draw(Vec2f(call.getFloat("x"), call.getFloat("y")));
+    Sprite sprite = call.getForeign!Sprite(0);
+    sprite.draw(Vec2f(call.getFloat(1), call.getFloat(2)));
 }
 /*
 private void _createText(GrCall call) {
-    auto font = call.getUserData!Font("font");
+    auto font = call.getForeign!Font("font");
     auto texture = font.render(to!string(call.getString("text")));
 	auto sprite = new Sprite(texture);
-    call.setUserData!Sprite(sprite);
+    call.setForeign!Sprite(sprite);
 }*/

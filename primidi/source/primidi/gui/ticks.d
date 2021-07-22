@@ -26,7 +26,7 @@ final class SelectTicksIntervalModal: GuiElement {
             auto box = new VContainer;
             box.setAlign(GuiAlignX.center, GuiAlignY.center);
             box.spacing = Vec2f(0f, 15f);
-            addChildGui(box);
+            appendChild(box);
 
             _slider = new HSlider;
             _slider.size = Vec2f(380f, 15f);
@@ -37,11 +37,11 @@ final class SelectTicksIntervalModal: GuiElement {
             _slider.setCallback(this, "slider");
             _defaultValue = getInternalSequencerInterval();
             _slider.ivalue = _defaultValue;
-			box.addChildGui(_slider);
+			box.appendChild(_slider);
 
             _ticksLabel = new Label(getLocalizedText("range_ticks") ~ ": " ~ to!string(_defaultValue));
             _ticksLabel.color = Color(20, 20, 20);
-            box.addChildGui(_ticksLabel);
+            box.appendChild(_ticksLabel);
 		}
 
 		{ //Title
@@ -49,7 +49,7 @@ final class SelectTicksIntervalModal: GuiElement {
             title.color = Color(20, 20, 20);
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
-            addChildGui(title);
+            appendChild(title);
         }
 
 		{ //Validation
@@ -57,17 +57,17 @@ final class SelectTicksIntervalModal: GuiElement {
             box.setAlign(GuiAlignX.right, GuiAlignY.bottom);
             box.position = Vec2f(10f, 10f);
             box.spacing = Vec2f(8f, 0f);
-            addChildGui(box);
+            appendChild(box);
 
             auto applyBtn = new ConfirmationButton(getLocalizedText("apply"));
             applyBtn.size = Vec2f(70f, 20f);
             applyBtn.setCallback(this, "apply");
-            box.addChildGui(applyBtn);
+            box.appendChild(applyBtn);
 
             auto cancelBtn = new ConfirmationButton(getLocalizedText("cancel"));
             cancelBtn.size = Vec2f(70f, 20f);
             cancelBtn.setCallback(this, "cancel");
-            box.addChildGui(cancelBtn);
+            box.appendChild(cancelBtn);
         }
 
         { //Exit
@@ -75,7 +75,7 @@ final class SelectTicksIntervalModal: GuiElement {
             exitBtn.setAlign(GuiAlignX.right, GuiAlignY.top);
             exitBtn.position = Vec2f(10f, 10f);
             exitBtn.setCallback(this, "cancel");
-            addChildGui(exitBtn);
+            appendChild(exitBtn);
         }
 
 		GuiState hiddenState = {
@@ -95,7 +95,7 @@ final class SelectTicksIntervalModal: GuiElement {
 	}
 
 	override void onCallback(string id) {
-        if(!isModalGui())
+        if(!isModal())
             return;
 		switch(id) {
         case "slider":
@@ -104,11 +104,11 @@ final class SelectTicksIntervalModal: GuiElement {
             break;
         case "apply":
             setInternalSequencerInterval(_slider.ivalue);
-            stopModalGui();
+            stopModal();
             break;
 		case "cancel":
             setInternalSequencerInterval(_defaultValue);
-            stopModalGui();
+            stopModal();
             break;
         default:
             break;

@@ -26,7 +26,7 @@ final class EditablePathGui: GuiElement {
         label = new Label(path);
         label.color = Color(20, 20, 20);
         label.setAlign(GuiAlignX.left, GuiAlignY.center);
-        addChildGui(label);
+        appendChild(label);
         size = label.size;
     }
 
@@ -48,8 +48,8 @@ final class EditablePathGui: GuiElement {
         isEditingName = false;
         isFirstClick = true;
         
-        removeChildrenGuis();
-        addChildGui(label);
+        removeChildren();
+        appendChild(label);
         triggerCallback();
     }
 
@@ -62,8 +62,8 @@ final class EditablePathGui: GuiElement {
         auto path = inputField.text;
         path = buildNormalizedPath(path);
         label.text = path;
-        removeChildrenGuis();
-        addChildGui(label);
+        removeChildren();
+        appendChild(label);
         triggerCallback();
     }
 
@@ -71,13 +71,13 @@ final class EditablePathGui: GuiElement {
         if(!isEditingName) {
             if(!isFirstClick) {
                 isEditingName = true;
-                removeChildrenGuis();
+                removeChildren();
                 inputField = new InputField(size, label.text != "untitled" ? label.text : "");
                 inputField.color = Color(20, 20, 20);
                 inputField.setAlign(GuiAlignX.center, GuiAlignY.center);
                 inputField.size = Vec2f(400f, label.size.y);
                 inputField.hasFocus = true;
-                addChildGui(inputField);
+                appendChild(inputField);
             }
             isFirstClick = false;
         }

@@ -2,8 +2,8 @@
 	"fileVersion": 1,
 	"versions": {
 		"atelier": {"path":"../atelier"},
-		"bindbc-loader": "0.2.1",
-		"bindbc-sdl": "0.15.0",
+		"bindbc-loader": "0.3.2",
+		"bindbc-sdl": "0.21.4",
 		"grimoire": {"path":"../grimoire"},
 		"minuit": {"path":"../minuit"}
 	}

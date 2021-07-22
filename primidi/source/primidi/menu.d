@@ -67,9 +67,9 @@ void setupApplication(string[] args) {
 		
 		enableAudio(false);
 		initializeMidiDevices();
-		createApplication(Vec2u(1280u, 720u + 70u), "Primidi");
+		createApplication(Vec2i(1280, 720 + 70), "Primidi");
 
-		setWindowMinSize(Vec2u(500, 200));
+		setWindowMinSize(Vec2i(500, 200));
 		setWindowClearColor(Color.black);
 
 		const string iconPath = buildNormalizedPath(dirName(thisExePath()), "img", "icon.png");
@@ -131,6 +131,6 @@ private void onLoadComplete() {
 }
 
 private void onMainMenu() {
-	removeRootGuis();
-	addRootGui(_mainGui);
+	removeRoots();
+	appendRoot(_mainGui);
 }

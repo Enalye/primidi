@@ -12,14 +12,16 @@ public {
 }
 import grimoire;
 
-void loadScriptDefinitions(GrData data) {
-    loadCanvas(data);
-    loadFont(data);
-    loadLabel(data);
-    loadMidi(data);
-    loadSprite(data);
-    loadTexture(data);
-    loadTween(data);
-    loadWindow(data);
-    loadParticles(data);
+GrLibrary loadPrimidiLibrary() {
+    GrLibrary library = new GrLibrary;
+    loadCanvas(library);
+    loadFont(library);
+    loadLabel(library);
+    loadMidi(library);
+    loadSprite(library);
+    loadTexture(library);
+    loadTween(library);
+    loadWindow(library);
+    loadParticles(library);
+    return library;
 }

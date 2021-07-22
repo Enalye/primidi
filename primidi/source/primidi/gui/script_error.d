@@ -52,7 +52,7 @@ final class ScriptErrorModal: GuiElement {
             _text = new Text(line);
             _text.setAlign(GuiAlignX.left, GuiAlignY.top);
             _text.position = Vec2f(20f, 50f);
-            addChildGui(_text);
+            appendChild(_text);
         }
 
         { //Title
@@ -60,7 +60,7 @@ final class ScriptErrorModal: GuiElement {
             title.color = Color(20, 20, 20);
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
-            addChildGui(title);
+            appendChild(title);
         }
 
 		{ //Close
@@ -69,7 +69,7 @@ final class ScriptErrorModal: GuiElement {
             closeBtn.position = Vec2f(10f, 10f);
             closeBtn.size = Vec2f(70f, 20f);
             closeBtn.setCallback(this, "close");
-            addChildGui(closeBtn);
+            appendChild(closeBtn);
         }
 
         { //Exit
@@ -77,7 +77,7 @@ final class ScriptErrorModal: GuiElement {
             exitBtn.setAlign(GuiAlignX.right, GuiAlignY.top);
             exitBtn.position = Vec2f(10f, 10f);
             exitBtn.setCallback(this, "cancel");
-            addChildGui(exitBtn);
+            appendChild(exitBtn);
         }
 
         GuiState hiddenState = {
@@ -100,7 +100,7 @@ final class ScriptErrorModal: GuiElement {
     override void onCallback(string id) {
 		switch(id) {
 		case "close":
-            stopModalGui();
+            stopModal();
             break;
         default:
             break;
