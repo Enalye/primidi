@@ -19,7 +19,7 @@ final class OpenModal: GuiElement {
         this() {
             super(Vec2f(434f, 334f));
             color = Color.white;
-            _container.canvas.color = Color.white;
+            _container.canvas.clearColor = Color.white;
         }
 
         override void onCallback(string id) {
