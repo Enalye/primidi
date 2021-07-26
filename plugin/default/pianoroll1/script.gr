@@ -27,7 +27,6 @@ let colors = [
     Color(49, 122, 21)
 ];
 
-array(Canvas) canvases;
 Texture noteTexture;
 let barWidth = 6f;
 float barX;
@@ -38,9 +37,13 @@ main {
     let centerX, centerY = width / 2f, height / 2f;
 
     // Rendering canvas.
-    setCameraSize(width, height);
+    /*setCameraSize(width, height);
     setCameraPosition(centerX, centerY);
-    setCameraClearColor(Color(0.051, 0.082, 0.125), 1f);
+    setCameraClearColor(Color(0.051, 0.082, 0.125), 1f);*/
+
+    setLayerClearColor(-1, Color(0.051, 0.082, 0.125));
+    setLayerClearAlpha(-1, 1f);
+    //setLayerAlpha(-1, 0f);
 
     /*
         Default interval of ticks to be displayed.
@@ -53,35 +56,17 @@ main {
         1 = left side.
     */
     setRatio(0.8f);
-
-    // We render each channel on a separate canvas.
-    canvases = array(Canvas)[];
-    loop(16) {
-        let canvas = Canvas(width, height);
-        canvas:setPosition(centerX, centerY);
-        canvas:setColorMod(Color(1f, 1f, 1f), Blend.alpha);
-        canvases ~= canvas;
-    }
+    setLayersCount(17);
     noteTexture = Texture("../note.png");
-
-    let mainCanvas = Canvas(width, height);
-    mainCanvas:setPosition(centerX, centerY);
-    mainCanvas:setColorMod(Color(1f, 1f, 1f), Blend.alpha);
 
     barX = width * (1f - getRatio()) - (barWidth / 2f);
     loop {
+        setLayer(0);
         if(background)
             background:draw(centerX, centerY);
-        for(canvas, canvases) {
-            canvas:draw(centerX, centerY);
-            canvas:clear;
-        }
         // Middle bar
-        pushCanvas(mainCanvas);
+        setLayer(-1);
         fillRect(barX, 0f, barWidth, height, Color(1f, 1f, 1f), 0.2f);
-        popCanvas();
-        mainCanvas:draw(centerX, centerY);
-        mainCanvas:clear;
         yield
     }
 }
@@ -135,9 +120,8 @@ event onNoteEnter(Note note) {
                 noteSprite:setAlpha(0.5f);
             }
         }
-        pushCanvas(canvases[note:getChannel]);
+        setLayer(note:getChannel + 1);
         noteSprite:draw(x, y);
-        popCanvas();
         yield
     }
 }
