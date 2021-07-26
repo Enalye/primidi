@@ -4,9 +4,6 @@
  * Authors: Enalye
  */
 
-// Canvas size
-let width, height = 1280f, 720f;
-
 // Channels' color
 let colors = [
     Color(109, 247, 193),
@@ -29,15 +26,12 @@ let colors = [
 
 Texture noteTexture;
 let barWidth = 6f;
-float barX;
 Sprite background;
 
 // Init
 main {
-    let centerX, centerY = width / 2f, height / 2f;
-
     // Rendering canvas.
-    /*setCameraSize(width, height);
+    /*setCameraSize(screenWidth(), screenHeight());
     setCameraPosition(centerX, centerY);
     setCameraClearColor(Color(0.051, 0.082, 0.125), 1f);*/
 
@@ -59,14 +53,15 @@ main {
     setLayersCount(17);
     noteTexture = Texture("../note.png");
 
-    barX = width * (1f - getRatio()) - (barWidth / 2f);
     loop {
         setLayer(0);
+        let centerX, centerY = screenWidth() / 2f, screenHeight() / 2f;
         if(background)
             background:draw(centerX, centerY);
         // Middle bar
         setLayer(-1);
-        fillRect(barX, 0f, barWidth, height, Color(1f, 1f, 1f), 0.2f);
+        float barX = screenWidth() * (1f - getRatio()) - (barWidth / 2f);
+        fillRect(barX, 0f, barWidth, screenHeight(), Color(1f, 1f, 1f), 0.2f);
         yield
     }
 }
@@ -86,8 +81,8 @@ event onNoteEnter(Note note) {
             kill
 
         let w, h =
-            width * note:getDuration,
-            height / 128f;
+            screenWidth() * note:getDuration,
+            screenHeight() / 128f;
 
         if(w < 4f)
             w = 4f;
@@ -95,8 +90,8 @@ event onNoteEnter(Note note) {
         noteSprite:setSize(w, h);
         
         let x, y =
-            width * (1f - note:getTime),
-            height * pitch - getPitchBend(note:getChannel) * h * 2f;
+            screenWidth() * (1f - note:getTime),
+            screenHeight() * pitch - getPitchBend(note:getChannel) * h * 2f;
 
         if(note:isPlaying) {
             let factor = note:getPlayTime;
@@ -130,5 +125,5 @@ event onFileDrop(string fileName) {
     let tex = Texture(fileName);
     unless(tex) return;
     background = Sprite(tex);
-    background:contain(width, height);
+    background:contain(screenWidth(), screenHeight());
 }

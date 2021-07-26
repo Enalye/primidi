@@ -128,8 +128,12 @@ private void setLayersSize(Vec2i size) {
     _layerSize = size;
 
     _defaultLayer.renderSize = _layerSize;
+    _defaultLayer.size = cast(Vec2f) _layerSize;
+    _defaultLayer.position = _defaultLayer.size / 2f;
     foreach (Canvas layer; _layers) {
         layer.renderSize = _layerSize;
+        layer.size = cast(Vec2f) _layerSize;
+        layer.position = layer.size / 2f;
     }
 }
 
