@@ -147,7 +147,7 @@ final class SelectPluginModal: GuiElement {
     }
 
     void reload() {
-        string path = buildNormalizedPath(dirName(thisExePath()), "plugin");
+        string path = buildNormalizedPath(getBasePath(), "plugin");
         if(!exists(path)) {
             throw new Exception("No plugin folder found");
         }

@@ -7,7 +7,7 @@ module primidi.gui.locale;
 
 import std.path, std.file, std.string, std.exception;
 import atelier;
-import primidi.locale;
+import primidi.config, primidi.locale;
 import primidi.gui.buttons;
 
 final class SelectLocaleModal: GuiElement {
@@ -114,7 +114,7 @@ private final class SelectLocaleGui: DropDownList {
 		removeChildren();
         _locales.length = 0uL;
         
-        auto path = buildNormalizedPath(dirName(thisExePath()), "locale");
+        auto path = buildNormalizedPath(getBasePath(), "locale");
         enforce(exists(path), "Missing locale folder");
         foreach(file; dirEntries(path, SpanMode.shallow)) {
             const string filePath = absolutePath(buildNormalizedPath(file));

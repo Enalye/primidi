@@ -7,6 +7,7 @@ module primidi.loader;
 
 import std.path, std.file, std.conv, std.exception;
 import atelier;
+import primidi.config;
 
 private {
     alias OnLoadCompleteCallback = void function();
@@ -59,7 +60,7 @@ void loadTextures() {
     setResourceCache!Tileset(tilesetCache);
     setResourceCache!NinePatch(ninePathCache);
 
-    auto path = buildNormalizedPath(dirName(thisExePath()), "img");
+    auto path = buildNormalizedPath(getBasePath(), "img");
     enforce(exists(path), "Missing img folder");
 	auto files = dirEntries(path, "{*.json}", SpanMode.depth);
     foreach(file; files) {
@@ -129,7 +130,7 @@ void loadFonts() {
     auto fontCache = new ResourceCache!TrueTypeFont;
 	setResourceCache!TrueTypeFont(fontCache);
 
-    auto path = buildNormalizedPath(dirName(thisExePath()), "font");
+    auto path = buildNormalizedPath(getBasePath(), "font");
     enforce(exists(path), "Missing font folder");
     auto files = dirEntries(path, "{*.ttf}", SpanMode.depth);
     foreach(file; files) {
