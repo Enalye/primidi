@@ -80,7 +80,7 @@ void saveConfig() {
     json["plugin"] = relativePath(buildNormalizedPath(_pluginFilePath), getBasePath());
     json["locale"] = (getLocale().length && exists(getLocale())) ?
         relativePath(buildNormalizedPath(getLocale()), getBasePath()) :
-        buildNormalizedPath("data", "locale", "en.json");
+        buildNormalizedPath("locale", "en.json");
 
     std.file.write(_configFilePath, toJSON(json, true));
 }
