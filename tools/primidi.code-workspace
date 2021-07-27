@@ -4,7 +4,7 @@
             "path": "../primidi"
         },
 	{
-            "path": "../assets"
+            "path": "../plugin"
         },
 	{
             "path": "../minuit"

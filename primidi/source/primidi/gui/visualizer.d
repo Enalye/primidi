@@ -215,12 +215,12 @@ final class Visualizer: GuiElement {
         drawFilledRect(origin, size, Color.black);
 
         pushCanvas(_defaultLayer, false);
-        foreach (Canvas layer; _layers) {
-            layer.draw(center);
-        }
         drawParticles();
         popCanvas();
         _defaultLayer.draw(center);
+        foreach (Canvas layer; _layers) {
+            layer.draw(center);
+        }
     }
 
     override void onQuit() {

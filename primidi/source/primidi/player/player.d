@@ -20,6 +20,7 @@ void startMidi() {
     startMidiClock();
     setupInternalSequencer();
     startInternalSequencer();
+    initializeMidiState();
 }
 
 void playMidi(string path) {
@@ -55,6 +56,7 @@ void stopMidi() {
         notifyEndInternalSequencer();
     _isMidiFilePlaying = false;
     setWindowTitle("Primidi");
+    startMidi();
 }
 
 bool isMidiPlaying() {

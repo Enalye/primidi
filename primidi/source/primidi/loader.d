@@ -29,11 +29,7 @@ class LoaderGui: GuiElement {
     /// Ctor
     this(OnLoadCompleteCallback callback) {
         _callback = callback;
-        //const auto startTime = MonoTime.currTime();
         loadTextures();
-        loadFonts();
-        //auto deltaTime = MonoTime.currTime() - startTime;
-        //writeln(deltaTime);
         //Load completed
         removeRoots();
         callback();
@@ -122,18 +118,5 @@ void loadTextures() {
                 break;
             }
         }
-    }
-}
-
-/// Load fonts in font folder
-void loadFonts() {
-    auto fontCache = new ResourceCache!TrueTypeFont;
-	setResourceCache!TrueTypeFont(fontCache);
-
-    auto path = buildNormalizedPath(getBasePath(), "font");
-    enforce(exists(path), "Missing font folder");
-    auto files = dirEntries(path, "{*.ttf}", SpanMode.depth);
-    foreach(file; files) {
-        fontCache.set(new TrueTypeFont(file, 12u), baseName(file, ".ttf"));
     }
 }

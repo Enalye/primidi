@@ -30,14 +30,8 @@ Sprite background;
 
 // Init
 main {
-    // Rendering canvas.
-    /*setCameraSize(getWidth(), getHeight());
-    setCameraPosition(centerX, centerY);
-    setCameraClearColor(Color(0.051, 0.082, 0.125), 1f);*/
-
     setLayerClearColor(-1, Color(0.051, 0.082, 0.125));
     setLayerClearAlpha(-1, 1f);
-    //setLayerAlpha(-1, 0f);
 
     /*
         Default interval of ticks to be displayed.
@@ -54,11 +48,11 @@ main {
     noteTexture = Texture("../note.png");
 
     loop {
-        setLayer(0);
+        setLayer(-1);
         if(background)
             background:draw(getCenterX() as float, getCenterY() as float);
         // Middle bar
-        setLayer(-1);
+        setLayer(16);
         float barX = getWidth() * (1f - getRatio()) - (barWidth / 2f);
         fillRect(barX, 0f, barWidth, getHeight() as float, Color(1f, 1f, 1f), 0.2f);
         yield
@@ -67,6 +61,15 @@ main {
 
 // Called for each note entering the Interval window.
 event onNoteEnter(Note note) {
+    handleNote(note);
+}
+
+// Called for each note received on the input.
+event onNoteInput(Note note) {
+    handleNote(note);
+}
+
+func handleNote(Note note) {
     let noteSprite = noteTexture as Sprite;
     noteSprite:setAnchor(0f, 0f);
 
@@ -114,7 +117,7 @@ event onNoteEnter(Note note) {
                 noteSprite:setAlpha(0.5f);
             }
         }
-        setLayer(note:getChannel + 1);
+        setLayer(note:getChannel);
         noteSprite:draw(x, y);
         yield
     }

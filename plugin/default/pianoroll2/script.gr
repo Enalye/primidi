@@ -4,9 +4,6 @@
  * Authors: Enalye
  */
 
-// Canvas size
-let width, height = 1280f, 720f;
-
 // Channels' color
 let colors = [
     Color(109, 247, 193),
@@ -27,8 +24,6 @@ let colors = [
     Color(49, 122, 21)
 ];
 
-array(Canvas) canvases;
-Canvas mainCanvas;
 Texture noteTexture;
 let barWidth, barFactor = 2f, 0f;
 Color barColor;
@@ -37,14 +32,11 @@ Sprite background;
 
 // Init
 main {
-    let centerX, centerY = width / 2f, height / 2f;
     Color baseBarColor;
     baseBarColor, barColor = Color(1f, 1f, 1f);
 
-    // Rendering canvas.
-    setCameraSize(width, height);
-    setCameraPosition(centerX, centerY);
-    setCameraClearColor(Color(0.051, 0.082, 0.125), 1f);
+    setLayerClearColor(-1, Color(0.051, 0.082, 0.125));
+    setLayerClearAlpha(-1, 1f);
 
     /*
         Default interval of ticks to be displayed.
@@ -58,43 +50,99 @@ main {
     */
     setRatio(0.8f);
 
-    // We render each channel on a separate canvas.
-    canvases = array(Canvas)[];
-    loop(16) {
-        let canvas = Canvas(width, height);
-        canvas:setPosition(centerX, centerY);
-        canvas:setColorMod(Color(1f, 1f, 1f), Blend.alpha);
-        canvases ~= canvas;
-    }
+    setLayersCount(17);
+
     noteTexture = Texture("../note.png");
 
-    mainCanvas = Canvas(width, height);
-    mainCanvas:setPosition(centerX, centerY);
-    mainCanvas:setColorMod(Color(1f, 1f, 1f), Blend.alpha);
-
-    barX = width * (1f - getRatio()) - (barWidth / 2f);
     loop {
+        setLayer(-1);
         if(background)
-            background:draw(centerX, centerY);
-        for(canvas, canvases) {
-            canvas:draw(centerX, centerY);
-            canvas:clear;
-        }
+            background:draw(getCenterX() as float, getCenterY() as float);
         // Middle bar
         if(barFactor > 1f)
             barFactor = 1f;
-        pushCanvas(mainCanvas);
-        fillRect(barX, 0f, barWidth, height, lerp(baseBarColor, barColor, barFactor), lerp(0.2f, 0.6f, barFactor));
-        popCanvas();
+        setLayer(16);
+        barX = getWidth() * (1f - getRatio()) - (barWidth / 2f);
+        fillRect(barX, 0f, barWidth, getHeight() as float, lerp(baseBarColor, barColor, barFactor), lerp(0.2f, 0.6f, barFactor));
         if(barFactor < 0f) {
             barFactor = 0f;
         }
         else {
             barFactor -= 0.1f;
         }
-        
-        mainCanvas:draw(centerX, centerY);
-        mainCanvas:clear;
+        yield
+    }
+}
+
+event onNoteInput(Note note) {
+    let noteSprite = noteTexture as Sprite;
+    noteSprite:setAnchor(0f, 0f);
+
+    Color color = colors[note:getChannel];
+
+    let pitch = 1f - (note:getPitch as float / 128f);
+    float fadeOut = 1f;
+    int time = 0;
+
+    let w, h =
+        getWidth() * note:getDuration,
+        getHeight() / 128f;
+    let particleX = barX + barWidth;
+
+    let x, y =
+        getWidth() * (1f - note:getTime),
+        getHeight() * pitch - getPitchBend(note:getChannel) * h * 2f;
+
+    loop(i, 17)
+        spark(particleX, y + h / 2f, -85f + (10f * i) + rand(-6f, 6f), rand(1.1f, 1.7f), rand(5, 30), color, color);
+
+    loop {
+        unless(note:isAlive)
+            kill
+
+        w, h =
+            getWidth() * note:getDuration,
+            getHeight() / 128f;
+
+        noteSprite:setSize(w, h);
+            
+        x, y =
+            getWidth() * (1f - note:getTime),
+            getHeight() * pitch - getPitchBend(note:getChannel) * h * 2f;
+
+        if(note:isPlaying) {
+            let factor = note:getPlayTime;
+            let c = lerp(Color(1f, 1f, 1f), color, factor);
+            noteSprite:setColor(c);
+            noteSprite:setAlpha(1f);
+
+            // Particles
+            if((time % 5) == 0) {
+                spark(particleX, y, rand(-85f, 5f), rand(0.2f, 1.5f), rand(5, 20), color, c);
+                spark(particleX, y + h, rand(5f, 85f), rand(0.2f, 1.5f), rand(5, 20), color, c);
+            }
+            barColor = mix(barColor, c);
+            barFactor += (1f - factor) * 0.2f;
+        }
+        else {
+            if(note:getPlayTime > 0f) {
+                noteSprite:setColor(lerp(Color(1f, 1f, 1f), color, fadeOut));
+                noteSprite:setAlpha(fadeOut);
+                if(fadeOut > 0f) {
+                    fadeOut -= 0.025f;
+                    if(fadeOut < 0f) {
+                        fadeOut = 0f;
+                    }
+                }
+            }
+            else {
+                noteSprite:setColor(Color(1f, 1f, 1f));
+                noteSprite:setAlpha(0.5f);
+            }
+        }
+        setLayer(note:getChannel);
+        noteSprite:draw(x, y);
+        time ++;
         yield
     }
 }
@@ -116,8 +164,8 @@ event onNoteEnter(Note note) {
             kill
 
         let w, h =
-            width * note:getDuration,
-            height / 128f;
+            getWidth() * note:getDuration,
+            getHeight() / 128f;
 
         if(w < 4f)
             w = 4f;
@@ -125,8 +173,8 @@ event onNoteEnter(Note note) {
         noteSprite:setSize(w, h);
         
         let x, y =
-            width * (1f - note:getTime),
-            height * pitch - getPitchBend(note:getChannel) * h * 2f;;
+            getWidth() * (1f - note:getTime),
+            getHeight() * pitch - getPitchBend(note:getChannel) * h * 2f;;
 
         if(note:isPlaying) {
             let factor = note:getPlayTime;
@@ -139,11 +187,11 @@ event onNoteEnter(Note note) {
             unless(wasHit) {
                 wasHit = true;
                 loop(i, 17)
-                    spark(particleX, y + h / 2f, -85f + (10f * i) + random(-6f, 6f), random(1.1f, 1.7f), random(5, 30), color, c);
+                    spark(particleX, y + h / 2f, -85f + (10f * i) + rand(-6f, 6f), rand(1.1f, 1.7f), rand(5, 30), color, c);
             }
             else if((time % 5) == 0) {
-                spark(particleX, y, random(-85f, 5f), random(0.2f, 1.5f), random(5, 20), color, c);
-                spark(particleX, y + h, random(5f, 85f), random(0.2f, 1.5f), random(5, 20), color, c);
+                spark(particleX, y, rand(-85f, 5f), rand(0.2f, 1.5f), rand(5, 20), color, c);
+                spark(particleX, y + h, rand(5f, 85f), rand(0.2f, 1.5f), rand(5, 20), color, c);
             }
             barColor = mix(barColor, c);
             barFactor += (1f - factor) * 0.2f;
@@ -164,9 +212,8 @@ event onNoteEnter(Note note) {
                 noteSprite:setAlpha(0.5f);
             }
         }
-        pushCanvas(canvases[note:getChannel]);
+        setLayer(note:getChannel);
         noteSprite:draw(x, y);
-        popCanvas();
         time ++;
         yield
     }
@@ -193,5 +240,5 @@ event onFileDrop(string fileName) {
     let tex = Texture(fileName);
     unless(tex) return;
     background = Sprite(tex);
-    background:contain(width, height);
+    background:contain(getWidth() as float, getHeight() as float);
 }
