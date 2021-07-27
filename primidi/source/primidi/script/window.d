@@ -7,6 +7,7 @@ module primidi.script.window;
 
 import std.conv;
 import grimoire, atelier;
+import primidi.gui;
 
 package void loadWindow(GrLibrary library) {
     auto defColor = grGetClassType("Color");
@@ -18,10 +19,12 @@ package void loadWindow(GrLibrary library) {
     library.addPrimitive(&_drawFilledRect, "fillRect", [grFloat, grFloat, grFloat, grFloat, defColor, grFloat]);
     library.addPrimitive(&_drawPixel, "drawPixel", [grFloat, grFloat, defColor, grFloat]);
     
-    library.addPrimitive(&_screenWidth, "screenWidth", [], [grFloat]);
-    library.addPrimitive(&_screenHeight, "screenHeight", [], [grFloat]);
-    library.addPrimitive(&_screenSize, "screenSize", [], [grFloat, grFloat]);
-    library.addPrimitive(&_screenCenter, "screenCenter", [], [grFloat, grFloat]);
+    library.addPrimitive(&_getWidth, "getWidth", [], [grInt]);
+    library.addPrimitive(&_getHeight, "getHeight", [], [grInt]);
+    library.addPrimitive(&_getSize, "getSize", [], [grInt, grInt]);
+    library.addPrimitive(&_getCenterX, "getCenterX", [], [grInt]);
+    library.addPrimitive(&_getCenterY, "getCenterY", [], [grInt]);
+    library.addPrimitive(&_getCenter, "getCenter", [], [grInt, grInt]);
 }
 
 private void _setRenderColor(GrCall call) {
@@ -86,21 +89,30 @@ private void _drawPixel(GrCall call) {
     drawPixel(pos, color, call.getFloat(3));
 }
 
-private void _screenWidth(GrCall call) {
-    call.setFloat(getWindowWidth());
+private void _getWidth(GrCall call) {
+    call.setInt(getLayersSize().x);
 }
 
-private void _screenHeight(GrCall call) {
-    call.setFloat(getWindowHeight());
+private void _getHeight(GrCall call) {
+    call.setInt(getLayersSize().y);
 }
 
-private void _screenSize(GrCall call) {
-    call.setFloat(getWindowWidth());
-    call.setFloat(getWindowHeight());
+private void _getSize(GrCall call) {
+    Vec2i size = getLayersSize();
+    call.setInt(size.x);
+    call.setInt(size.y);
 }
 
-private void _screenCenter(GrCall call) {
-    const center = getWindowCenter();
-    call.setFloat(cast(int)center.x);
-    call.setFloat(cast(int)center.y);
+private void _getCenterX(GrCall call) {
+    call.setInt(getLayersSize().x / 2);
+}
+
+private void _getCenterY(GrCall call) {
+    call.setInt(getLayersSize().y / 2);
+}
+
+private void _getCenter(GrCall call) {
+    Vec2i size = getLayersSize() / 2;
+    call.setInt(size.x);
+    call.setInt(size.y);
 }

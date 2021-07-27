@@ -31,7 +31,7 @@ Sprite background;
 // Init
 main {
     // Rendering canvas.
-    /*setCameraSize(screenWidth(), screenHeight());
+    /*setCameraSize(getWidth(), getHeight());
     setCameraPosition(centerX, centerY);
     setCameraClearColor(Color(0.051, 0.082, 0.125), 1f);*/
 
@@ -55,13 +55,12 @@ main {
 
     loop {
         setLayer(0);
-        let centerX, centerY = screenWidth() / 2f, screenHeight() / 2f;
         if(background)
-            background:draw(centerX, centerY);
+            background:draw(getCenterX() as float, getCenterY() as float);
         // Middle bar
         setLayer(-1);
-        float barX = screenWidth() * (1f - getRatio()) - (barWidth / 2f);
-        fillRect(barX, 0f, barWidth, screenHeight(), Color(1f, 1f, 1f), 0.2f);
+        float barX = getWidth() * (1f - getRatio()) - (barWidth / 2f);
+        fillRect(barX, 0f, barWidth, getHeight() as float, Color(1f, 1f, 1f), 0.2f);
         yield
     }
 }
@@ -81,8 +80,8 @@ event onNoteEnter(Note note) {
             kill
 
         let w, h =
-            screenWidth() * note:getDuration,
-            screenHeight() / 128f;
+            getWidth() * note:getDuration,
+            getHeight() / 128f;
 
         if(w < 4f)
             w = 4f;
@@ -90,8 +89,8 @@ event onNoteEnter(Note note) {
         noteSprite:setSize(w, h);
         
         let x, y =
-            screenWidth() * (1f - note:getTime),
-            screenHeight() * pitch - getPitchBend(note:getChannel) * h * 2f;
+            getWidth() * (1f - note:getTime),
+            getHeight() * pitch - getPitchBend(note:getChannel) * h * 2f;
 
         if(note:isPlaying) {
             let factor = note:getPlayTime;
@@ -125,5 +124,5 @@ event onFileDrop(string fileName) {
     let tex = Texture(fileName);
     unless(tex) return;
     background = Sprite(tex);
-    background:contain(screenWidth(), screenHeight());
+    background:contain(getWidth() as float, getHeight() as float);
 }

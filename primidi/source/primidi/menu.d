@@ -130,7 +130,6 @@ string receiveFilePath() {
 }
 
 private void onLoadComplete() {
-	setDefaultFont(fetch!TrueTypeFont("Cascadia"));
 	_mainGui = new MainGui(_startingFilePath);
 	onMainMenu();
 }

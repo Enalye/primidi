@@ -137,6 +137,10 @@ private void setLayersSize(Vec2i size) {
     }
 }
 
+Vec2i getLayersSize() {
+    return _layerSize;
+}
+
 /// Load and run the plugin's script
 final class Visualizer: GuiElement {
     private {
