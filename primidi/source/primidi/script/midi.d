@@ -9,7 +9,7 @@ import std.conv, std.path;
 import grimoire, atelier;
 import primidi.midi, primidi.player;
 
-package void loadMidi(GrLibrary library) {
+package void loadMidiLibrary(GrLibrary library) {
     auto grNote = library.addForeign("Note");
     library.addPrimitive(&clock_getTime, "getTime", [], [grFloat]);
     library.addPrimitive(&seq_getTick, "getTick", [], [grInt]);
@@ -33,7 +33,6 @@ package void loadMidi(GrLibrary library) {
     library.addPrimitive(&note_isPlaying, "isPlaying", [grNote], [grBool]);
     library.addPrimitive(&note_isAlive, "isAlive", [grNote], [grBool]);
 
-
     library.addPrimitive(&chan_getPitchBend, "getPitchBend", [grInt], [grFloat]);
 }
 
@@ -42,7 +41,7 @@ private void clock_getTime(GrCall call) {
 }
 
 private void seq_getTick(GrCall call) {
-    call.setInt(to!int(getInternalSequencerTick()));//Fix NaN on startup
+    call.setInt(to!int(getInternalSequencerTick())); //Fix NaN on startup
 }
 
 private void seq_setInterval(GrCall call) {
@@ -113,7 +112,6 @@ private void note_getDuration(GrCall call) {
     call.setFloat(note.duration);
 }
 
-
 private void note_isAlive(GrCall call) {
     auto note = call.getForeign!Note(0);
     call.setBool(note.isAlive);
@@ -126,7 +124,7 @@ private void note_isPlaying(GrCall call) {
 
 private void chan_getPitchBend(GrCall call) {
     auto chan = call.getInt(0);
-    if(chan >= 16 || chan < 0) {
+    if (chan >= 16 || chan < 0) {
         call.raise("Channel index out of bounds");
         return;
     }

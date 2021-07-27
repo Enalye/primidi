@@ -6,22 +6,26 @@
 module primidi.script.library;
 
 public {
-    import primidi.script.canvas, primidi.script.font, primidi.script.label, primidi.script.midi;
-    import primidi.script.sprite, primidi.script.texture, primidi.script.tween, primidi.script.window;
-    import primidi.script.particles;
+    import primidi.script.layer, primidi.script.canvas, primidi.script.font,
+        primidi.script.text, primidi.script.midi;
+    import primidi.script.sprite, primidi.script.texture, primidi.script.tween,
+        primidi.script.window;
+    import primidi.script.particle;
 }
 import grimoire;
 
+/// Load all the functions and types of Primidi
 GrLibrary loadPrimidiLibrary() {
     GrLibrary library = new GrLibrary;
-    loadCanvas(library);
-    loadFont(library);
-    loadLabel(library);
-    loadMidi(library);
-    loadSprite(library);
-    loadTexture(library);
-    loadTween(library);
-    loadWindow(library);
-    loadParticles(library);
+    loadLayerLibrary(library);
+    loadCanvasLibrary(library);
+    loadFontLibrary(library);
+    loadTextLibrary(library);
+    loadMidiLibrary(library);
+    loadSpriteLibrary(library);
+    loadTextureLibrary(library);
+    loadTweenLibrary(library);
+    loadWindowLibrary(library);
+    loadParticleLibrary(library);
     return library;
 }

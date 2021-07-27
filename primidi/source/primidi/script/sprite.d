@@ -5,31 +5,45 @@
  */
 module primidi.script.sprite;
 
-import std.conv: to;
+import std.conv : to;
 import grimoire, atelier;
 
-package void loadSprite(GrLibrary library) {
+package void loadSpriteLibrary(GrLibrary library) {
     auto defSprite = library.addForeign("Sprite");
     auto defTex = grGetForeignType("Texture");
     auto defColor = grGetClassType("Color");
     auto defBlend = grGetEnumType("Blend");
 
     library.addPrimitive(&_makeSpriteT, "Sprite", [defTex], [defSprite]);
-    library.addPrimitive(&_makeSpriteTClip, "Sprite", [defTex, grInt, grInt, grInt, grInt], [defSprite]);
+    library.addPrimitive(&_makeSpriteTClip, "Sprite", [
+            defTex, grInt, grInt, grInt, grInt
+            ], [defSprite]);
     library.addPrimitive(&_makeSpriteS, "Sprite", [defSprite], [defSprite]);
-    library.addPrimitive(&_setSpriteClip, "setClip", [defSprite, grInt, grInt, grInt, grInt]);
+    library.addPrimitive(&_setSpriteClip, "setClip", [
+            defSprite, grInt, grInt, grInt, grInt
+            ]);
     library.addPrimitive(&_setSpriteAngle, "setAngle", [defSprite, grFloat]);
-    library.addPrimitive(&_setSpriteAnchor, "setAnchor", [defSprite, grFloat, grFloat]);
+    library.addPrimitive(&_setSpriteAnchor, "setAnchor", [
+            defSprite, grFloat, grFloat
+            ]);
     library.addPrimitive(&_setSpriteColor, "setColor", [defSprite, defColor]);
     library.addPrimitive(&_setSpriteAlpha, "setAlpha", [defSprite, grFloat]);
 
-    library.addPrimitive(&_setSpriteSize, "setSize", [defSprite, grFloat, grFloat]);
-    library.addPrimitive(&_getSpriteSize, "getSize", [defSprite], [grFloat, grFloat]);
+    library.addPrimitive(&_setSpriteSize, "setSize", [
+            defSprite, grFloat, grFloat
+            ]);
+    library.addPrimitive(&_getSpriteSize, "getSize", [defSprite], [
+            grFloat, grFloat
+            ]);
     library.addPrimitive(&_getSpriteWidth, "getWidth", [defSprite], [grFloat]);
     library.addPrimitive(&_getSpriteHeight, "getHeight", [defSprite], [grFloat]);
 
-    library.addPrimitive(&_setSpriteScale, "setScale", [defSprite, grFloat, grFloat]);
-    library.addPrimitive(&_getSpriteScale, "getScale", [defSprite], [grFloat, grFloat]);
+    library.addPrimitive(&_setSpriteScale, "setScale", [
+            defSprite, grFloat, grFloat
+            ]);
+    library.addPrimitive(&_getSpriteScale, "getScale", [defSprite], [
+            grFloat, grFloat
+            ]);
 
     library.addPrimitive(&_setSpriteFlip, "setFlip", [defSprite, grInt]);
     library.addPrimitive(&_getSpriteFlip, "setFlip", [defSprite], [grInt]);
@@ -38,7 +52,9 @@ package void loadSprite(GrLibrary library) {
     library.addPrimitive(&_getSpriteBlend, "getBlend", [defSprite], [grInt]);
 
     library.addPrimitive(&_spriteFit, "fit", [defSprite, grFloat, grFloat]);
-    library.addPrimitive(&_spriteContain, "contain", [defSprite, grFloat, grFloat]);
+    library.addPrimitive(&_spriteContain, "contain", [
+            defSprite, grFloat, grFloat
+            ]);
     library.addPrimitive(&_drawSprite, "draw", [defSprite, grFloat, grFloat]);
 
     //library.addPrimitive(&_createText, "createText", ["font", "text"], [defFont, grString], [defSprite]);  
@@ -50,14 +66,8 @@ private void _makeSpriteT(GrCall call) {
 }
 
 private void _makeSpriteTClip(GrCall call) {
-    Sprite sprite = new Sprite(
-        call.getForeign!Texture(0),
-        Vec4i(
-            call.getInt(1),
-            call.getInt(2),
-            call.getInt(3),
-            call.getInt(4)
-        ));
+    Sprite sprite = new Sprite(call.getForeign!Texture(0),
+            Vec4i(call.getInt(1), call.getInt(2), call.getInt(3), call.getInt(4)));
     call.setForeign(sprite);
 }
 
@@ -87,10 +97,7 @@ private void _setSpriteAnchor(GrCall call) {
 private void _setSpriteColor(GrCall call) {
     Sprite sprite = call.getForeign!Sprite(0);
     auto c = call.getObject(1);
-    Color color = Color(
-        c.getFloat("r"),
-        c.getFloat("g"),
-        c.getFloat("b"));
+    Color color = Color(c.getFloat("r"), c.getFloat("g"), c.getFloat("b"));
     sprite.color = color;
 }
 
@@ -134,7 +141,7 @@ private void _getSpriteScale(GrCall call) {
 private void _setSpriteFlip(GrCall call) {
     Sprite sprite = call.getForeign!Sprite(0);
     auto flip = call.getInt(1);
-    if(flip >= 4 || flip < 0)
+    if (flip >= 4 || flip < 0)
         flip = 0;
     sprite.flip = cast(Flip) flip;
 }

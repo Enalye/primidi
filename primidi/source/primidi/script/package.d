@@ -7,4 +7,5 @@ module primidi.script;
 
 public {
     import primidi.script.library;
+    import primidi.script.util : initScriptState;
 }

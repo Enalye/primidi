@@ -242,6 +242,7 @@ private void logMessage(string msg) {
 void loadScript(string filePath) {
     if (!_handler)
         return;
+    initScriptState();
     _handler.load(filePath);
     import primidi.config : saveConfig;
 
@@ -259,6 +260,7 @@ void runScript() {
 void reloadScript() {
     if (!_handler)
         return;
+    initScriptState();
     _handler.reload();
 }
 
@@ -266,6 +268,7 @@ void reloadScript() {
 void restartScript() {
     if (!_handler)
         return;
+    initScriptState();
     _handler.restart();
 }
 

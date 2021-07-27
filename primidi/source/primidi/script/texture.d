@@ -5,11 +5,11 @@
  */
 module primidi.script.texture;
 
-import std.conv: to;
+import std.conv : to;
 import grimoire, atelier;
 import primidi.script.util;
 
-package void loadTexture(GrLibrary library) {
+package void loadTextureLibrary(GrLibrary library) {
     auto defTexture = library.addForeign("Texture");
     auto defSprite = grGetForeignType("Sprite");
     library.addEnum("Blend", ["none", "modular", "additive", "alpha"]);

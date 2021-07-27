@@ -3,19 +3,19 @@
  * License: Zlib
  * Authors: Enalye
  */
-module primidi.script.particles;
+module primidi.script.particle;
 
 import atelier, grimoire;
 import primidi.particles;
 
-package void loadParticles(GrLibrary library) {
+package void loadParticleLibrary(GrLibrary library) {
     const GrType defColor = grGetClassType("Color");
     const GrType defSprite = grGetForeignType("Sprite");
     const GrType defParticle = library.addForeign("Particle");
 
-    library.addPrimitive(&_makeParticle,
-        "Particle",
-        [grFloat, grFloat, grFloat, grFloat, grInt], [defParticle]);
+    library.addPrimitive(&_makeParticle, "Particle", [
+            grFloat, grFloat, grFloat, grFloat, grInt
+            ], [defParticle]);
 
     library.addPrimitive(&_setSprite, "setSprite", [defParticle, defSprite]);
     library.addPrimitive(&_getSprite, "getSprite", [defParticle], [defSprite]);
@@ -26,8 +26,12 @@ package void loadParticles(GrLibrary library) {
     library.addPrimitive(&_setAlpha, "setAlpha", [defParticle, grFloat]);
     library.addPrimitive(&_getAlpha, "getAlpha", [defParticle], [grFloat]);
 
-    library.addPrimitive(&_setPosition, "setPosition", [defParticle, grFloat, grFloat]);
-    library.addPrimitive(&_getPosition, "getPosition", [defParticle], [grFloat, grFloat]);
+    library.addPrimitive(&_setPosition, "setPosition", [
+            defParticle, grFloat, grFloat
+            ]);
+    library.addPrimitive(&_getPosition, "getPosition", [defParticle], [
+            grFloat, grFloat
+            ]);
 
     library.addPrimitive(&_setAngle, "setAngle", [defParticle, grFloat]);
     library.addPrimitive(&_getAngle, "getAngle", [defParticle], [grFloat]);
@@ -35,20 +39,19 @@ package void loadParticles(GrLibrary library) {
     library.addPrimitive(&_setSpeed, "setSpeed", [defParticle, grFloat]);
     library.addPrimitive(&_getSpeed, "getSpeed", [defParticle], [grFloat]);
 
-    library.addPrimitive(&_setAngleSpeed, "setAngleSpeed", [defParticle, grFloat]);
-    library.addPrimitive(&_getAngleSpeed, "getAngleSpeed", [defParticle], [grFloat]);
+    library.addPrimitive(&_setAngleSpeed, "setAngleSpeed", [
+            defParticle, grFloat
+            ]);
+    library.addPrimitive(&_getAngleSpeed, "getAngleSpeed", [defParticle], [
+            grFloat
+            ]);
 
     library.addPrimitive(&_isAlive, "isAlive", [defParticle], [grBool]);
 }
 
 private void _makeParticle(GrCall call) {
-    call.setForeign!Particle(createParticle(
-        Vec2f(
-            call.getFloat(0),
-            call.getFloat(1)),
-        call.getFloat(2),
-        call.getFloat(3),
-        call.getInt(4)));
+    call.setForeign!Particle(createParticle(Vec2f(call.getFloat(0),
+            call.getFloat(1)), call.getFloat(2), call.getFloat(3), call.getInt(4)));
 }
 
 private void _setSprite(GrCall call) {
@@ -65,10 +68,7 @@ private void _getSprite(GrCall call) {
 private void _setColor(GrCall call) {
     Particle particle = call.getForeign!Particle(0);
     auto color = call.getObject(1);
-    particle.color = Color(
-        color.getFloat("r"),
-        color.getFloat("g"),
-        color.getFloat("b"));
+    particle.color = Color(color.getFloat("r"), color.getFloat("g"), color.getFloat("b"));
 }
 
 private void _getColor(GrCall call) {
