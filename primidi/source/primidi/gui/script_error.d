@@ -21,6 +21,8 @@ final class ScriptErrorModal: GuiElement {
         setAlign(GuiAlignX.center, GuiAlignY.center);
         isMovable(true);
 
+        Font font = new TrueTypeFont(veraMonoFontData, 12);
+
         { //Error display
             string lineNumber = to!string(error.line) ~ "| ";
             string snippet, underline, extra, space;
@@ -49,7 +51,7 @@ final class ScriptErrorModal: GuiElement {
                 ~ "," ~ to!string(error.column) ~ ")\n{c:blue}" ~
                 extra ~ "\n" ~ snippet ~ "\n" ~ underline ~"\n{c:blue}" ~ extra ~
                 "\n{c:black}Compilation aborted...";
-            _text = new Text(line);
+            _text = new Text(line, font);
             _text.setAlign(GuiAlignX.left, GuiAlignY.top);
             _text.position = Vec2f(20f, 50f);
             appendChild(_text);
