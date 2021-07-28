@@ -14,6 +14,7 @@ private {
     string _configFilePath = "config.json";
     string _pluginFilePath;
     bool _isDevMode = true;
+    string _currentFolder;
 }
 
 bool isDevMode() {
@@ -29,6 +30,15 @@ string getBasePath() {
     }
 }
 
+void setCurrentFolder(string folder) {
+    _currentFolder = folder;
+}
+
+string getCurrentFolder() {
+    return _currentFolder;
+}
+
+/// Load config file
 void loadConfig() {
     if(!_isConfigFilePathConfigured) {
         _isConfigFilePathConfigured = true;
@@ -44,6 +54,7 @@ void loadConfig() {
     string outputName = getJsonStr(json, "output", "");
     string pluginPath = buildNormalizedPath(absolutePath(getJsonStr(json, "plugin", ""), getBasePath()));
     string localePath = buildNormalizedPath(absolutePath(getJsonStr(json, "locale", ""), getBasePath()));
+    setCurrentFolder(getJsonStr(json, "folder", ""));
     selectMidiInDevice(mnFetchInput(inputName));
     selectMidiOutDevice(mnFetchOutput(outputName));
     if(exists(pluginPath)) {
@@ -71,6 +82,7 @@ string getPluginPath() {
     return _pluginFilePath;
 }
 
+/// Save config file
 void saveConfig() {
     JSONValue json;
     auto midiIn = getMidiIn();
@@ -81,6 +93,7 @@ void saveConfig() {
     json["locale"] = (getLocale().length && exists(getLocale())) ?
         relativePath(buildNormalizedPath(getLocale()), getBasePath()) :
         buildNormalizedPath("locale", "en.json");
+    json["folder"] = getCurrentFolder();
 
     std.file.write(_configFilePath, toJSON(json, true));
 }

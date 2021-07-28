@@ -10,8 +10,8 @@ import atelier;
 import primidi.locale;
 import primidi.gui.editable_path, primidi.gui.buttons;
 
-final class OpenModal: GuiElement {
-    final class DirListGui: VList {
+final class OpenModal : GuiElement {
+    final class DirListGui : VList {
         private {
             string[] _subDirs;
         }
@@ -24,7 +24,7 @@ final class OpenModal: GuiElement {
 
         override void onCallback(string id) {
             super.onCallback(id);
-            if(id == "list") {
+            if (id == "list") {
                 triggerCallback();
             }
         }
@@ -36,7 +36,7 @@ final class OpenModal: GuiElement {
         }
 
         string getSubDir() {
-            if(selected() >= _subDirs.length)
+            if (selected() >= _subDirs.length)
                 throw new Exception("Subdirectory index out of range");
             return _subDirs[selected()];
         }
@@ -47,19 +47,53 @@ final class OpenModal: GuiElement {
         }
     }
 
-	private {
+    /// Search field
+    final class SearchField : GuiElement {
+        private {
+            InputField _inputField;
+        }
+
+        @property {
+            /// Input text
+            string text() const {
+                return _inputField.text;
+            }
+        }
+
+        /// Ctor
+        this() {
+            _inputField = new InputField(Vec2f(200f, 20f));
+            _inputField.setCallback(this, "search");
+            _inputField.color = Color(20, 20, 20);
+            _inputField.font = new TrueTypeFont(veraMonoFontData, 12);
+            appendChild(_inputField);
+            size = _inputField.size;
+        }
+
+        override void onCallback(string id) {
+            if (id == "search")
+                triggerCallback();
+        }
+
+        override void draw() {
+            drawFilledRect(origin, size, Color(204, 204, 204));
+        }
+    }
+
+    private {
         EditablePathGui _pathLabel;
+        SearchField _searchField;
         DirListGui _list;
-		string _path, _fileName;
+        string _path, _fileName;
         Label _filePathLabel;
         GuiElement _applyBtn;
         string[] _extensionList;
     }
 
-	this(string basePath, string[] extensionList) {
+    this(string basePath, string[] extensionList) {
         _extensionList = extensionList;
-        if(basePath.length) {
-            _path = dirName(basePath);
+        if (basePath.length) {
+            _path = basePath;
         }
         else {
             _path = getcwd();
@@ -137,35 +171,47 @@ final class OpenModal: GuiElement {
             appendChild(_list);
         }
 
+        {
+            auto hbox = new HContainer;
+            hbox.position = Vec2f(33f, 53f);
+            hbox.setAlign(GuiAlignX.right, GuiAlignY.bottom);
+            hbox.spacing = Vec2f(10f, 0f);
+            appendChild(hbox);
+
+            Label label = new Label(getLocalizedText("search") ~ ":");
+            label.color = Color.black;
+            hbox.appendChild(label);
+
+            _searchField = new SearchField;
+            _searchField.setCallback(this, "search");
+            hbox.appendChild(_searchField);
+        }
+
         reloadList();
 
-        GuiState hiddenState = {
-            offset: Vec2f(0f, -50f),
-            alpha: 0f
-        };
+        GuiState hiddenState = {offset: Vec2f(0f, -50f), alpha: 0f};
         addState("hidden", hiddenState);
 
         GuiState defaultState = {
-            time: .5f,
-            easing: getEasingFunction(Ease.sineOut)
+            time: .5f, easing: getEasingFunction(Ease.sineOut)
         };
         addState("default", defaultState);
 
         setState("hidden");
         doTransitionState("default");
-	}
-    
+    }
+
     string getPath() {
         return buildPath(_path, _fileName);
     }
-    
+
     override void onCallback(string id) {
-        switch(id) {
+        switch (id) {
         case "path":
-            if(!exists(_pathLabel.text)) {
+            if (!exists(_pathLabel.text)) {
                 _pathLabel.text = _path;
             }
-            else if(isDir(_pathLabel.text)) {
+            else if (isDir(_pathLabel.text)) {
                 _path = _pathLabel.text;
                 reloadList();
             }
@@ -176,9 +222,12 @@ final class OpenModal: GuiElement {
                 _applyBtn.isLocked = false;
             }
             break;
+        case "search":
+            reloadList(false);
+            break;
         case "file":
             string path = buildPath(_path, _list.getSubDir());
-            if(isDir(path)) {
+            if (isDir(path)) {
                 _path = path;
                 reloadList();
             }
@@ -211,33 +260,42 @@ final class OpenModal: GuiElement {
 
     /// Discriminate between file types.
     private FileType getFileType(string filePath) {
-        import std.algorithm: canFind;
+        import std.algorithm : canFind;
+
         try {
-            if(isDir(filePath))
+            if (isDir(filePath))
                 return FileType.DirectoryType;
             const string ext = extension(filePath).toLower();
-            if(_extensionList.canFind(ext))
+            if (_extensionList.canFind(ext))
                 return FileType.MidiFileType;
             return FileType.InvalidType;
         }
-        catch(Exception e) {
+        catch (Exception e) {
             //Functions like isDir can return an exception
             //when reading a file it can't open.
             //So we don't care about those file.
             return FileType.InvalidType;
         }
     }
-    
-    private void reloadList() {
-        _fileName = "";
-        _filePathLabel.text = getLocalizedText("file") ~ ": ---";
-        _applyBtn.isLocked = true;
+
+    private void reloadList(bool resetSelection = true) {
+        import std.typecons : No;
+        import std.string : indexOf;
+
+        if (resetSelection) {
+            _fileName = "";
+            _filePathLabel.text = getLocalizedText("file") ~ ": ---";
+            _applyBtn.isLocked = true;
+        }
         _pathLabel.text = _path;
+        string search = _searchField.text;
         _list.reset();
         auto files = dirEntries(_path, SpanMode.shallow);
-        foreach(file; files) {
+        foreach (file; files) {
+            if (file.indexOf(search, No.caseSentitive) == -1)
+                continue;
             const auto type = getFileType(file);
-            final switch(type) with(FileType) {
+            final switch (type) with (FileType) {
             case DirectoryType:
                 _list.add(baseName(file), Color(20, 20, 20));
                 continue;
@@ -251,10 +309,10 @@ final class OpenModal: GuiElement {
     }
 
     override void update(float deltaTime) {
-        if(getButtonDown(KeyButton.escape))
+        if (getButtonDown(KeyButton.escape))
             onCallback("cancel");
-        else if(!_applyBtn.isLocked) {
-            if(getButtonDown(KeyButton.enter) || getButtonDown(KeyButton.enter2))
+        else if (!_applyBtn.isLocked) {
+            if (getButtonDown(KeyButton.enter) || getButtonDown(KeyButton.enter2))
                 onCallback("apply");
         }
     }
@@ -268,7 +326,7 @@ final class OpenModal: GuiElement {
     }
 }
 
-final class ParentButton: Button {
+final class ParentButton : Button {
     private {
         Sprite _parentSprite;
     }
@@ -279,11 +337,11 @@ final class ParentButton: Button {
     }
 
     override void draw() {
-        if(isClicked) {
+        if (isClicked) {
             drawFilledRect(origin, size, Color(204, 228, 247));
             drawRect(origin, size, Color(0, 84, 153));
         }
-        else if(isHovered) {
+        else if (isHovered) {
             drawFilledRect(origin, size, Color(229, 241, 251));
             drawRect(origin, size, Color(0, 120, 215));
         }

@@ -6,7 +6,7 @@
 module primidi.gui.menubar;
 
 import atelier;
-import primidi.player, primidi.midi, primidi.locale;
+import primidi.player, primidi.midi, primidi.locale, primidi.config;
 import primidi.gui.open_file, primidi.gui.port, primidi.gui.locale;
 import primidi.gui.plugin, primidi.gui.ticks;
 
@@ -231,7 +231,7 @@ private final class MenuButton: GuiElement {
             stopOverlay();
             isClicked = false;
             isHovered = false;
-            auto modal = new OpenModal(getMidiFilePath(), [".mid", ".midi"]);
+            auto modal = new OpenModal(getCurrentFolder(), [".mid", ".midi"]);
             modal.setCallback(this, "media.open.modal");
             pushModal(modal);
             break;

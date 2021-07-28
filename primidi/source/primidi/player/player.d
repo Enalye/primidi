@@ -5,9 +5,9 @@
  */
 module primidi.player.player;
 
-import std.path: baseName;
+import std.path: baseName, dirName;
 import atelier, minuit;
-import primidi.midi;
+import primidi.midi, primidi.config;
 
 private {
     MidiFile _midiFile;
@@ -26,6 +26,8 @@ void startMidi() {
 void playMidi(string path) {
     _midiFilePath = path;
     stopMidiClock();
+    setCurrentFolder(dirName(_midiFilePath));
+    saveConfig();
     _midiFile = new MidiFile(path);
     stopMidiOutSequencer();
     stopInternalSequencer();
