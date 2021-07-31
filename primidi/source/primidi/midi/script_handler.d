@@ -99,35 +99,35 @@ private final class ScriptHandler {
             _isLoaded = true;
 
             // Events
-            _onNoteEnterEventName = grMangleNamedFunction("onNoteEnter", [
+            _onNoteEnterEventName = grMangleComposite("onNoteEnter", [
                     grGetForeignType("Note")
                     ]);
             setNoteEnterCallback(_handler._engine.hasEvent(_onNoteEnterEventName)
                     ? &onNoteEnter : null);
 
-            _onNoteHitEventName = grMangleNamedFunction("onNoteHit", [
+            _onNoteHitEventName = grMangleComposite("onNoteHit", [
                     grGetForeignType("Note")
                     ]);
             setNoteHitCallback(_handler._engine.hasEvent(_onNoteHitEventName) ? &onNoteHit : null);
 
-            _onNoteExitEventName = grMangleNamedFunction("onNoteExit", [
+            _onNoteExitEventName = grMangleComposite("onNoteExit", [
                     grGetForeignType("Note")
                     ]);
             setNoteExitCallback(_handler._engine.hasEvent(_onNoteExitEventName) ? &onNoteExit : null);
 
-            _onNoteInputEventName = grMangleNamedFunction("onNoteInput", [
+            _onNoteInputEventName = grMangleComposite("onNoteInput", [
                     grGetForeignType("Note")
                     ]);
             setNoteInputCallback(_handler._engine.hasEvent(_onNoteInputEventName)
                     ? &onNoteInput : null);
 
-            _onStartEventName = grMangleNamedFunction("onStart", []);
+            _onStartEventName = grMangleComposite("onStart", []);
             setStartCallback(_handler._engine.hasEvent(_onStartEventName) ? &onStart : null);
 
-            _onEndEventName = grMangleNamedFunction("onEnd", []);
+            _onEndEventName = grMangleComposite("onEnd", []);
             setEndCallback(_handler._engine.hasEvent(_onEndEventName) ? &onEnd : null);
 
-            _onFileDropEventName = grMangleNamedFunction("onFileDrop", [
+            _onFileDropEventName = grMangleComposite("onFileDrop", [
                     grString
                     ]);
             setFileDropCallback(_handler._engine.hasEvent(_onFileDropEventName) ? &onFileDrop : null);
