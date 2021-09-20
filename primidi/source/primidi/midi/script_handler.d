@@ -80,7 +80,7 @@ private final class ScriptHandler {
             GrCompiler compiler = new GrCompiler;
             compiler.addLibrary(_stdLib);
             compiler.addLibrary(_primidiLib);
-            _bytecode = compiler.compileFile(_filePath, GrCompiler.Flags.none);
+            _bytecode = compiler.compileFile(_filePath, GrOption.symbols);
             if (!_bytecode) {
                 _isLoaded = false;
                 _error = compiler.getError();
