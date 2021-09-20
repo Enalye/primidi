@@ -193,7 +193,8 @@ private final class ScriptHandler {
             _cycle = _cycle + 1;
             if (_engine.isPanicking) {
                 _timeout.isRunning = false;
-                throw new Exception("Panic: " ~ to!string(_engine.panicMessage));
+                pushModal(new ScriptErrorModal(_engine.panicMessage, _engine.stackTraces));
+                cleanup();
             }
             else if (!_engine.hasCoroutines) {
                 _timeout.isRunning = false;
