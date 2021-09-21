@@ -60,6 +60,7 @@ private final class ScriptHandler {
     this() {
         _stdLib = grLoadStdLibrary();
         _primidiLib = loadPrimidiLibrary();
+        grSetOutputFunction(&logMessage);
     }
 
     void cleanup() {
