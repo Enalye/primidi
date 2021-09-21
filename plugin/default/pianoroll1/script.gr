@@ -129,3 +129,7 @@ event onFileDrop(string fileName) {
     background = Sprite(tex);
     background:contain(getWidth() as float, getHeight() as float);
 }
+
+event onResize(int x, int y) {
+    Vec2(x, y):printl;
+}

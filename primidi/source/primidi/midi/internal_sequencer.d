@@ -56,6 +56,11 @@ void notifyFileDrop(string filePath) {
 		_onFileDropCallback(filePath);
 }
 
+void notifyResize(int width, int height) {
+	if (_onResizeCallback)
+		_onResizeCallback(width, height);
+}
+
 void playInternalSequencer(MidiFile midiFile) {
 	if (!_sequencer)
 		return;
@@ -153,9 +158,13 @@ double getInternalSequencerTick() {
 // -- CALLBACKS --
 alias NoteCallback = void function(Note);
 alias FileCallback = void function(string);
-private NoteCallback _onNoteEnterCallback, _onNoteHitCallback,
-	_onNoteExitCallback, _onNoteInputCallback;
-private FileCallback _onFileDropCallback;
+alias ResizeCallback = void function(int, int);
+private {
+	NoteCallback _onNoteEnterCallback, _onNoteHitCallback, _onNoteExitCallback,
+		_onNoteInputCallback;
+	FileCallback _onFileDropCallback;
+	ResizeCallback _onResizeCallback;
+}
 
 void setNoteEnterCallback(NoteCallback callback) {
 	_onNoteEnterCallback = callback;
@@ -185,6 +194,10 @@ void setEndCallback(GlobalMidiCallback callback) {
 
 void setFileDropCallback(FileCallback callback) {
 	_onFileDropCallback = callback;
+}
+
+void setResizeCallback(ResizeCallback callback) {
+	_onResizeCallback = callback;
 }
 
 ///Visual sequencer

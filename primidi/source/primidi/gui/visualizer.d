@@ -135,6 +135,7 @@ private void setLayersSize(Vec2i size) {
         layer.size = cast(Vec2f) _layerSize;
         layer.position = layer.size / 2f;
     }
+    notifyResize(_layerSize.x, _layerSize.y);
 }
 
 Vec2i getLayersSize() {
