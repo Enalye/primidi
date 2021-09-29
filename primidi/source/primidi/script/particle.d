@@ -51,7 +51,7 @@ package void loadParticleLibrary(GrLibrary library) {
 
 private void _makeParticle(GrCall call) {
     call.setForeign!Particle(createParticle(Vec2f(call.getFloat(0),
-            call.getFloat(1)), call.getFloat(2), call.getFloat(3), call.getInt(4)));
+            call.getFloat(1)), call.getFloat(2), call.getFloat(3), cast(int) call.getInt(4)));
 }
 
 private void _setSprite(GrCall call) {

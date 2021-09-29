@@ -67,7 +67,8 @@ private void _makeSpriteT(GrCall call) {
 
 private void _makeSpriteTClip(GrCall call) {
     Sprite sprite = new Sprite(call.getForeign!Texture(0),
-            Vec4i(call.getInt(1), call.getInt(2), call.getInt(3), call.getInt(4)));
+            Vec4i(cast(int) call.getInt(1), cast(int) call.getInt(2),
+                cast(int) call.getInt(3), cast(int) call.getInt(4)));
     call.setForeign(sprite);
 }
 
@@ -78,10 +79,10 @@ private void _makeSpriteS(GrCall call) {
 
 private void _setSpriteClip(GrCall call) {
     Sprite sprite = call.getForeign!Sprite(0);
-    sprite.clip.x = call.getInt(1);
-    sprite.clip.y = call.getInt(2);
-    sprite.clip.z = call.getInt(3);
-    sprite.clip.w = call.getInt(4);
+    sprite.clip.x = cast(int) call.getInt(1);
+    sprite.clip.y = cast(int) call.getInt(2);
+    sprite.clip.z = cast(int) call.getInt(3);
+    sprite.clip.w = cast(int) call.getInt(4);
 }
 
 private void _setSpriteAngle(GrCall call) {

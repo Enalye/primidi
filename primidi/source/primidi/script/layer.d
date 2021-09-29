@@ -48,7 +48,7 @@ package void loadLayerLibrary(GrLibrary library) {
 }
 
 private void _setLayersCount(GrCall call) {
-    setLayersCount(call.getInt(0));
+    setLayersCount(cast(int) call.getInt(0));
 }
 
 private void _getLayersCount(GrCall call) {
@@ -56,7 +56,7 @@ private void _getLayersCount(GrCall call) {
 }
 
 private void _setLayer(GrCall call) {
-    setLayer(call.getInt(0));
+    setLayer(cast(int) call.getInt(0));
 }
 
 private void _setLayerDefault(GrCall call) {
@@ -69,7 +69,7 @@ private void _getLayer(GrCall call) {
 
 private void _setLayerClearColor(GrCall call) {
     auto obj = call.getObject(1);
-    setLayerClearColor(call.getInt(0), Color(obj.getFloat("r"),
+    setLayerClearColor(cast(int) call.getInt(0), Color(obj.getFloat("r"),
             obj.getFloat("g"), obj.getFloat("b")));
 }
 
@@ -79,7 +79,7 @@ private void _setLayerClearColorDefault(GrCall call) {
 }
 
 private void _setLayerClearAlpha(GrCall call) {
-    setLayerClearAlpha(call.getInt(0), call.getFloat(1));
+    setLayerClearAlpha(cast(int) call.getInt(0), call.getFloat(1));
 }
 
 private void _setLayerClearAlphaDefault(GrCall call) {
@@ -87,7 +87,7 @@ private void _setLayerClearAlphaDefault(GrCall call) {
 }
 
 private void _setLayerBlend(GrCall call) {
-    setLayerBlend(call.getInt(0), call.getEnum!Blend(1));
+    setLayerBlend(cast(int) call.getInt(0), call.getEnum!Blend(1));
 }
 
 private void _setLayerBlendDefault(GrCall call) {
@@ -97,7 +97,7 @@ private void _setLayerBlendDefault(GrCall call) {
 private void _setLayerColor(GrCall call) {
     auto obj = call.getObject(1);
     const Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
-    setLayerColor(call.getInt(0), color);
+    setLayerColor(cast(int) call.getInt(0), color);
 }
 
 private void _setLayerColorDefault(GrCall call) {
@@ -107,7 +107,7 @@ private void _setLayerColorDefault(GrCall call) {
 }
 
 private void _setLayerAlpha(GrCall call) {
-    setLayerAlpha(call.getInt(0), call.getFloat(1));
+    setLayerAlpha(cast(int) call.getInt(0), call.getFloat(1));
 }
 
 private void _setLayerAlphaDefault(GrCall call) {

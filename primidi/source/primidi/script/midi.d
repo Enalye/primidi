@@ -45,7 +45,7 @@ private void seq_getTick(GrCall call) {
 }
 
 private void seq_setInterval(GrCall call) {
-    setInternalSequencerInterval(call.getInt(0));
+    setInternalSequencerInterval(cast(int) call.getInt(0));
 }
 
 private void seq_setHitRatio(GrCall call) {

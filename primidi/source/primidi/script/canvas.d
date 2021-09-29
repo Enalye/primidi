@@ -37,7 +37,7 @@ private void _makeCanvasf(GrCall call) {
 }
 
 private void _makeCanvasi(GrCall call) {
-    call.setForeign!Canvas(new Canvas(Vec2i(call.getInt(0), call.getInt(1))));
+    call.setForeign!Canvas(new Canvas(Vec2i(cast(int) call.getInt(0), cast(int) call.getInt(1))));
 }
 
 private void _pushCanvas(GrCall call) {
