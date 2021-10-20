@@ -128,14 +128,10 @@ private final class ScriptHandler {
             _onEndEventName = grMangleComposite("onEnd", []);
             setEndCallback(_handler._engine.hasEvent(_onEndEventName) ? &onEnd : null);
 
-            _onFileDropEventName = grMangleComposite("onFileDrop", [
-                    grString
-                    ]);
+            _onFileDropEventName = grMangleComposite("onFileDrop", [grString]);
             setFileDropCallback(_handler._engine.hasEvent(_onFileDropEventName) ? &onFileDrop : null);
 
-            _onResizeEventName = grMangleComposite("onResize", [
-                    grInt, grInt
-                    ]);
+            _onResizeEventName = grMangleComposite("onResize", [grInt, grInt]);
             setResizeCallback(_handler._engine.hasEvent(_onResizeEventName) ? &onResize : null);
         }
         catch (Exception e) {
@@ -225,8 +221,8 @@ private final class ScriptHandler {
 
 private {
     ScriptHandler _handler;
-    string _onNoteEnterEventName, _onNoteHitEventName, _onNoteExitEventName,
-        _onNoteInputEventName, _onStartEventName, _onEndEventName, _onFileDropEventName,_onResizeEventName;
+    string _onNoteEnterEventName, _onNoteHitEventName, _onNoteExitEventName, _onNoteInputEventName,
+        _onStartEventName, _onEndEventName, _onFileDropEventName, _onResizeEventName;
     Logger _logger;
 }
 
@@ -293,25 +289,25 @@ string getScriptFilePath() {
 ///Event callback when a note appears in the tick window.
 private void onNoteEnter(Note note) {
     auto context = _handler._engine.spawnEvent(_onNoteEnterEventName);
-    context.setUserData(note);
+    context.setForeign!Note(note);
 }
 
 ///Event callback when a note is played.
 private void onNoteHit(Note note) {
     auto context = _handler._engine.spawnEvent(_onNoteHitEventName);
-    context.setUserData(note);
+    context.setForeign!Note(note);
 }
 
 ///Event callback when a note disappears in the tick window.
 private void onNoteExit(Note note) {
     auto context = _handler._engine.spawnEvent(_onNoteExitEventName);
-    context.setUserData(note);
+    context.setForeign!Note(note);
 }
 
 ///Event callback when a note is received from the midi input.
 private void onNoteInput(Note note) {
     auto context = _handler._engine.spawnEvent(_onNoteInputEventName);
-    context.setUserData(note);
+    context.setForeign!Note(note);
 }
 
 ///Event callback when a file is dropped inside the app.

@@ -95,6 +95,7 @@ void startInternalSequencer() {
 void updateInternalSequencer() {
 	auto midiOut = getMidiOut();
 	auto midiIn = getMidiIn();
+
 	while (midiIn.canReceive()) {
 		const ubyte[] bytes = midiIn.receive();
 		switch (bytes[0] & 0xF0) with (MidiEventType) {

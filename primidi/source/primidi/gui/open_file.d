@@ -92,7 +92,7 @@ final class OpenModal : GuiElement {
 
     this(string basePath, string[] extensionList) {
         _extensionList = extensionList;
-        if (basePath.length) {
+        if (basePath.length && exists(basePath) && isDir(basePath)) {
             _path = basePath;
         }
         else {

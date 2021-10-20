@@ -39,13 +39,12 @@ private void _getFont(GrCall call) {
 }
 
 private void _trueTypeFont(GrCall call) {
-    TrueTypeFont font = new TrueTypeFont(getResourcePath(call.getString(0)),
-            cast(int) call.getInt(1));
+    TrueTypeFont font = new TrueTypeFont(getResourcePath(call.getString(0)), call.getInt32(1));
     call.setForeign!TrueTypeFont(font);
 }
 
 private void _trueTypeFontOutline(GrCall call) {
     TrueTypeFont font = new TrueTypeFont(getResourcePath(call.getString(0)),
-            cast(int) call.getInt(1), cast(int) call.getInt(2));
+            call.getInt32(1), call.getInt32(2));
     call.setForeign!TrueTypeFont(font);
 }

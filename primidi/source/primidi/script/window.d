@@ -45,12 +45,12 @@ package void loadWindowLibrary(GrLibrary library) {
             ]);
     library.addPrimitive(&_drawPixelDefault, "drawPixel", [grFloat, grFloat]);
 
-    library.addPrimitive(&_getWidth, "getWidth", [], [grInt]);
-    library.addPrimitive(&_getHeight, "getHeight", [], [grInt]);
-    library.addPrimitive(&_getSize, "getSize", [], [grInt, grInt]);
-    library.addPrimitive(&_getCenterX, "getCenterX", [], [grInt]);
-    library.addPrimitive(&_getCenterY, "getCenterY", [], [grInt]);
-    library.addPrimitive(&_getCenter, "getCenter", [], [grInt, grInt]);
+    library.addPrimitive(&_getWidth, "getWidth", [], [grFloat]);
+    library.addPrimitive(&_getHeight, "getHeight", [], [grFloat]);
+    library.addPrimitive(&_getSize, "getSize", [], [grFloat, grFloat]);
+    library.addPrimitive(&_getCenterX, "getCenterX", [], [grFloat]);
+    library.addPrimitive(&_getCenterY, "getCenterY", [], [grFloat]);
+    library.addPrimitive(&_getCenter, "getCenter", [], [grFloat, grFloat]);
 }
 
 private void _setColor(GrCall call) {
@@ -143,29 +143,29 @@ private void _drawPixelDefault(GrCall call) {
 }
 
 private void _getWidth(GrCall call) {
-    call.setInt(getLayersSize().x);
+    call.setFloat(getLayersSize().x);
 }
 
 private void _getHeight(GrCall call) {
-    call.setInt(getLayersSize().y);
+    call.setFloat(getLayersSize().y);
 }
 
 private void _getSize(GrCall call) {
     Vec2i size = getLayersSize();
-    call.setInt(size.x);
-    call.setInt(size.y);
+    call.setFloat(size.x);
+    call.setFloat(size.y);
 }
 
 private void _getCenterX(GrCall call) {
-    call.setInt(getLayersSize().x / 2);
+    call.setFloat(getLayersSize().x / 2);
 }
 
 private void _getCenterY(GrCall call) {
-    call.setInt(getLayersSize().y / 2);
+    call.setFloat(getLayersSize().y / 2);
 }
 
 private void _getCenter(GrCall call) {
     Vec2i size = getLayersSize() / 2;
-    call.setInt(size.x);
-    call.setInt(size.y);
+    call.setFloat(size.x);
+    call.setFloat(size.y);
 }

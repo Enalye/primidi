@@ -48,7 +48,7 @@ package void loadLayerLibrary(GrLibrary library) {
 }
 
 private void _setLayersCount(GrCall call) {
-    setLayersCount(cast(int) call.getInt(0));
+    setLayersCount(call.getInt32(0));
 }
 
 private void _getLayersCount(GrCall call) {
@@ -56,7 +56,7 @@ private void _getLayersCount(GrCall call) {
 }
 
 private void _setLayer(GrCall call) {
-    setLayer(cast(int) call.getInt(0));
+    setLayer(call.getInt32(0));
 }
 
 private void _setLayerDefault(GrCall call) {
@@ -69,7 +69,7 @@ private void _getLayer(GrCall call) {
 
 private void _setLayerClearColor(GrCall call) {
     auto obj = call.getObject(1);
-    setLayerClearColor(cast(int) call.getInt(0), Color(obj.getFloat("r"),
+    setLayerClearColor(call.getInt32(0), Color(obj.getFloat("r"),
             obj.getFloat("g"), obj.getFloat("b")));
 }
 
@@ -79,15 +79,15 @@ private void _setLayerClearColorDefault(GrCall call) {
 }
 
 private void _setLayerClearAlpha(GrCall call) {
-    setLayerClearAlpha(cast(int) call.getInt(0), call.getFloat(1));
+    setLayerClearAlpha(call.getInt32(0), call.getFloat32(1));
 }
 
 private void _setLayerClearAlphaDefault(GrCall call) {
-    setLayerClearAlpha(-1, call.getFloat(0));
+    setLayerClearAlpha(-1, call.getFloat32(0));
 }
 
 private void _setLayerBlend(GrCall call) {
-    setLayerBlend(cast(int) call.getInt(0), call.getEnum!Blend(1));
+    setLayerBlend(call.getInt32(0), call.getEnum!Blend(1));
 }
 
 private void _setLayerBlendDefault(GrCall call) {
@@ -97,7 +97,7 @@ private void _setLayerBlendDefault(GrCall call) {
 private void _setLayerColor(GrCall call) {
     auto obj = call.getObject(1);
     const Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
-    setLayerColor(cast(int) call.getInt(0), color);
+    setLayerColor(call.getInt32(0), color);
 }
 
 private void _setLayerColorDefault(GrCall call) {
@@ -107,15 +107,15 @@ private void _setLayerColorDefault(GrCall call) {
 }
 
 private void _setLayerAlpha(GrCall call) {
-    setLayerAlpha(cast(int) call.getInt(0), call.getFloat(1));
+    setLayerAlpha(call.getInt32(0), call.getFloat32(1));
 }
 
 private void _setLayerAlphaDefault(GrCall call) {
-    setLayerAlpha(-1, call.getFloat(0));
+    setLayerAlpha(-1, call.getFloat32(0));
 }
 
 private void _setCameraSizef(GrCall call) {
-    //_canvas.size = Vec2f(call.getFloat(0), call.getFloat(1));
+    //_canvas.size = Vec2f(call.getFloat32(0), call.getFloat32(1));
 }
 
 private void _setCameraSizei(GrCall call) {
@@ -123,12 +123,12 @@ private void _setCameraSizei(GrCall call) {
 }
 
 private void _setCameraPosition(GrCall call) {
-    //_canvas.position = Vec2f(call.getFloat(0), call.getFloat(1));
+    //_canvas.position = Vec2f(call.getFloat32(0), call.getFloat32(1));
 }
 
 private void _setCameraClearColor(GrCall call) {
     /+auto obj = call.getObject(0);
     const Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
     _canvas.color = color;
-    _canvas.alpha = call.getFloat(1);+/
+    _canvas.alpha = call.getFloat32(1);+/
 }

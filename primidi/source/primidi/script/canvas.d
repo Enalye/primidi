@@ -33,11 +33,11 @@ package void loadCanvasLibrary(GrLibrary library) {
 }
 
 private void _makeCanvasf(GrCall call) {
-    call.setForeign!Canvas(new Canvas(Vec2f(call.getFloat(0), call.getFloat(1))));
+    call.setForeign!Canvas(new Canvas(Vec2f(call.getFloat32(0), call.getFloat32(1))));
 }
 
 private void _makeCanvasi(GrCall call) {
-    call.setForeign!Canvas(new Canvas(Vec2i(cast(int) call.getInt(0), cast(int) call.getInt(1))));
+    call.setForeign!Canvas(new Canvas(Vec2i(call.getInt32(0), call.getInt32(1))));
 }
 
 private void _pushCanvas(GrCall call) {
@@ -55,7 +55,7 @@ private void _clearCanvas(GrCall call) {
 
 private void _renderCanvas(GrCall call) {
     Canvas canvas = call.getForeign!Canvas(0);
-    canvas.draw(Vec2f(call.getFloat(1), call.getFloat(2)));
+    canvas.draw(Vec2f(call.getFloat32(1), call.getFloat32(2)));
 }
 
 private void _setClearColor(GrCall call) {
@@ -66,7 +66,7 @@ private void _setClearColor(GrCall call) {
 
 private void _setClearAlpha(GrCall call) {
     Canvas canvas = call.getForeign!Canvas(0);
-    canvas.clearAlpha = call.getFloat(1);
+    canvas.clearAlpha = call.getFloat32(1);
 }
 
 private void _setBlend(GrCall call) {
@@ -84,11 +84,11 @@ private void _setColor(GrCall call) {
 
 private void _setAlpha(GrCall call) {
     Canvas canvas = call.getForeign!Canvas(0);
-    const float alpha = call.getFloat(1);
+    const float alpha = call.getFloat32(1);
     canvas.alpha(alpha);
 }
 
 private void _setPosition(GrCall call) {
     Canvas canvas = call.getForeign!Canvas(0);
-    canvas.position = Vec2f(call.getFloat(1), call.getFloat(2));
+    canvas.position = Vec2f(call.getFloat32(1), call.getFloat32(2));
 }
