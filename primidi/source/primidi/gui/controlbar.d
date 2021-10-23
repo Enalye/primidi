@@ -6,12 +6,15 @@
 module primidi.gui.controlbar;
 
 import atelier;
-import primidi.gui.port;
+import std.conv : to;
+import primidi.gui.port, primidi.gui.slider;
 import primidi.player, primidi.midi;
 
-final class ControlBar: GuiElement {
+final class ControlBar : GuiElement {
     private {
         bool _isVisible = true;
+        Label _speedLabel;
+        SpeedSlider _speedSlider;
     }
 
     this() {
@@ -45,28 +48,41 @@ final class ControlBar: GuiElement {
             hbox.appendChild(stopBtn);
         }
 
+        {
+            auto hbox = new HContainer;
+            hbox.setAlign(GuiAlignX.left, GuiAlignY.bottom);
+            hbox.position = Vec2f(120f, 5f);
+            hbox.spacing = Vec2f(10f, 0f);
+            appendChild(hbox);
+
+            _speedSlider = new SpeedSlider;
+            _speedSlider.setCallback(this, "speed");
+            hbox.appendChild(_speedSlider);
+
+            _speedLabel = new Label("x1");
+            _speedLabel.color = Color.fromHex(0x787878);
+            hbox.appendChild(_speedLabel);
+        }
+
         GuiState hiddenState = {
-            offset: Vec2f(0f, -50f),
-            time: .25f,
-            easing: getEasingFunction(Ease.quadInOut)
+            offset: Vec2f(0f, -50f), time: .25f, easing: getEasingFunction(Ease.quadInOut)
         };
         addState("hidden", hiddenState);
 
         GuiState shownState = {
-            time: .25f,
-            easing: getEasingFunction(Ease.quadInOut)
+            time: .25f, easing: getEasingFunction(Ease.quadInOut)
         };
         addState("shown", shownState);
         setState("shown");
     }
 
     override void onEvent(Event event) {
-        switch(event.type) with(Event.Type) {
+        switch (event.type) with (Event.Type) {
         case resize:
             size(Vec2f(event.window.size.x, 50f));
             break;
         case custom:
-            if(event.custom.id == "hide") {
+            if (event.custom.id == "hide") {
                 doTransitionState(_isVisible ? "hidden" : "shown");
                 _isVisible = !_isVisible;
             }
@@ -78,7 +94,12 @@ final class ControlBar: GuiElement {
 
     override void onCallback(string id) {
         super.onCallback(id);
-        switch(id) {
+        switch (id) {
+        case "speed":
+            const speed = _speedSlider.getSpeed();
+            setMidiClockTimeScale(speed);
+            _speedLabel.text = "x" ~ to!string(speed);
+            break;
         default:
             break;
         }
@@ -89,7 +110,7 @@ final class ControlBar: GuiElement {
     }
 }
 
-final class PlayButton: Button {
+final class PlayButton : Button {
     private {
         Sprite _pauseSprite, _playSprite;
     }
@@ -103,8 +124,8 @@ final class PlayButton: Button {
         size = Vec2f(30f, 30f);
     }
 
-	override void onSubmit() {
-        if(isMidiPlaying())
+    override void onSubmit() {
+        if (isMidiPlaying())
             pauseMidi();
         else
             replayMidi();
@@ -112,16 +133,17 @@ final class PlayButton: Button {
 
     override void update(float deltaTime) {
         super.update(deltaTime);
-        if(getButtonDown(KeyButton.space) || getButtonDown(KeyButton.k) || getButtonDown(KeyButton.p))
+        if (getButtonDown(KeyButton.space) || getButtonDown(KeyButton.k)
+                || getButtonDown(KeyButton.p))
             onSubmit();
     }
 
     override void draw() {
-        if(isClicked) {
+        if (isClicked) {
             drawFilledRect(origin, size, Color(204, 228, 247));
             drawRect(origin, size, Color(0, 84, 153));
         }
-        else if(isHovered) {
+        else if (isHovered) {
             drawFilledRect(origin, size, Color(229, 241, 251));
             drawRect(origin, size, Color(0, 120, 215));
         }
@@ -129,14 +151,14 @@ final class PlayButton: Button {
             drawFilledRect(origin, size, Color(225, 225, 225));
             drawRect(origin, size, Color(173, 173, 173));
         }
-        if(isMidiPlaying() && isMidiClockRunning())
+        if (isMidiPlaying() && isMidiClockRunning())
             _pauseSprite.draw(center);
         else
             _playSprite.draw(center);
     }
 }
 
-final class RewindButton: Button {
+final class RewindButton : Button {
     private {
         Sprite _rewindSprite;
     }
@@ -152,16 +174,16 @@ final class RewindButton: Button {
 
     override void update(float deltaTime) {
         super.update(deltaTime);
-        if(getButtonDown(KeyButton.r))
+        if (getButtonDown(KeyButton.r))
             onSubmit();
     }
 
     override void draw() {
-        if(isClicked) {
+        if (isClicked) {
             drawFilledRect(origin, size, Color(204, 228, 247));
             drawRect(origin, size, Color(0, 84, 153));
         }
-        else if(isHovered) {
+        else if (isHovered) {
             drawFilledRect(origin, size, Color(229, 241, 251));
             drawRect(origin, size, Color(0, 120, 215));
         }
@@ -173,7 +195,7 @@ final class RewindButton: Button {
     }
 }
 
-final class StopButton: Button {
+final class StopButton : Button {
     private {
         Sprite _stopSprite;
     }
@@ -189,16 +211,16 @@ final class StopButton: Button {
 
     override void update(float deltaTime) {
         super.update(deltaTime);
-        if(getButtonDown(KeyButton.s))
+        if (getButtonDown(KeyButton.s))
             onSubmit();
     }
 
     override void draw() {
-        if(isClicked) {
+        if (isClicked) {
             drawFilledRect(origin, size, Color(204, 228, 247));
             drawRect(origin, size, Color(0, 84, 153));
         }
-        else if(isHovered) {
+        else if (isHovered) {
             drawFilledRect(origin, size, Color(229, 241, 251));
             drawRect(origin, size, Color(0, 120, 215));
         }
@@ -210,7 +232,7 @@ final class StopButton: Button {
     }
 }
 
-final class ProgressBar: GuiElement {
+final class ProgressBar : GuiElement {
     private {
         float _factor;
         Sprite _cursorSprite, _circleSprite;
@@ -226,10 +248,10 @@ final class ProgressBar: GuiElement {
     }
 
     override void onEvent(Event event) {
-        switch(event.type) with(Event.Type) {
+        switch (event.type) with (Event.Type) {
         case mouseDown:
             _factor = clamp(rlerp(origin.x, origin.x + size.x, event.mouse.position.x), 0f, 1f);
-            setMidiPosition(cast(long) (getMidiDuration() * _factor));
+            setMidiPosition(cast(long)(getMidiDuration() * _factor));
             break;
         case mouseUp:
             break;
@@ -244,10 +266,10 @@ final class ProgressBar: GuiElement {
     override void update(float deltaTime) {
         auto currentTime = getMidiTime();
         auto totalTime = getMidiDuration();
-        if(!isMidiPlaying()) {
+        if (!isMidiPlaying()) {
             _factor = 0f;
         }
-        else if(totalTime <= 0) {
+        else if (totalTime <= 0) {
             _factor = 1f;
             return;
         }
@@ -261,24 +283,20 @@ final class ProgressBar: GuiElement {
         _circleSprite.color = _backgroundColor;
         _circleSprite.draw(Vec2f(origin.x, center.y));
         _circleSprite.draw(Vec2f(origin.x + size.x, center.y));
-        drawFilledRect(
-            Vec2f(origin.x, center.y - (barSize / 2f)),
-            Vec2f(size.x, barSize),
-            _backgroundColor);
-        if(isMidiPlaying()) {
+        drawFilledRect(Vec2f(origin.x, center.y - (barSize / 2f)), Vec2f(size.x,
+                barSize), _backgroundColor);
+        if (isMidiPlaying()) {
             _circleSprite.color = _foregroundColor;
             _circleSprite.draw(Vec2f(origin.x, center.y));
             _circleSprite.draw(Vec2f(origin.x + size.x * _factor, center.y));
-            drawFilledRect(
-                Vec2f(origin.x, center.y - (barSize / 2f)),
-                Vec2f(size.x, barSize) * Vec2f(_factor, 1f),
-                _foregroundColor);
+            drawFilledRect(Vec2f(origin.x, center.y - (barSize / 2f)),
+                    Vec2f(size.x, barSize) * Vec2f(_factor, 1f), _foregroundColor);
             _cursorSprite.draw(Vec2f(origin.x + size.x * _factor, center.y));
         }
     }
 }
 
-final class CurrentTimeGui: GuiElement {
+final class CurrentTimeGui : GuiElement {
     private {
         Label _label;
     }
@@ -293,19 +311,19 @@ final class CurrentTimeGui: GuiElement {
     }
 
     override void update(float deltaTime) {
-        import core.time: dur;
-        import std.format: format;
-        import std.conv: to;
+        import core.time : dur;
+        import std.format : format;
+        import std.conv : to;
 
         string text;
-        if(isMidiPlaying()) {
+        if (isMidiPlaying()) {
             const auto time = dur!"msecs"(getMidiTime().to!long).split!("minutes", "seconds");
             text = format!"%02d:%02d"(time.minutes, time.seconds);
         }
         else {
             text = "--:--";
         }
-        if(_label.text != text)
+        if (_label.text != text)
             _label.text = text;
     }
 
@@ -314,7 +332,7 @@ final class CurrentTimeGui: GuiElement {
     }
 }
 
-final class TotalTimeGui: GuiElement {
+final class TotalTimeGui : GuiElement {
     private {
         Label _label;
     }
@@ -329,19 +347,19 @@ final class TotalTimeGui: GuiElement {
     }
 
     override void update(float deltaTime) {
-        import core.time: dur;
-        import std.format: format;
-        import std.conv: to;
+        import core.time : dur;
+        import std.format : format;
+        import std.conv : to;
 
         string text;
-        if(isMidiPlaying()) {
+        if (isMidiPlaying()) {
             const auto time = dur!"msecs"(getMidiDuration().to!long).split!("minutes", "seconds");
             text = format!"%02d:%02d"(time.minutes, time.seconds);
         }
         else {
             text = "--:--";
         }
-        if(_label.text != text)
+        if (_label.text != text)
             _label.text = text;
     }
 

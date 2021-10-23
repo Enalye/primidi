@@ -6,37 +6,88 @@
 module primidi.midi.clock;
 
 import std.datetime;
-import std.datetime.stopwatch: StopWatch, AutoStart;
 
-__gshared StopWatch midiClock;
+private {
+    __gshared bool _isRunning;
+    __gshared long _ticksElapsed;
+    __gshared MonoTime _timeStarted;
+    __gshared double _timeScale;
+}
 
 void initMidiClock() {
-    midiClock = StopWatch(AutoStart.no);
+    _isRunning = false;
+    _ticksElapsed = 0;
+    _timeScale = 1f;
 }
 
 void startMidiClock() {
-    midiClock.start();
+    _isRunning = true;
+    _timeStarted = MonoTime.currTime;
 }
 
 void pauseMidiClock() {
-    if(midiClock.running())
-        midiClock.stop();
+    if (_isRunning) {
+        if (_timeScale > .99 && _timeScale < 1.01) {
+            _ticksElapsed += MonoTime.currTime.ticks - _timeStarted.ticks;
+        }
+        else {
+            _ticksElapsed += cast(long)((MonoTime.currTime.ticks - _timeStarted.ticks) * _timeScale);
+        }
+    }
+    _isRunning = false;
 }
 
 void stopMidiClock() {
-    if(midiClock.running())
-        midiClock.stop();
-    midiClock.reset();
+    _isRunning = false;
+    _ticksElapsed = 0;
 }
 
 bool isMidiClockRunning() {
-    return midiClock.running();
+    return _isRunning;
+}
+
+void setMidiClockTimeScale(double timeScale) {
+    if (_isRunning) {
+        if (_timeScale > .99 && _timeScale < 1.01) {
+            _ticksElapsed += MonoTime.currTime.ticks - _timeStarted.ticks;
+        }
+        else {
+            _ticksElapsed += cast(long)((MonoTime.currTime.ticks - _timeStarted.ticks) * _timeScale);
+        }
+    }
+    _timeStarted = MonoTime.currTime;
+    _timeScale = timeScale;
 }
 
 long getMidiTime() {
-    return midiClock.peek.total!"msecs";
+    enum hnsecsPerSecond = convert!("seconds", "hnsecs")(1);
+    immutable hnsecsMeasured = convClockFreq(_ticksElapsed,
+            MonoTime.ticksPerSecond, hnsecsPerSecond);
+
+    Duration duration;
+    if (_isRunning) {
+        if (_timeScale > .99 && _timeScale < 1.01) {
+            duration = MonoTime.currTime - _timeStarted + hnsecs(hnsecsMeasured);
+        }
+        else {
+            long ticksElapsed = cast(long)(
+                    (MonoTime.currTime.ticks - _timeStarted.ticks) * _timeScale);
+
+            immutable hnsecsMeasured2 = convClockFreq(ticksElapsed,
+                    MonoTime.ticksPerSecond, hnsecsPerSecond);
+            duration = hnsecs(hnsecsMeasured2 + hnsecsMeasured);
+        }
+    }
+    else {
+        duration = hnsecs(hnsecsMeasured);
+    }
+
+    return duration.total!"msecs";
 }
 
 void setMidiTime(long time) {
-    midiClock.setTimeElapsed(dur!"msecs"(time));
+    enum hnsecsPerSecond = convert!("seconds", "hnsecs")(1);
+    _ticksElapsed = convClockFreq(dur!"msecs"(time).total!"hnsecs",
+            hnsecsPerSecond, MonoTime.ticksPerSecond);
+    _timeStarted = MonoTime.currTime;
 }
