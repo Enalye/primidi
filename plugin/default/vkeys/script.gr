@@ -27,15 +27,15 @@ let colors = [
     [49, 122, 215]
 ];
 
-array(Canvas) canvases;
+list(Canvas) canvases;
 Canvas mainCanvas;
 Texture texture;
 let barWidth, barFactor = 2f, 0f;
 Color barColor;
-float barX;
+real barX;
 
 // Init
-main {
+action onLoad() {
     let centerX, centerY = width / 2f, height / 2f;
     Color baseBarColor;
     baseBarColor, barColor = Color(1f, 1f, 1f, 0.2f);
@@ -58,7 +58,7 @@ main {
     setRatio(1f);
 
     // We render each channel on a separate canvas.
-    canvases = array(Canvas)[];
+    canvases = list(Canvas)[];
     loop(16) {
         let canvas = Canvas(width, height);
         canvas::setPosition(centerX, centerY);
@@ -93,22 +93,22 @@ main {
         
         mainCanvas::draw(centerX, centerY);
         mainCanvas::clear;
-        yield
+        suspend
     }
 }
 
 // Called for each note entering the Interval window.
-event onNoteEnter(Note note) {
-    bool wasHit = false;
+action onNoteEnter(Note note) {
+    boolean wasHit = false;
     let noteSprite = texture as Sprite;
     noteSprite::setAnchor(0f, 0f);
     noteSprite::setClip(55, 0, 1, 1);
 
     Color color = colors[note::getChannel];
 
-    let pitch = 1f - (note::getPitch as float / 128f);
-    float fadeOut = 1f;
-    int time = 0;
+    let pitch = 1f - (note::getPitch as real / 128f);
+    real fadeOut = 1f;
+    integer time = 0;
 
     loop {
         unless(note::isAlive)
@@ -158,12 +158,12 @@ event onNoteEnter(Note note) {
         noteSprite::draw(x, y);
         popCanvas();
         time ++;
-        yield
+        suspend
     }
 }
 
 // Create a single particle
-task spark(float x, float y, float angle, float speed, int ttl, Color startColor, Color endColor) {
+task spark(real x, real y, real angle, real speed, integer ttl, Color startColor, Color endColor) {
     let particle = createParticle(x, y, angle, speed, ttl);
     unless(particle) kill
 
@@ -172,10 +172,10 @@ task spark(float x, float y, float angle, float speed, int ttl, Color startColor
     startColor:a = 1f;
     endColor:a = 1f;
     particle::setColor(startColor);
-    float time = 0f;
+    real time = 0f;
     while(particle::isAlive) {
         particle::setColor(lerp(startColor, endColor, time / ttl));
         time ++;
-        yield
+        suspend
     }
 }

@@ -29,7 +29,7 @@ let barWidth = 6f;
 Sprite background;
 
 // Init
-main {
+action onLoad() {
     setLayerClearColor(-1, Color(0.051, 0.082, 0.125));
     setLayerClearAlpha(-1, 1f);
 
@@ -50,37 +50,37 @@ main {
     loop {
         setLayer(-1);
         if(background)
-            background:draw(getCenterX() as float, getCenterY() as float);
+            background:draw(getCenterX() as real, getCenterY() as real);
         // Middle bar
         setLayer(16);
-        float barX = getWidth() * (1f - getRatio()) - (barWidth / 2f);
-        fillRect(barX, 0f, barWidth, getHeight() as float, Color(1f, 1f, 1f), 0.2f);
-        yield
+        real barX = getWidth() * (1f - getRatio()) - (barWidth / 2f);
+        fillRect(barX, 0f, barWidth, getHeight() as real, Color(1f, 1f, 1f), 0.2f);
+        suspend
     }
 }
 
 // Called for each note entering the Interval window.
-event onNoteEnter(Note note) {
+action onNoteEnter(Note note) {
     handleNote(note);
 }
 
 // Called for each note received on the input.
-event onNoteInput(Note note) {
+action onNoteInput(Note note) {
     handleNote(note);
 }
 
-func handleNote(Note note) {
+function handleNote(Note note) {
     let noteSprite = noteTexture as Sprite;
     noteSprite:setAnchor(0f, 0f);
 
     Color color = colors[note:getChannel];
 
-    let pitch = 1f - (note:getPitch as float / 128f);
-    float fadeOut = 1f;
+    let pitch = 1f - (note:getPitch as real / 128f);
+    real fadeOut = 1f;
 
     loop {
         unless(note:isAlive)
-            kill
+            die
 
         let w, h =
             getWidth() * note:getDuration,
@@ -119,17 +119,30 @@ func handleNote(Note note) {
         }
         setLayer(note:getChannel);
         noteSprite:draw(x, y);
-        yield
+        suspend
     }
 }
 
-event onFileDrop(string fileName) {
+action onBarEnter(Bar bar) {
+    loop {
+        unless(bar:isAlive)
+            die
+        let x = getWidth() * (1f - bar:getTime);
+
+        setLayer(16);
+        fillRect(x, 0., 1., getHeight() as real, Color(1f, 1f, 1f), .1);
+        bar:getCount as string:print(x + 10., getHeight() - 20.);
+        suspend
+    }
+}
+
+action onFileDrop(string fileName) {
     let tex = Texture(fileName);
     unless(tex) return;
     background = Sprite(tex);
-    background:contain(getWidth() as float, getHeight() as float);
+    background:contain(getWidth() as real, getHeight() as real);
 }
 
-event onResize(int x, int y) {
-    Vec2(x, y):printl;
+action onResize(integer x, integer y) {
+    Vec2(x, y):trace;
 }

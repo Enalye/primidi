@@ -10,7 +10,8 @@ import grimoire, atelier;
 import primidi.midi, primidi.player;
 
 package void loadMidiLibrary(GrLibrary library) {
-    auto grNote = library.addForeign("Note");
+    auto barType = library.addForeign("Bar");
+    auto noteType = library.addForeign("Note");
     library.addPrimitive(&clock_getTime, "getTime", [], [grFloat]);
     library.addPrimitive(&seq_getTick, "getTick", [], [grInt]);
     library.addPrimitive(&seq_setInterval, "setInterval", [grInt]);
@@ -20,18 +21,28 @@ package void loadMidiLibrary(GrLibrary library) {
     library.addPrimitive(&seq_isMidiPlaying, "isMidiPlaying", [], [grBool]);
     library.addPrimitive(&seq_getMidiDuration, "getMidiDuration", [], [grFloat]);
     library.addPrimitive(&seq_getMidiTime, "getMidiTime", [], [grFloat]);
+    
+    library.addPrimitive(&bar_getTick, "getTick", [barType], [grInt]);
+    library.addPrimitive(&bar_getStep, "getStep", [barType], [grInt]);
+    library.addPrimitive(&bar_getCount, "getCount", [barType], [grInt]);
+    library.addPrimitive(&bar_getPlayTime, "getPlayTime", [barType], [grFloat]);
+    library.addPrimitive(&bar_getTime, "getTime", [barType], [grFloat]);
+    library.addPrimitive(&bar_getDuration, "getDuration", [barType], [grFloat]);
 
-    library.addPrimitive(&note_getChannel, "getChannel", [grNote], [grInt]);
-    library.addPrimitive(&note_getTick, "getTick", [grNote], [grInt]);
-    library.addPrimitive(&note_getPitch, "getPitch", [grNote], [grInt]);
-    library.addPrimitive(&note_getStep, "getStep", [grNote], [grInt]);
-    library.addPrimitive(&note_getVelocity, "getVelocity", [grNote], [grInt]);
-    library.addPrimitive(&note_getPlayTime, "getPlayTime", [grNote], [grFloat]);
-    library.addPrimitive(&note_getTime, "getTime", [grNote], [grFloat]);
-    library.addPrimitive(&note_getDuration, "getDuration", [grNote], [grFloat]);
+    library.addPrimitive(&bar_isPlaying, "isPlaying", [barType], [grBool]);
+    library.addPrimitive(&bar_isAlive, "isAlive", [barType], [grBool]);
 
-    library.addPrimitive(&note_isPlaying, "isPlaying", [grNote], [grBool]);
-    library.addPrimitive(&note_isAlive, "isAlive", [grNote], [grBool]);
+    library.addPrimitive(&note_getChannel, "getChannel", [noteType], [grInt]);
+    library.addPrimitive(&note_getTick, "getTick", [noteType], [grInt]);
+    library.addPrimitive(&note_getPitch, "getPitch", [noteType], [grInt]);
+    library.addPrimitive(&note_getStep, "getStep", [noteType], [grInt]);
+    library.addPrimitive(&note_getVelocity, "getVelocity", [noteType], [grInt]);
+    library.addPrimitive(&note_getPlayTime, "getPlayTime", [noteType], [grFloat]);
+    library.addPrimitive(&note_getTime, "getTime", [noteType], [grFloat]);
+    library.addPrimitive(&note_getDuration, "getDuration", [noteType], [grFloat]);
+
+    library.addPrimitive(&note_isPlaying, "isPlaying", [noteType], [grBool]);
+    library.addPrimitive(&note_isAlive, "isAlive", [noteType], [grBool]);
 
     library.addPrimitive(&chan_getPitchBend, "getPitchBend", [grInt], [grFloat]);
 }
@@ -72,6 +83,48 @@ private void seq_getMidiTime(GrCall call) {
     call.setFloat(getMidiTime());
 }
 
+// Bar
+private void bar_getTick(GrCall call) {
+    auto bar = call.getForeign!Bar(0);
+    call.setInt(bar.tick);
+}
+
+private void bar_getStep(GrCall call) {
+    auto bar = call.getForeign!Bar(0);
+    call.setInt(bar.step);
+}
+
+private void bar_getCount(GrCall call) {
+    auto bar = call.getForeign!Bar(0);
+    call.setInt(bar.count);
+}
+
+private void bar_getPlayTime(GrCall call) {
+    auto bar = call.getForeign!Bar(0);
+    call.setFloat(bar.playTime);
+}
+
+private void bar_getTime(GrCall call) {
+    auto bar = call.getForeign!Bar(0);
+    call.setFloat(bar.time);
+}
+
+private void bar_getDuration(GrCall call) {
+    auto bar = call.getForeign!Bar(0);
+    call.setFloat(bar.duration);
+}
+
+private void bar_isAlive(GrCall call) {
+    auto bar = call.getForeign!Bar(0);
+    call.setBool(bar.isAlive);
+}
+
+private void bar_isPlaying(GrCall call) {
+    auto bar = call.getForeign!Bar(0);
+    call.setBool(bar.playTime >= 0f && bar.playTime <= 1f);
+}
+
+// Note
 private void note_getChannel(GrCall call) {
     auto note = call.getForeign!Note(0);
     call.setInt(note.channel);

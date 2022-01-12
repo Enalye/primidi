@@ -27,11 +27,11 @@ let colors = [
 Texture noteTexture;
 let barWidth, barFactor = 2f, 0f;
 Color barColor;
-float barX;
+real barX;
 Sprite background;
 
 // Init
-main {
+action onLoad() {
     Color baseBarColor;
     baseBarColor, barColor = Color(1f, 1f, 1f);
 
@@ -57,32 +57,32 @@ main {
     loop {
         setLayer(-1);
         if(background)
-            background:draw(getCenterX() as float, getCenterY() as float);
+            background:draw(getCenterX() as real, getCenterY() as real);
         // Middle bar
         if(barFactor > 1f)
             barFactor = 1f;
         setLayer(16);
         barX = getWidth() * (1f - getRatio()) - (barWidth / 2f);
-        fillRect(barX, 0f, barWidth, getHeight() as float, lerp(baseBarColor, barColor, barFactor), lerp(0.2f, 0.6f, barFactor));
+        fillRect(barX, 0f, barWidth, getHeight() as real, lerp(baseBarColor, barColor, barFactor), lerp(0.2f, 0.6f, barFactor));
         if(barFactor < 0f) {
             barFactor = 0f;
         }
         else {
             barFactor -= 0.1f;
         }
-        yield
+        suspend
     }
 }
 
-event onNoteInput(Note note) {
+action onNoteInput(Note note) {
     let noteSprite = noteTexture as Sprite;
     noteSprite:setAnchor(0f, 0f);
 
     Color color = colors[note:getChannel];
 
-    let pitch = 1f - (note:getPitch as float / 128f);
-    float fadeOut = 1f;
-    int time = 0;
+    let pitch = 1f - (note:getPitch as real / 128f);
+    real fadeOut = 1f;
+    integer time = 0;
 
     let w, h =
         getWidth() * note:getDuration,
@@ -143,21 +143,21 @@ event onNoteInput(Note note) {
         setLayer(note:getChannel);
         noteSprite:draw(x, y);
         time ++;
-        yield
+        suspend
     }
 }
 
 // Called for each note entering the Interval window.
-event onNoteEnter(Note note) {
-    bool wasHit = false;
+action onNoteEnter(Note note) {
+    boolean wasHit = false;
     let noteSprite = noteTexture as Sprite;
     noteSprite:setAnchor(0f, 0f);
 
     Color color = colors[note:getChannel];
 
-    let pitch = 1f - (note:getPitch as float / 128f);
-    float fadeOut = 1f;
-    int time = 0;
+    let pitch = 1f - (note:getPitch as real / 128f);
+    real fadeOut = 1f;
+    integer time = 0;
 
     loop {
         unless(note:isAlive)
@@ -215,12 +215,12 @@ event onNoteEnter(Note note) {
         setLayer(note:getChannel);
         noteSprite:draw(x, y);
         time ++;
-        yield
+        suspend
     }
 }
 
 // Create a single particle
-task spark(float x, float y, float angle, float speed, int ttl, Color startColor, Color endColor) {
+task spark(real x, real y, real angle, real speed, integer ttl, Color startColor, Color endColor) {
     let particle = Particle(x, y, angle, speed, ttl);
     unless(particle) kill
 
@@ -228,17 +228,17 @@ task spark(float x, float y, float angle, float speed, int ttl, Color startColor
     sprite:setBlend(Blend.additive);
     particle:setColor(startColor);
     particle:setAlpha(1f);
-    float time = 0f;
+    real time = 0f;
     while(particle:isAlive) {
         particle:setColor(lerp(startColor, endColor, time / ttl));
         time ++;
-        yield
+        suspend
     }
 }
 
-event onFileDrop(string fileName) {
+action onFileDrop(string fileName) {
     let tex = Texture(fileName);
     unless(tex) return;
     background = Sprite(tex);
-    background:contain(getWidth() as float, getHeight() as float);
+    background:contain(getWidth() as real, getHeight() as real);
 }

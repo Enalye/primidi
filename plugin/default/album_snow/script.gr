@@ -7,7 +7,7 @@ Canvas mainCanvas;
 Texture spriteSheet, smallParticle, bigParticle;
 let barWidth, barFactor, hitFactor = 2., 0.;
 Color barColor;
-float barX;
+real barX;
 
 // Channels' color
 let colors = [
@@ -29,7 +29,7 @@ let colors = [
     Color(49, 122, 21)
 ];
 
-main {
+action onLoad() {
     Color baseBarColor;
     baseBarColor, barColor = Color(1., 1., 1.);
     spriteSheet = Texture("test.png");
@@ -57,22 +57,22 @@ main {
 
     // Background
     let bg = Texture("background.png") as Sprite;
-    bg:setSize(getWidth() as float, getHeight() as float);
+    bg:setSize(getWidth() as real, getHeight() as real);
 
     displayInfo();
 
-    int time = 0;
+    integer time = 0;
     loop {
         setLayer(-1);
         if((time % 30) == 0)
             lightEffect();
 
-        bg:draw(getCenterX() as float, getCenterY() as float);
+        bg:draw(getCenterX() as real, getCenterY() as real);
         // Middle bar
         if(barFactor > 1.)
             barFactor = 1.;
         setLayer(16);
-        fillRect(barX, 0., barWidth, getHeight() as float, lerp(baseBarColor, barColor, barFactor), lerp(.2, .6, barFactor));
+        fillRect(barX, 0., barWidth, getHeight() as real, lerp(baseBarColor, barColor, barFactor), lerp(.2, .6, barFactor));
         if(barFactor < 0.) {
             barFactor = 0.;
         }
@@ -80,22 +80,22 @@ main {
             barFactor -= .1;
         }
         time ++;
-        yield
+        suspend
     }
 }
 
 task lightEffect() {
-    let color = Color(rand(), rand(), rand());
-    let particle = Particle(rand(0., getWidth() + 50.), -64., rand(95., 105.), rand(0.5f, 1f), 2_000);
+    let color = Color(random(), random(), random());
+    let particle = Particle(random(0., getWidth() + 50.), -64., random(95., 105.), random(0.5f, 1f), 2_000);
     
     unless(particle)
-        kill
+        die
 
     let sprite = smallParticle as Sprite;
     sprite:setBlend(Blend.additive);
 
-    float particleSize = 128.;
-    if(rand() >= .5)
+    real particleSize = 128.;
+    if(random() >= .5)
         particleSize = 64.;
 
     sprite:setSize(particleSize, particleSize);
@@ -103,8 +103,8 @@ task lightEffect() {
     particle:setColor(color);
     particle:setAlpha(.8);
 
-    float baseAngle = particle:getAngle;
-    float time = 0.;
+    real baseAngle = particle:getAngle;
+    real time = 0.;
 
     while(particle:isAlive) {
         particle:setColor(color);
@@ -112,15 +112,15 @@ task lightEffect() {
         sprite:setSize(particleSize + barFactor * particleSize * 2., particleSize + particleSize * barFactor * 2f);
         particle:setAngle(baseAngle + cos(time * .01) * 50.);
         time ++;
-        yield
+        suspend
     }
 }
 
-task spark(float x, float y, float angle, float speed, int ttl, Color startColor, Color endColor) {
+task spark(real x, real y, real angle, real speed, integer ttl, Color startColor, Color endColor) {
     let particle = Particle(x, y, angle, speed, ttl);
 
     unless(particle)
-        kill
+        die
 
     let sprite = bigParticle as Sprite;
     sprite:setSize(3., 3.);
@@ -129,26 +129,24 @@ task spark(float x, float y, float angle, float speed, int ttl, Color startColor
     particle:setSprite(sprite);
     particle:setColor(startColor);
 
-    float time = 0.;
+    real time = 0.;
     while(particle:isAlive) {
         particle:setColor(lerp(startColor, endColor, time / ttl));
         time ++;
-        yield
+        suspend
     }
 }
 
-float displayInfoFactor = 0.;
+real displayInfoFactor = 0.;
 string trackName = "No Title";
-bool isInfoRunning = false;
+boolean isInfoRunning = false;
 task displayInfo() {
     let coverSprite = Texture("cover.png") as Sprite;
     let shadowSprite = Texture("shadow.png") as Sprite;
     coverSprite:setSize(300., 300.);
     shadowSprite:setSize(300., 300.);
 
-    let font = TrueTypeFont("Cascadia.ttf", 32);
-
-    float coverX, coverY = getWidth() - 200., 350.;
+    real coverX, coverY = getWidth() - 200., 350.;
 
     Color infoColor = Color(1., 1., 1.);
 
@@ -162,8 +160,8 @@ task displayInfo() {
             isInfoRunning = false;
             endTask();
         }
-        let trackWidth, trackHeight = getTextSize(trackName, font);
-        float trackNameX = (getWidth() - trackWidth / 2.) - 50.;
+        let trackWidth, trackHeight = getTextSize(trackName);
+        real trackNameX = (getWidth() - trackWidth / 2.) - 50.;
 
         coverSprite:setColor(infoColor);
         coverSprite:setAlpha(displayInfoFactor);
@@ -176,7 +174,7 @@ task displayInfo() {
         trackName:print(trackNameX, getHeight() - 100.);
 
         if(displayInfoFactor > 0f)
-            spark(getWidth() as float, ((getHeight() - 100.) - trackHeight / 2.) + rand(0., trackHeight), 180f, rand(2f, 3f), 180, infoColor, clear);
+            spark(getWidth() as real, ((getHeight() - 100.) - trackHeight / 2.) + random(0., trackHeight), 180f, random(2f, 3f), 180, infoColor, clear);
 
         barSprite:setColor(infoColor);
         barSprite:setAlpha(displayInfoFactor);
@@ -185,79 +183,79 @@ task displayInfo() {
             barSprite:draw(trackNameX + trackWidth / 2f, getHeight() - 70.);
         }
         else if(displayInfoFactor < 1f) {
-            float t = easeOutSine((displayInfoFactor - .5) * 2.);
+            real t = easeOutSine((displayInfoFactor - .5) * 2.);
             barSprite:setSize(lerp(trackWidth, 0., t), 5.);
             barSprite:draw(trackNameX + lerp((trackWidth / 2.), -trackWidth / 2., t), getHeight() - 70f);
         }
-        yield
+        suspend
     }
 }
 
 // Called when a midi file is starting.
-event onStart() {
+action onStart() {
     trackName = getMidiName();
     displayInfoFactor = 0.;
     2:seconds:sleep;
 
-    float time = 0.;
+    real time = 0.;
     while(isMidiPlaying()) {
         displayInfoFactor = lerp(0., 1., easeInOutSine(time));
         if(time > 1f) {
             displayInfoFactor = 1.;
             isInfoRunning = true;
-            kill
+            die
         }
         time += .0025;
-        yield
+        suspend
     }
 }
 
 // Called when a midi file is ending.
-event onEnd() {
+action onEnd() {
     if(isInfoRunning)
         endTask();
 }
 
 task endTask() {
     isInfoRunning = false;
-    float time = 0.;
+    real time = 0.;
     displayInfoFactor = 0.;
     loop {
         displayInfoFactor = lerp(1., 0., easeInOutSine(time));
         if(time > 1.) {
             displayInfoFactor = 0.;
-            kill
+            die
         }
         time +=  .0025;
-        yield
+        suspend
     }
 }
 
 // Called for each note entering the Interval window.
-event onNoteEnter(Note note) {
+action onNoteEnter(Note note) {
     handleNote(note);
 }
 
 // Called for each note received on the input.
-event onNoteInput(Note note) {
+action onNoteInput(Note note) {
     handleNote(note);
 }
 
-func handleNote(Note note) {
-    bool wasHit = false;
+function handleNote(Note note) {
+    boolean wasHit = false;
     let noteSprite = spriteSheet as Sprite;
     noteSprite:setClip(16, 0, 1, 1);
     noteSprite:setAnchor(0., 0.);
 
     Color color = colors[note:getChannel];
 
-    let pitch = 1. - (note:getPitch as float / 128.);
-    float fadeOut = 1.;
-    int time = 0;
+    let pitch = 1. - (note:getPitch as real / 128.);
+    real fadeOut = 1.;
+    integer time = 0;
 
     loop {
         unless(note:isAlive)
-            kill
+            die
 
         let w, h =
             getWidth() * note:getDuration,
@@ -283,12 +281,12 @@ func handleNote(Note note) {
             unless(wasHit) {
                 wasHit = true;
                 loop(i, 17) {
-                    spark(particleX, y + h / 2f, -85f + (10f * i) + rand(-6f, 6f), rand(1.1f, 1.7f), rand(5, 30), color, c);
+                    spark(particleX, y + h / 2f, -85f + (10f * i) + random(-6f, 6f), random(1.1f, 1.7f), random(5, 30), color, c);
                 }
             }
             else if((time % 5) == 0) {
-                spark(particleX, y, rand(-85f, 5f), rand(0.2f, 1.5f), rand(5, 20), color, c);
-                spark(particleX, y + h, rand(5f, 85f), rand(0.2f, 1.5f), rand(5, 20), color, c);
+                spark(particleX, y, random(-85f, 5f), random(0.2f, 1.5f), random(5, 20), color, c);
+                spark(particleX, y + h, random(5f, 85f), random(0.2f, 1.5f), random(5, 20), color, c);
             }
             barColor = mix(barColor, c);
             barFactor += (1. - factor) * 0.2;
@@ -313,6 +311,6 @@ func handleNote(Note note) {
         setLayer(note:getChannel);
         noteSprite:draw(x, y);
         time ++;
-        yield
+        suspend
     }
 }

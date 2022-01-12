@@ -23,16 +23,16 @@ let colors = [
     Color(49, 122, 21)
 ];
 
-array(Canvas) canvases;
+list(Canvas) canvases;
 Texture rectTex;
 let barWidth = 6.;
-float barX;
-int barCount = 128;
-array(Color) barsC1, barsC2;
+real barX;
+integer barCount = 128;
+list(Color) barsC1, barsC2;
 Sprite cover, background;
 
 // Init
-main {
+action onLoad() {
     // Rendering canvas.
     setLayerClearColor(-1, Color(.051, .082, .125));
     setLayerClearAlpha(-1, 1.);
@@ -53,10 +53,10 @@ main {
     */
     setLayersCount(16);
 
-    bars = array(float)[];
-    bars2 = array(float)[];
-    barsC1 = array(Color)[];
-    barsC2 = array(Color)[];
+    bars = list(real)[];
+    bars2 = list(real)[];
+    barsC1 = list(Color)[];
+    barsC2 = list(Color)[];
     loop(barCount) {
         bars ~= 0.;
         bars2 ~= 0.;
@@ -104,7 +104,7 @@ main {
                 factors[i] = 0.;
         }
         loop(i, barCount) {
-            float neighbors;
+            real neighbors;
             if(i == 0) {
                 neighbors = bars[1] / 2.;
                 barsC2[i] = lerp(barsC1[0], barsC1[1], clamp(bars[1] - bars[0], 0.1., 1.));
@@ -126,7 +126,7 @@ main {
             if(bars[i] < 0.)
                 bars[i] = 0.;
 
-            float barSize = lerp(10., 100., bars[i]);
+            real barSize = lerp(10., 100., bars[i]);
             rect:setSize(getWidth() / 256., barSize + 5f);
             rect:setColor(barsC1[i]);
             rect:setAlpha(1.);
@@ -134,14 +134,14 @@ main {
             rect:draw(a, getHeight() - barSize);
             rect:draw(getWidth() - (a + rect:getWidth()), 0.);
         }
-        yield
+        suspend
     }
 }
 
-array(float) factors = [0., 0., 0., 0.];
-array(float) bars, bars2;
+list(real) factors = [0., 0., 0., 0.];
+list(real) bars, bars2;
 // When the note is played
-event onNoteHit(Note note) {
+action onNoteHit(Note note) {
     bars[note:getPitch] += (note:getVelocity / 127.) * 1.27;
     barsC1[note:getPitch] = colors[note:getChannel];
     loop(i, 4) {
@@ -151,18 +151,18 @@ event onNoteHit(Note note) {
 }
 
 // Called for each note entering the Interval window.
-event onNoteEnter(Note note) {
+action onNoteEnter(Note note) {
     let noteSprite = rectTex as Sprite;
     noteSprite:setAnchor(0., 0.);
 
     Color color = colors[note:getChannel];
 
-    let pitch = 1. - (note:getPitch as float / 128.);
-    float fadeOut = 1.;
+    let pitch = 1. - (note:getPitch as real / 128.);
+    real fadeOut = 1.;
 
     loop {
         unless(note:isAlive)
-            kill
+            die
 
         let w, h =
             getWidth() * note:getDuration,
@@ -223,11 +223,11 @@ event onNoteEnter(Note note) {
                 noteSprite:draw(x + 200., y);
             }
         }
-        yield
+        suspend
     }
 }
 
-event onFileDrop(string fileName) {
+action onFileDrop(string fileName) {
     let tex = Texture(fileName);
     unless(tex) return;
     background = Sprite(tex);

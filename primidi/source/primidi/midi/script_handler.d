@@ -93,46 +93,68 @@ private final class ScriptHandler {
             _engine.addLibrary(_stdLib);
             _engine.addLibrary(_primidiLib);
             _engine.load(_bytecode);
-            _engine.spawn();
+
+            if (_engine.hasAction("onLoad"))
+                _engine.callAction("onLoad");
 
             _timeout = new TimeoutThread(this);
             _timeout.start();
             _isLoaded = true;
 
             // Events
+            _onBarEnterEventName = grMangleComposite("onBarEnter", [
+                    grGetForeignType("Bar")
+                ]);
+            setBarEnterCallback(_handler._engine.hasAction(_onBarEnterEventName)
+                    ? &onBarEnter : null);
+
+            _onBarHitEventName = grMangleComposite("onBarHit", [
+                    grGetForeignType("Bar")
+                ]);
+            setBarHitCallback(_handler._engine.hasAction(_onBarHitEventName)
+                    ? &onBarHit : null);
+
+            _onBarExitEventName = grMangleComposite("onBarExit", [
+                    grGetForeignType("Bar")
+                ]);
+            setBarExitCallback(_handler._engine.hasAction(_onBarExitEventName)
+                    ? &onBarExit : null);
+
             _onNoteEnterEventName = grMangleComposite("onNoteEnter", [
                     grGetForeignType("Note")
-                    ]);
-            setNoteEnterCallback(_handler._engine.hasEvent(_onNoteEnterEventName)
+                ]);
+            setNoteEnterCallback(_handler._engine.hasAction(_onNoteEnterEventName)
                     ? &onNoteEnter : null);
 
             _onNoteHitEventName = grMangleComposite("onNoteHit", [
                     grGetForeignType("Note")
-                    ]);
-            setNoteHitCallback(_handler._engine.hasEvent(_onNoteHitEventName) ? &onNoteHit : null);
+                ]);
+            setNoteHitCallback(_handler._engine.hasAction(_onNoteHitEventName) ? &onNoteHit : null);
 
             _onNoteExitEventName = grMangleComposite("onNoteExit", [
                     grGetForeignType("Note")
-                    ]);
-            setNoteExitCallback(_handler._engine.hasEvent(_onNoteExitEventName) ? &onNoteExit : null);
+                ]);
+            setNoteExitCallback(_handler._engine.hasAction(_onNoteExitEventName) ? &onNoteExit
+                    : null);
 
             _onNoteInputEventName = grMangleComposite("onNoteInput", [
                     grGetForeignType("Note")
-                    ]);
-            setNoteInputCallback(_handler._engine.hasEvent(_onNoteInputEventName)
+                ]);
+            setNoteInputCallback(_handler._engine.hasAction(_onNoteInputEventName)
                     ? &onNoteInput : null);
 
             _onStartEventName = grMangleComposite("onStart", []);
-            setStartCallback(_handler._engine.hasEvent(_onStartEventName) ? &onStart : null);
+            setStartCallback(_handler._engine.hasAction(_onStartEventName) ? &onStart : null);
 
             _onEndEventName = grMangleComposite("onEnd", []);
-            setEndCallback(_handler._engine.hasEvent(_onEndEventName) ? &onEnd : null);
+            setEndCallback(_handler._engine.hasAction(_onEndEventName) ? &onEnd : null);
 
             _onFileDropEventName = grMangleComposite("onFileDrop", [grString]);
-            setFileDropCallback(_handler._engine.hasEvent(_onFileDropEventName) ? &onFileDrop : null);
+            setFileDropCallback(_handler._engine.hasAction(_onFileDropEventName) ? &onFileDrop
+                    : null);
 
             _onResizeEventName = grMangleComposite("onResize", [grInt, grInt]);
-            setResizeCallback(_handler._engine.hasEvent(_onResizeEventName) ? &onResize : null);
+            setResizeCallback(_handler._engine.hasAction(_onResizeEventName) ? &onResize : null);
         }
         catch (Exception e) {
             logMessage(e.msg);
@@ -164,7 +186,8 @@ private final class ScriptHandler {
             _isLoaded = false;
             _engine = new GrEngine;
             _engine.load(_bytecode);
-            _engine.spawn();
+            if (_engine.hasAction("onLoad"))
+                _engine.callAction("onLoad");
             _isLoaded = true;
         }
         catch (Exception e) {
@@ -221,8 +244,9 @@ private final class ScriptHandler {
 
 private {
     ScriptHandler _handler;
-    string _onNoteEnterEventName, _onNoteHitEventName, _onNoteExitEventName, _onNoteInputEventName,
-        _onStartEventName, _onEndEventName, _onFileDropEventName, _onResizeEventName;
+    string _onBarEnterEventName, _onBarHitEventName, _onBarExitEventName,
+    _onNoteEnterEventName, _onNoteHitEventName, _onNoteExitEventName, _onNoteInputEventName,
+    _onStartEventName, _onEndEventName, _onFileDropEventName, _onResizeEventName;
     Logger _logger;
 }
 
@@ -286,49 +310,71 @@ string getScriptFilePath() {
     return _handler ? _handler._filePath : "";
 }
 
+///Event callback when a bar appears in the tick window.
+private void onBarEnter(Bar bar) {
+    auto context = _handler._engine.callAction(_onBarEnterEventName);
+    context.setForeign!Bar(bar);
+}
+
+///Event callback when a bar is hit.
+private void onBarHit(Bar bar) {
+    auto context = _handler._engine.callAction(_onBarHitEventName);
+    context.setForeign!Bar(bar);
+}
+
+///Event callback when a bar disappears from the tick window.
+private void onBarExit(Bar bar) {
+    auto context = _handler._engine.callAction(_onBarExitEventName);
+    context.setForeign!Bar(bar);
+}
+
 ///Event callback when a note appears in the tick window.
 private void onNoteEnter(Note note) {
-    auto context = _handler._engine.spawnEvent(_onNoteEnterEventName);
+    auto context = _handler._engine.callAction(_onNoteEnterEventName);
     context.setForeign!Note(note);
 }
 
 ///Event callback when a note is played.
 private void onNoteHit(Note note) {
-    auto context = _handler._engine.spawnEvent(_onNoteHitEventName);
+    auto context = _handler._engine.callAction(_onNoteHitEventName);
     context.setForeign!Note(note);
 }
 
-///Event callback when a note disappears in the tick window.
+///Event callback when a note disappears from the tick window.
 private void onNoteExit(Note note) {
-    auto context = _handler._engine.spawnEvent(_onNoteExitEventName);
+    auto context = _handler._engine.callAction(_onNoteExitEventName);
     context.setForeign!Note(note);
 }
 
 ///Event callback when a note is received from the midi input.
 private void onNoteInput(Note note) {
-    auto context = _handler._engine.spawnEvent(_onNoteInputEventName);
+    auto context = _handler._engine.callAction(_onNoteInputEventName);
     context.setForeign!Note(note);
 }
 
 ///Event callback when a file is dropped inside the app.
 private void onFileDrop(string filePath) {
-    auto context = _handler._engine.spawnEvent(_onFileDropEventName);
+    auto context = _handler._engine.callAction(_onFileDropEventName);
     context.setString(filePath);
 }
 
 ///Event callback when a file is dropped inside the app.
 private void onResize(int width, int height) {
-    auto context = _handler._engine.spawnEvent(_onResizeEventName);
+    auto context = _handler._engine.callAction(_onResizeEventName);
     context.setInt(width);
     context.setInt(height);
 }
 
 ///Called when a midi file is starting.
 private void onStart() {
-    _handler._engine.spawnEvent(_onStartEventName);
+    _handler._engine.callAction(_onStartEventName);
 }
 
 ///Called when a midi file is ending.
 private void onEnd() {
-    _handler._engine.spawnEvent(_onEndEventName);
+    _handler._engine.callAction(_onEndEventName);
+}
+
+int getScriptCycle() {
+    return _handler._cycle;
 }
