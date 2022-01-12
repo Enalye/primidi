@@ -395,6 +395,10 @@ private final class Sequencer {
         }
 
         foreach (channelId; 0u .. 16u) {
+            // Corrige l’ordonnancement pour certains midi qui utilisent le même canal sur plusieurs pistes.
+            sort!((a, b) => (a.tick < b.tick))(noteOnEvents[channelId]);
+            sort!((a, b) => (a.tick < b.tick))(noteOffEvents[channelId]);
+
             //Use the NOTE OFF events to set each note length.
             foreach (uint i; 0 .. cast(uint)(noteOnEvents[channelId].length)) {
                 int note = noteOnEvents[channelId][i].note;
@@ -466,7 +470,7 @@ private final class Sequencer {
             // Start entering the window
             Bar bar = new Bar;
             bar.tick = cast(int) _nextBarTick;
-            bar.step = cast(int) (_ticksPerQuarter * 4);
+            bar.step = cast(int)(_ticksPerQuarter * 4);
             bar.count = (bar.tick / bar.step) + 1;
             bar.isAlive = true;
             bar.hasHit = false;
