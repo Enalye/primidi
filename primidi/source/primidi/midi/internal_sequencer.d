@@ -464,7 +464,7 @@ private final class Sequencer {
 
         long tick = cast(long) totalTicksElapsed;
         if (tick > (_nextBarTick + _endInterval)) {
-            _nextBarTick = (tick - _endInterval) % (_ticksPerQuarter * 4);
+            _nextBarTick = (tick - _endInterval) + (tick % (_ticksPerQuarter * 4));
         }
         if (_nextBarTick <= (tick + _startInterval) && getScriptCycle() > 0) {
             // Start entering the window

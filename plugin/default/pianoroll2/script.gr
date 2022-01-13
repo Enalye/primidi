@@ -63,7 +63,7 @@ action onLoad() {
             barFactor = 1f;
         setLayer(16);
         barX = getWidth() * (1f - getRatio()) - (barWidth / 2f);
-        fillRect(barX, 0f, barWidth, getHeight() as real, lerp(baseBarColor, barColor, barFactor), lerp(0.2f, 0.6f, barFactor));
+        rectangle(barX, 0f, barWidth, getHeight() as real, true, lerp(baseBarColor, barColor, barFactor), lerp(0.2f, 0.6f, barFactor));
         if(barFactor < 0f) {
             barFactor = 0f;
         }

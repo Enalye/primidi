@@ -18,32 +18,49 @@ package void loadWindowLibrary(GrLibrary library) {
     library.addPrimitive(&_setAlpha, "setAlpha", [grFloat]);
     library.addPrimitive(&_getAlpha, "getAlpha", [], [grFloat]);
 
-    library.addPrimitive(&_drawPoint, "drawPoint", [
+    library.addPrimitive(&_point0, "point", [grFloat, grFloat]);
+    library.addPrimitive(&_point1, "point", [grFloat, grFloat, colorType]);
+    library.addPrimitive(&_point2, "point", [grFloat, grFloat, grFloat]);
+    library.addPrimitive(&_point3, "point", [
             grFloat, grFloat, colorType, grFloat
-            ]);
-    library.addPrimitive(&_drawPointDefault, "drawPoint", [grFloat, grFloat]);
-    library.addPrimitive(&_drawLine, "drawLine", [
-            grFloat, grFloat, grFloat, grFloat, colorType, grFloat
-            ]);
-    library.addPrimitive(&_drawLineDefault, "drawLine", [
+        ]);
+
+    library.addPrimitive(&_line0, "line", [
             grFloat, grFloat, grFloat, grFloat
-            ]);
-    library.addPrimitive(&_drawRect, "drawRect", [
+        ]);
+    library.addPrimitive(&_line1, "line", [
+            grFloat, grFloat, grFloat, grFloat, colorType
+        ]);
+    library.addPrimitive(&_line2, "line", [
+            grFloat, grFloat, grFloat, grFloat, grFloat
+        ]);
+    library.addPrimitive(&_line3, "line", [
             grFloat, grFloat, grFloat, grFloat, colorType, grFloat
-            ]);
-    library.addPrimitive(&_drawRectDefault, "drawRect", [
-            grFloat, grFloat, grFloat, grFloat
-            ]);
-    library.addPrimitive(&_fillRect, "fillRect", [
-            grFloat, grFloat, grFloat, grFloat, colorType, grFloat
-            ]);
-    library.addPrimitive(&_fillRectDefault, "fillRect", [
-            grFloat, grFloat, grFloat, grFloat
-            ]);
-    library.addPrimitive(&_drawPixel, "drawPixel", [
+        ]);
+
+    library.addPrimitive(&_rectangle0, "rectangle", [
+            grFloat, grFloat, grFloat, grFloat, grBool
+        ]);
+    library.addPrimitive(&_rectangle1, "rectangle", [
+            grFloat, grFloat, grFloat, grFloat, grBool, colorType
+        ]);
+    library.addPrimitive(&_rectangle2, "rectangle", [
+            grFloat, grFloat, grFloat, grFloat, grBool, grFloat
+        ]);
+    library.addPrimitive(&_rectangle3, "rectangle", [
+            grFloat, grFloat, grFloat, grFloat, grBool, colorType, grFloat
+        ]);
+
+    library.addPrimitive(&_pixel0, "pixel", [grFloat, grFloat]);
+    library.addPrimitive(&_pixel1, "pixel", [
+            grFloat, grFloat, colorType
+        ]);
+    library.addPrimitive(&_pixel2, "pixel", [
+            grFloat, grFloat, grFloat
+        ]);
+    library.addPrimitive(&_pixel3, "pixel", [
             grFloat, grFloat, colorType, grFloat
-            ]);
-    library.addPrimitive(&_drawPixelDefault, "drawPixel", [grFloat, grFloat]);
+        ]);
 
     library.addPrimitive(&_getWidth, "getWidth", [], [grFloat]);
     library.addPrimitive(&_getHeight, "getHeight", [], [grFloat]);
@@ -76,69 +93,127 @@ private void _getAlpha(GrCall call) {
     call.setFloat(getScriptAlpha());
 }
 
-private void _drawPoint(GrCall call) {
-    Vec2f pos = Vec2f(call.getFloat(0), call.getFloat(1));
-    auto c = call.getObject(2);
-    Color color = Color(c.getFloat("r"), c.getFloat("g"), c.getFloat("b"));
-    drawPoint(pos, color, call.getFloat(3));
-}
-
-private void _drawPointDefault(GrCall call) {
+private void _point0(GrCall call) {
     Vec2f pos = Vec2f(call.getFloat(0), call.getFloat(1));
     drawPoint(pos, getScriptColor(), getScriptAlpha());
 }
 
-private void _drawLine(GrCall call) {
-    Vec2f startPos = Vec2f(call.getFloat(0), call.getFloat(1));
-    Vec2f endPos = Vec2f(call.getFloat(2), call.getFloat(3));
-    auto c = call.getObject(4);
-    Color color = Color(c.getFloat("r"), c.getFloat("g"), c.getFloat("b"));
-    drawLine(startPos, endPos, color, call.getFloat(5));
+private void _point1(GrCall call) {
+    Vec2f pos = Vec2f(call.getFloat(0), call.getFloat(1));
+    auto c = call.getObject(2);
+    setScriptColor(Color(c.getFloat("r"), c.getFloat("g"), c.getFloat("b")));
+    drawPoint(pos, getScriptColor(), getScriptAlpha());
 }
 
-private void _drawLineDefault(GrCall call) {
+private void _point2(GrCall call) {
+    Vec2f pos = Vec2f(call.getFloat(0), call.getFloat(1));
+    setScriptAlpha(call.getFloat(2));
+    drawPoint(pos, getScriptColor(), getScriptAlpha());
+}
+
+private void _point3(GrCall call) {
+    Vec2f pos = Vec2f(call.getFloat(0), call.getFloat(1));
+    auto c = call.getObject(2);
+    setScriptColor(Color(c.getFloat("r"), c.getFloat("g"), c.getFloat("b")));
+    setScriptAlpha(call.getFloat(3));
+    drawPoint(pos, getScriptColor(), getScriptAlpha());
+}
+
+private void _line0(GrCall call) {
     Vec2f startPos = Vec2f(call.getFloat(0), call.getFloat(1));
     Vec2f endPos = Vec2f(call.getFloat(2), call.getFloat(3));
     drawLine(startPos, endPos, getScriptColor(), getScriptAlpha());
 }
 
-private void _drawRect(GrCall call) {
-    Vec2f pos = Vec2f(call.getFloat(0), call.getFloat(1));
-    Vec2f size = Vec2f(call.getFloat(2), call.getFloat(3));
+private void _line1(GrCall call) {
+    Vec2f startPos = Vec2f(call.getFloat(0), call.getFloat(1));
+    Vec2f endPos = Vec2f(call.getFloat(2), call.getFloat(3));
     auto c = call.getObject(4);
-    Color color = Color(c.getFloat("r"), c.getFloat("g"), c.getFloat("b"));
-    drawRect(pos, size, color, call.getFloat(5));
+    setScriptColor(Color(c.getFloat("r"), c.getFloat("g"), c.getFloat("b")));
+    drawLine(startPos, endPos, getScriptColor(), getScriptAlpha());
 }
 
-private void _drawRectDefault(GrCall call) {
-    Vec2f pos = Vec2f(call.getFloat(0), call.getFloat(1));
-    Vec2f size = Vec2f(call.getFloat(2), call.getFloat(3));
-    drawRect(pos, size, getScriptColor(), getScriptAlpha());
+private void _line2(GrCall call) {
+    Vec2f startPos = Vec2f(call.getFloat(0), call.getFloat(1));
+    Vec2f endPos = Vec2f(call.getFloat(2), call.getFloat(3));
+    setScriptAlpha(call.getFloat(4));
+    drawLine(startPos, endPos, getScriptColor(), getScriptAlpha());
 }
 
-private void _fillRect(GrCall call) {
-    Vec2f pos = Vec2f(call.getFloat(0), call.getFloat(1));
-    Vec2f size = Vec2f(call.getFloat(2), call.getFloat(3));
+private void _line3(GrCall call) {
+    Vec2f startPos = Vec2f(call.getFloat(0), call.getFloat(1));
+    Vec2f endPos = Vec2f(call.getFloat(2), call.getFloat(3));
     auto c = call.getObject(4);
-    Color color = Color(c.getFloat("r"), c.getFloat("g"), c.getFloat("b"));
-    drawFilledRect(pos, size, color, call.getFloat(5));
+    setScriptColor(Color(c.getFloat("r"), c.getFloat("g"), c.getFloat("b")));
+    setScriptAlpha(call.getFloat(5));
+    drawLine(startPos, endPos, getScriptColor(), getScriptAlpha());
 }
 
-private void _fillRectDefault(GrCall call) {
+private void _rectangle0(GrCall call) {
     Vec2f pos = Vec2f(call.getFloat(0), call.getFloat(1));
     Vec2f size = Vec2f(call.getFloat(2), call.getFloat(3));
-    drawFilledRect(pos, size, getScriptColor(), getScriptAlpha());
+    if (call.getBool(4))
+        drawFilledRect(pos, size, getScriptColor(), getScriptAlpha());
+    else
+        drawRect(pos, size, getScriptColor(), getScriptAlpha());
 }
 
-private void _drawPixel(GrCall call) {
+private void _rectangle1(GrCall call) {
+    Vec2f pos = Vec2f(call.getFloat(0), call.getFloat(1));
+    Vec2f size = Vec2f(call.getFloat(2), call.getFloat(3));
+    auto c = call.getObject(5);
+    setScriptColor(Color(c.getFloat("r"), c.getFloat("g"), c.getFloat("b")));
+    if (call.getBool(4))
+        drawFilledRect(pos, size, getScriptColor(), getScriptAlpha());
+    else
+        drawRect(pos, size, getScriptColor(), getScriptAlpha());
+}
+
+private void _rectangle2(GrCall call) {
+    Vec2f pos = Vec2f(call.getFloat(0), call.getFloat(1));
+    Vec2f size = Vec2f(call.getFloat(2), call.getFloat(3));
+    setScriptAlpha(call.getFloat(5));
+    if (call.getBool(4))
+        drawFilledRect(pos, size, getScriptColor(), getScriptAlpha());
+    else
+        drawRect(pos, size, getScriptColor(), getScriptAlpha());
+}
+
+private void _rectangle3(GrCall call) {
+    Vec2f pos = Vec2f(call.getFloat(0), call.getFloat(1));
+    Vec2f size = Vec2f(call.getFloat(2), call.getFloat(3));
+    auto c = call.getObject(5);
+    setScriptColor(Color(c.getFloat("r"), c.getFloat("g"), c.getFloat("b")));
+    setScriptAlpha(call.getFloat(6));
+    if (call.getBool(4))
+        drawFilledRect(pos, size, getScriptColor(), getScriptAlpha());
+    else
+        drawRect(pos, size, getScriptColor(), getScriptAlpha());
+}
+
+private void _pixel0(GrCall call) {
+    Vec2f pos = Vec2f(call.getFloat(0), call.getFloat(1));
+    drawPixel(pos, getScriptColor(), getScriptAlpha());
+}
+
+private void _pixel1(GrCall call) {
     Vec2f pos = Vec2f(call.getFloat(0), call.getFloat(1));
     auto c = call.getObject(2);
-    Color color = Color(c.getFloat("r"), c.getFloat("g"), c.getFloat("b"));
-    drawPixel(pos, color, call.getFloat(3));
+    setScriptColor(Color(c.getFloat("r"), c.getFloat("g"), c.getFloat("b")));
+    drawPixel(pos, getScriptColor(), getScriptAlpha());
 }
 
-private void _drawPixelDefault(GrCall call) {
+private void _pixel2(GrCall call) {
     Vec2f pos = Vec2f(call.getFloat(0), call.getFloat(1));
+    setScriptAlpha(call.getFloat(2));
+    drawPixel(pos, getScriptColor(), getScriptAlpha());
+}
+
+private void _pixel3(GrCall call) {
+    Vec2f pos = Vec2f(call.getFloat(0), call.getFloat(1));
+    auto c = call.getObject(2);
+    setScriptColor(Color(c.getFloat("r"), c.getFloat("g"), c.getFloat("b")));
+    setScriptAlpha(call.getFloat(3));
     drawPixel(pos, getScriptColor(), getScriptAlpha());
 }
 

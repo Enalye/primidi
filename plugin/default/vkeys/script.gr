@@ -82,7 +82,7 @@ action onLoad() {
             barFactor = 1f;
         barColor:a = 0.6f;
         pushCanvas(mainCanvas);
-        fillRect(barX, 0f, barWidth, height, lerp(baseBarColor, barColor, barFactor));
+        rectangle(barX, 0f, barWidth, height, true, lerp(baseBarColor, barColor, barFactor));
         popCanvas();
         if(barFactor < 0f) {
             barFactor = 0f;

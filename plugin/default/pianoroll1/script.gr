@@ -30,8 +30,8 @@ Sprite background;
 
 // Init
 action onLoad() {
-    setLayerClearColor(-1, Color(0.051, 0.082, 0.125));
-    setLayerClearAlpha(-1, 1f);
+    setLayerClearColor(-1, Color(.051, .082, .125));
+    setLayerClearAlpha(-1, 1.);
 
     /*
         Default interval of ticks to be displayed.
@@ -40,10 +40,10 @@ action onLoad() {
     setInterval(6000);
     /*
         0 = note are hit on the right side of the screen.
-        0.5 = in the center.
+        .5 = in the center.
         1 = left side.
     */
-    setRatio(0.8f);
+    setRatio(.8);
     setLayersCount(17);
     noteTexture = Texture("../note.png");
 
@@ -53,8 +53,8 @@ action onLoad() {
             background:draw(getCenterX() as real, getCenterY() as real);
         // Middle bar
         setLayer(16);
-        real barX = getWidth() * (1f - getRatio()) - (barWidth / 2f);
-        fillRect(barX, 0f, barWidth, getHeight() as real, Color(1f, 1f, 1f), 0.2f);
+        real barX = getWidth() * (1. - getRatio()) - (barWidth / 2.);
+        rectangle(barX, 0f, barWidth, getHeight() as real, true, Color(1., 1., 1.), .2);
         suspend
     }
 }
@@ -71,12 +71,12 @@ action onNoteInput(Note note) {
 
 function handleNote(Note note) {
     let noteSprite = noteTexture as Sprite;
-    noteSprite:setAnchor(0f, 0f);
+    noteSprite:setAnchor(0., 0.);
 
     Color color = colors[note:getChannel];
 
-    let pitch = 1f - (note:getPitch as real / 128f);
-    real fadeOut = 1f;
+    let pitch = 1. - (note:getPitch as real / 128.);
+    real fadeOut = 1.;
 
     loop {
         unless(note:isAlive)
@@ -84,37 +84,37 @@ function handleNote(Note note) {
 
         let w, h =
             getWidth() * note:getDuration,
-            getHeight() / 128f;
+            getHeight() / 128.;
 
-        if(w < 4f)
-            w = 4f;
+        if(w < 4.)
+            w = 4.;
         
         noteSprite:setSize(w, h);
         
         let x, y =
-            getWidth() * (1f - note:getTime),
+            getWidth() * (1. - note:getTime),
             getHeight() * pitch - getPitchBend(note:getChannel) * h * 2f;
 
         if(note:isPlaying) {
             let factor = note:getPlayTime;
-            let c = lerp(Color(1f, 1f, 1f), color, factor);
+            let c = lerp(Color(1., 1., 1.), color, factor);
             noteSprite:setColor(c);
-            noteSprite:setAlpha(1f);
+            noteSprite:setAlpha(1.);
         }
         else {
-            if(note:getPlayTime > 0f) {
-                noteSprite:setColor(lerp(Color(1f, 1f, 1f), color, fadeOut));
+            if(note:getPlayTime > 0.) {
+                noteSprite:setColor(lerp(Color(1., 1., 1.), color, fadeOut));
                 noteSprite:setAlpha(fadeOut);
-                if(fadeOut > 0f) {
-                    fadeOut -= 0.025f;
-                    if(fadeOut < 0f) {
-                        fadeOut = 0f;
+                if(fadeOut > 0.) {
+                    fadeOut -= .025;
+                    if(fadeOut < 0.) {
+                        fadeOut = 0.;
                     }
                 }
             }
             else {
-                noteSprite:setColor(Color(1f, 1f, 1f));
-                noteSprite:setAlpha(0.5f);
+                noteSprite:setColor(Color(1., 1., 1.));
+                noteSprite:setAlpha(.5);
             }
         }
         setLayer(note:getChannel);
@@ -127,11 +127,11 @@ action onBarEnter(Bar bar) {
     loop {
         unless(bar:isAlive)
             die
-        let x = getWidth() * (1f - bar:getTime);
+        let x = getWidth() * (1. - bar:getTime);
 
         setLayer(16);
-        fillRect(x, 0., 1., getHeight() as real, Color(1f, 1f, 1f), .1);
-        bar:getCount as string:print(x + 10., getHeight() - 20.);
+        rectangle(x, 0., 1., getHeight() as real, true, Color(1., 1., 1.), .1);
+        bar:getCount as string:write(x + 10., getHeight() - 20., .75);
         suspend
     }
 }
