@@ -39,6 +39,7 @@ private {
     int _intervalWindowSize = 5_000, _startInterval = 2_500, _endInterval = 2_500;
     float _intervalRatio = 0.5f;
     long _ticksPerQuarter = 960;
+    int _minPitch = 0, _maxPitch = 127;
 }
 
 Note[][16] sequencerNotes;
@@ -123,6 +124,12 @@ void updateInternalSequencer() {
                 note.time = 0f;
                 note.isAlive = true;
                 note.velocity = bytes[2];
+
+                if (note.note > _maxPitch)
+                    _maxPitch = note.note;
+                if (note.note < _minPitch)
+                    _minPitch = note.note;
+
                 _sequencer.channels[channelId].midiNoteOnEvents.push(note);
                 _sequencer.channels[channelId].notesInRange.push(note);
                 if (_onNoteInputCallback !is null)
@@ -164,6 +171,14 @@ double getInternalSequencerTick() {
     if (_sequencer)
         return _sequencer.totalTicksElapsed;
     return 0uL;
+}
+
+int getMinPitch() {
+    return _minPitch;
+}
+
+int getMaxPitch() {
+    return _maxPitch;
 }
 
 // -- CALLBACKS --
@@ -394,6 +409,9 @@ private final class Sequencer {
             }
         }
 
+        _minPitch = 127;
+        _maxPitch = 0;
+
         foreach (channelId; 0u .. 16u) {
             // Corrige l’ordonnancement pour certains midi qui utilisent le même canal sur plusieurs pistes.
             sort!((a, b) => (a.tick < b.tick))(noteOnEvents[channelId]);
@@ -402,6 +420,12 @@ private final class Sequencer {
             //Use the NOTE OFF events to set each note length.
             foreach (uint i; 0 .. cast(uint)(noteOnEvents[channelId].length)) {
                 int note = noteOnEvents[channelId][i].note;
+
+                if (note > _maxPitch)
+                    _maxPitch = note;
+                if (note < _minPitch)
+                    _minPitch = note;
+
                 foreach (uint y; 0 .. cast(uint)(noteOffEvents[channelId].length)) {
                     if (note == noteOffEvents[channelId][y].note) {
                         noteOnEvents[channelId][i].step = noteOffEvents[channelId][y].tick

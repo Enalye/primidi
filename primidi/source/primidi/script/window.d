@@ -7,11 +7,13 @@ module primidi.script.window;
 
 import std.conv;
 import grimoire, atelier;
-import primidi.gui;
+import primidi.gui, primidi.locale;
 import primidi.script.util;
 
 package void loadWindowLibrary(GrLibrary library) {
     auto colorType = grGetClassType("Color");
+
+    library.addPrimitive(&_getLocale, "getLocale", [], [grString]);
 
     library.addPrimitive(&_setColor, "setColor", [colorType]);
     library.addPrimitive(&_getColor, "getColor", [], [colorType]);
@@ -68,6 +70,10 @@ package void loadWindowLibrary(GrLibrary library) {
     library.addPrimitive(&_getCenterX, "getCenterX", [], [grFloat]);
     library.addPrimitive(&_getCenterY, "getCenterY", [], [grFloat]);
     library.addPrimitive(&_getCenter, "getCenter", [], [grFloat, grFloat]);
+}
+
+private void _getLocale(GrCall call) {
+    call.setString(getLocaleKey());
 }
 
 private void _setColor(GrCall call) {

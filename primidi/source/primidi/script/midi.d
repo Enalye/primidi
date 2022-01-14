@@ -21,6 +21,8 @@ package void loadMidiLibrary(GrLibrary library) {
     library.addPrimitive(&seq_isMidiPlaying, "isMidiPlaying", [], [grBool]);
     library.addPrimitive(&seq_getMidiDuration, "getMidiDuration", [], [grFloat]);
     library.addPrimitive(&seq_getMidiTime, "getMidiTime", [], [grFloat]);
+    library.addPrimitive(&seq_getMinPitch, "getMinPitch", [], [grInt]);
+    library.addPrimitive(&seq_getMaxPitch, "getMaxPitch", [], [grInt]);
     
     library.addPrimitive(&bar_getTick, "getTick", [barType], [grInt]);
     library.addPrimitive(&bar_getStep, "getStep", [barType], [grInt]);
@@ -81,6 +83,14 @@ private void seq_getMidiDuration(GrCall call) {
 
 private void seq_getMidiTime(GrCall call) {
     call.setFloat(getMidiTime());
+}
+
+private void seq_getMinPitch(GrCall call) {
+    call.setInt(getMinPitch());
+}
+
+private void seq_getMaxPitch(GrCall call) {
+    call.setInt(getMaxPitch());
 }
 
 // Bar
