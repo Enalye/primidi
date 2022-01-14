@@ -84,8 +84,9 @@ private final class MidiSequencer : Thread {
 
         sort!(
             (a, b) => (a.tick == b.tick) ?
-                (a.type != MidiEventType.NoteOn && b.type == MidiEventType.NoteOn) : (
-                    a.tick < b.tick)
+                (a.type == MidiEventType.NoteOn && b.type == MidiEventType.NoteOff) : (
+                    a.tick < b.tick),
+                SwapStrategy.stable
         )(events);
 
         //Set initial time step (120 BPM).
@@ -106,8 +107,6 @@ private final class MidiSequencer : Thread {
             timeAtLastChange = 0;
 
             isRunning = true;
-            //writeln("tempo: ", tempoEvents.length, ", ", tempoEventsTop);
-
             while (isRunning) {
                 //Time handling.
                 double currentTime = getMidiTime();
@@ -145,7 +144,6 @@ private final class MidiSequencer : Thread {
                     uint tickThreshold = events[eventsTop].tick;
                     if (totalTicksElapsed > tickThreshold) {
                         MidiEvent ev = events[eventsTop];
-
                         if (totalTicksElapsed > (tickThreshold + 10)) {
                             switch (ev.type) with (MidiEventType) {
                             case SystemExclusive:

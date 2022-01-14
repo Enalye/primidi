@@ -9,7 +9,7 @@ import primidi.menu, primidi.midi;
 
 /// GC Configuration
 extern (C) __gshared string[] rt_options = [
-	"gcopt=initReserve:128 minPoolSize:256 parallel:2 profile:1"
+	"gcopt=initReserve:128 minPoolSize:256 parallel:2 profile:0"
 ];
 
 void main(string[] args) {
