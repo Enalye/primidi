@@ -1,0 +1,127 @@
+/** 
+ * Copyright: Enalye
+ * License: Zlib
+ * Authors: Enalye
+ */
+
+// Channels' color
+let colors = [
+    Color(109, 247, 193),
+    Color(17, 173, 193),
+    Color(96, 108, 129),
+    Color(57, 52, 87),
+    Color(30, 136, 117),
+    Color(91, 179, 97),
+    Color(161, 229, 90),
+    Color(247, 228, 118),
+    Color(249, 146, 82),
+    Color(203, 77, 104),
+    Color(106, 55, 113),
+    Color(201, 36, 100),
+    Color(244, 140, 182),
+    Color(247, 182, 158),
+    Color(155, 156, 130),
+    Color(49, 122, 21)
+];
+
+Texture noteTexture;
+let barWidth = 6f;
+Sprite background;
+
+// Init
+action onLoad() {
+    setLayerClearColor(-1, Color(.051, .082, .125));
+    setLayerClearAlpha(-1, 1.);
+
+    /*
+        Default interval of ticks to be displayed.
+        A too large value can cause slowdowns.
+    */
+    setInterval(6_000);
+    /*
+        0 = note are hit on the right side of the screen.
+        .5 = in the center.
+        1 = left side.
+    */
+    setRatio(.5);
+    setLayersCount(17);
+    noteTexture = Texture("../note.png");
+
+    loop {
+        setLayer(-1);
+        if(background)
+            background:draw(getCenterX() as real, getCenterY() as real);
+        // Middle bar
+        setLayer(16);
+        line(getCenterX() as real, 0f, getCenterX() as real, getHeight() as real, Color(1., 1., 1.), .2);
+        suspend
+    }
+}
+
+// Called for each note entering the Interval window.
+action onNoteEnter(Note note) {
+    handleNote(note);
+}
+
+// Called for each note received on the input.
+action onNoteInput(Note note) {
+    handleNote(note);
+}
+
+function handleNote(Note note) {
+    let noteSprite = noteTexture as Sprite;
+    noteSprite:setAnchor(0., 0.);
+
+    Color color = colors[note:getChannel];
+
+    let pitch = 1. - (note:getPitch as real / 128.);
+
+    loop {
+        unless(note:isAlive)
+            die
+
+        let w, h =
+            getWidth() * note:getDuration,
+            getHeight() / 128.;
+
+        if(w < 4.)
+            w = 4.;
+        
+        noteSprite:setSize(w, h);
+        noteSprite:setColor(color);
+        
+        let x, y =
+            getWidth() * (1. - note:getTime),
+            getHeight() * pitch - getPitchBend(note:getChannel) * h * 2f;
+
+        if(note:isPlaying) {
+            noteSprite:setAlpha(1.);
+        }
+        else {
+            noteSprite:setAlpha(.5);
+        }
+        setLayer(note:getChannel);
+        noteSprite:draw(x, y);
+        suspend
+    }
+}
+
+action onBarEnter(Bar bar) {
+    loop {
+        unless(bar:isAlive)
+            die
+        let x = getWidth() * (1. - bar:getTime);
+
+        setLayer(16);
+        rectangle(x, 0., 1., getHeight() as real, true, Color(1., 1., 1.), .1);
+        bar:getCount as string:write(x + 10., getHeight() - 20., .75);
+        suspend
+    }
+}
+
+action onFileDrop(string fileName) {
+    let tex = Texture(fileName);
+    unless(tex) return;
+    background = Sprite(tex);
+    background:contain(getWidth() as real, getHeight() as real);
+}
