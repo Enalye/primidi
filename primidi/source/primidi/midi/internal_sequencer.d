@@ -485,7 +485,6 @@ private final class Sequencer {
 
         int i = 0;
         foreach (ref bar; midiBarEvents) {
-            bar.step = cast(int) getInternalSequencerTick() - bar.tick;
             bar.duration = rlerp(0, _intervalWindowSize, bar.step);
             bar.playTime = cast(float)(cast(int) tick - cast(int) bar.tick) / cast(float) bar
                 .step;
