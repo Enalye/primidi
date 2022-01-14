@@ -1,7 +1,19 @@
 {
-    "name": "Snow",
+    "locale": {
+        "en_US": {
+            "name": "Snow",
+            "info": "Snow-like falling particles"
+        },
+        "fr_FR": {
+            "name": "",
+            "info": ""
+        },
+        "eo": {
+            "name": "",
+            "info": ""
+        }
+    },
     "script": "script.gr",
     "cover": "cover.png",
-    "info": "Snow-like falling particles",
     "author": "Enalye"
 }

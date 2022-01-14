@@ -1,0 +1,19 @@
+{
+    "locale": {
+        "en_US": {
+            "name": "Bars 1",
+            "info": "Centered bars"
+        },
+        "fr_FR": {
+            "name": "Barres 1",
+            "info": "Barres centrées"
+        },
+        "eo": {
+            "name": "Stangoj 1",
+            "info": "Centraj stangoj"
+        }
+    },
+    "script": "bar1.gr",
+    "cover": "cover.png",
+    "author": "Enalye"
+}

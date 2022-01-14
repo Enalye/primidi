@@ -10,27 +10,27 @@ import atelier;
 import primidi.config, primidi.locale;
 import primidi.gui.buttons;
 
-final class SelectPluginModal: GuiElement {
-	private {
+final class SelectPluginModal : GuiElement {
+    private {
         PluginList _pluginList;
         PluginItem _currentItem;
         Label _nameLabel, _infoLabel, _authorLabel;
         string _scriptPath;
         Sprite _cover;
-	}
+    }
 
-	this() {
-		setAlign(GuiAlignX.center, GuiAlignY.center);
+    this() {
+        setAlign(GuiAlignX.center, GuiAlignY.center);
         size(Vec2f(800f, 600f));
         isMovable(true);
 
-		{ //Port
-			_pluginList = new PluginList;
+        { //Port
+            _pluginList = new PluginList;
             _pluginList.position(Vec2f(15f, 0f));
-			_pluginList.setAlign(GuiAlignX.left, GuiAlignY.center);
+            _pluginList.setAlign(GuiAlignX.left, GuiAlignY.center);
             _pluginList.setCallback(this, "list");
-			appendChild(_pluginList);
-		}
+            appendChild(_pluginList);
+        }
 
         {
             auto box = new VContainer;
@@ -50,7 +50,7 @@ final class SelectPluginModal: GuiElement {
             box.appendChild(_authorLabel);
         }
 
-		{ //Title
+        { //Title
             auto title = new Label(getLocalizedText("select_plugin") ~ ":");
             title.color = Color(20, 20, 20);
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
@@ -58,7 +58,7 @@ final class SelectPluginModal: GuiElement {
             appendChild(title);
         }
 
-		{ //Validation
+        { //Validation
             auto box = new HContainer;
             box.setAlign(GuiAlignX.right, GuiAlignY.bottom);
             box.position = Vec2f(10f, 10f);
@@ -85,10 +85,8 @@ final class SelectPluginModal: GuiElement {
         }
         reload();
 
-		GuiState hiddenState = {
-            offset: Vec2f(0f, -50f),
-            alpha: 0f
-        };
+        GuiState hiddenState = {offset: Vec2f(0f, -50f),
+        alpha: 0f};
         addState("hidden", hiddenState);
 
         GuiState defaultState = {
@@ -99,11 +97,11 @@ final class SelectPluginModal: GuiElement {
 
         setState("hidden");
         doTransitionState("default");
-	}
+    }
 
     private void setCurrentPlugin(PluginItem item) {
         _currentItem = item;
-        if(_currentItem) {
+        if (_currentItem) {
             _nameLabel.text = getLocalizedText("name") ~ ": " ~ _currentItem._name;
             _infoLabel.text = getLocalizedText("info") ~ ": " ~ _currentItem._description;
             _authorLabel.text = getLocalizedText("author") ~ ": " ~ _currentItem._authorName;
@@ -111,34 +109,34 @@ final class SelectPluginModal: GuiElement {
         }
     }
 
-	override void onCallback(string id) {
-		switch(id) {
+    override void onCallback(string id) {
+        switch (id) {
         case "list":
             setCurrentPlugin(_pluginList._selectedItem);
             break;
-		case "close":
+        case "close":
             stopModal();
             break;
         case "apply":
-            if(_currentItem)
+            if (_currentItem)
                 setPlugin(_currentItem._pluginPath);
             stopModal();
             break;
         default:
             break;
         }
-	}
+    }
 
     override void update(float deltaTime) {
-        if(getButtonDown(KeyButton.escape))
+        if (getButtonDown(KeyButton.escape))
             onCallback("close");
-        else if(getButtonDown(KeyButton.enter) || getButtonDown(KeyButton.enter2))
+        else if (getButtonDown(KeyButton.enter) || getButtonDown(KeyButton.enter2))
             onCallback("apply");
     }
 
-	override void draw() {
+    override void draw() {
         drawFilledRect(origin, size, Color(240, 240, 240));
-        if(_cover)
+        if (_cover)
             _cover.draw(origin + Vec2f(size.x - (_cover.size.x / 2f + 80f), 40f + _cover.size.y / 2f));
     }
 
@@ -148,39 +146,58 @@ final class SelectPluginModal: GuiElement {
 
     void reload() {
         string path = buildNormalizedPath(getBasePath(), "plugin");
-        if(!exists(path)) {
+        if (!exists(path)) {
             throw new Exception("No plugin folder found");
         }
-        foreach(file; dirEntries(path, SpanMode.depth)) {
+        foreach (file; dirEntries(path, "{*.json}", SpanMode.depth)) {
             const string filePath = absolutePath(buildNormalizedPath(file));
-            if(extension(filePath).toLower() != ".json")
+            if (extension(filePath).toLower() != ".json")
                 continue;
+
             JSONValue json = parseJSON(readText(filePath));
+            bool hasLocale;
+            string pluginName, pluginInfo;
+            if (hasJson(json, "locale")) {
+                JSONValue localeNode = getJson(json, "locale");
+                if (hasJson(localeNode, getLocaleKey())) {
+                    JSONValue localeSubNode = getJson(localeNode, getLocaleKey());
+                    hasLocale = true;
+                    pluginName = getJsonStr(localeSubNode, "name", getLocalizedText(
+                            "plugin.no_name"));
+                    pluginInfo = getJsonStr(localeSubNode, "info", getLocalizedText(
+                            "plugin.no_info"));
+                }
+            }
+            if (!hasLocale) {
+                pluginName = getLocalizedText("plugin.no_name");
+                pluginInfo = getLocalizedText("plugin.no_info");
+            }
+
             _pluginList.appendChild(new PluginItem(
-                filePath,
-                getJsonStr(json, "cover", ""),
-                getJsonStr(json, "name", "Untitled"),
-                getJsonStr(json, "info", "..."),
-                getJsonStr(json, "author", "anonymous"),
-                getJsonStr(json, "script", "")
-                ));
+                    filePath,
+                    getJsonStr(json, "cover", ""),
+                    pluginName,
+                    pluginInfo,
+                    getJsonStr(json, "author", getLocalizedText("plugin.no_author")),
+                    getJsonStr(json, "script", "")
+            ));
         }
-        
+
         const string pluginPath = getPluginPath();
-        if(exists(pluginPath)) {
+        if (exists(pluginPath)) {
             auto list = cast(PluginItem[]) _pluginList.children;
-            for(size_t i = 0u; i < list.length; ++ i) {
-				if(list[i]._pluginPath == pluginPath) {
-					_pluginList.selected(cast(uint) i);
+            for (size_t i = 0u; i < list.length; ++i) {
+                if (list[i]._pluginPath == pluginPath) {
+                    _pluginList.selected(cast(uint) i);
                     setCurrentPlugin(list[i]);
-					break;
-				}
-			}
+                    break;
+                }
+            }
         }
     }
 }
 
-private final class PluginItem: Button {
+private final class PluginItem : Button {
     private {
         Sprite _cover;
         string _name, _description, _authorName, _scriptPath, _pluginPath;
@@ -195,9 +212,9 @@ private final class PluginItem: Button {
 
         size(Vec2f(128f, 128f));
 
-        if(coverPath.length) {
+        if (coverPath.length) {
             coverPath = buildNormalizedPath(basePath, coverPath);
-            if(exists(coverPath)) {
+            if (exists(coverPath)) {
                 auto tex = new Texture(coverPath);
                 _cover = new Sprite(tex);
             }
@@ -210,7 +227,7 @@ private final class PluginItem: Button {
         }
         _cover.fit(size);
 
-        if(!scriptPath.length)
+        if (!scriptPath.length)
             throw new Exception("No script specified for plugin");
         _scriptPath = buildNormalizedPath(basePath, scriptPath);
     }
@@ -218,26 +235,26 @@ private final class PluginItem: Button {
     override void draw() {
         drawFilledRect(origin, size, Color(20, 20, 20));
         _cover.draw(center + (isClicked ? Vec2f(1f, 2f) : Vec2f.zero));
-        if(isSelected)
+        if (isSelected)
             drawRect(origin, size, Color.cyan);
     }
 }
 
-private final class PluginList: GridList {
-	private {
+private final class PluginList : GridList {
+    private {
         PluginItem _selectedItem;
-	}
+    }
 
-	this() {
-		super(Vec2f(384f, 512f));
+    this() {
+        super(Vec2f(384f, 512f));
         maxElementsPerLine(3u);
-	}
+    }
 
     override void onCallback(string id) {
         super.onCallback(id);
-        if(id == "list") {
+        if (id == "list") {
             _selectedItem = cast(PluginItem) children[selected()];
-            if(!_selectedItem)
+            if (!_selectedItem)
                 throw new Exception("Plugin grid null item");
             triggerCallback();
         }

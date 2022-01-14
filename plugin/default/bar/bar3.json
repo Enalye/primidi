@@ -1,0 +1,19 @@
+{
+    "locale": {
+        "en_US": {
+            "name": "Bars 3",
+            "info": "Bars with fadeout and particles"
+        },
+        "fr_FR": {
+            "name": "Barres 3",
+            "info": "Barres avec fondu et particules"
+        },
+        "eo": {
+            "name": "Stangoj 3",
+            "info": "Stangoj kun fado kaj eroj"
+        }
+    },
+    "script": "bar3.gr",
+    "cover": "cover.png",
+    "author": "Enalye"
+}

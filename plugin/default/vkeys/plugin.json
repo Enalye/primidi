@@ -1,7 +1,11 @@
 {
-    "name": "Vertical Keys 1",
+    "locale": {
+        "en_US": {
+            "name": "Vertical keys",
+            "info": "Falling notes on a piano"
+        }
+    },
     "script": "script.gr",
     "cover": "cover.png",
-    "info": "Falling notes on a piano",
     "author": "Enalye"
 }

@@ -1,0 +1,19 @@
+{
+    "locale": {
+        "en_US": {
+            "name": "Bars 2",
+            "info": "Bars with fadeout"
+        },
+        "fr_FR": {
+            "name": "Barres 2",
+            "info": "Barres avec fondu"
+        },
+        "eo": {
+            "name": "Stangoj 2",
+            "info": "Stangoj kun fado"
+        }
+    },
+    "script": "bar2.gr",
+    "cover": "cover.png",
+    "author": "Enalye"
+}

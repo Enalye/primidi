@@ -5,11 +5,11 @@
  */
 module primidi.locale;
 
-import std.file;
+import std.file, std.path;
 import atelier;
 
 private {
-    string _localeFilePath;
+    string _localeFilePath, _localeKey;
     string[string] _localizations;
 }
 
@@ -17,10 +17,15 @@ string getLocale() {
     return _localeFilePath;   
 }
 
+string getLocaleKey() {
+    return _localeKey;   
+}
+
 void setLocale(string filePath) {
     if(!exists(filePath))
         return;
     _localeFilePath = filePath;
+    _localeKey = baseName(stripExtension(filePath));
 
     JSONValue json = parseJSON(readText(_localeFilePath));
     foreach(string key, JSONValue value; json) {
