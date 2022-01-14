@@ -105,6 +105,8 @@ private final class MidiSequencer : Thread {
             tickPerMs = (initialBpm * ticksPerQuarter * speedFactor) / 60_000f;
             msPerTick = 60_000f / (initialBpm * ticksPerQuarter * speedFactor);
             timeAtLastChange = 0;
+            MidiEvent[ubyte] skippedEvents;
+            MidiEvent[] ccEvents;
 
             isRunning = true;
             while (isRunning) {
@@ -138,7 +140,6 @@ private final class MidiSequencer : Thread {
                 }
 
                 //Events handling.
-                MidiEvent[ubyte] skippedEvents;
             checkTick:
                 if (events.length > eventsTop) {
                     uint tickThreshold = events[eventsTop].tick;
@@ -152,9 +153,22 @@ private final class MidiSequencer : Thread {
                             case ProgramChange:
                             case ChannelAfterTouch:
                             case PitchWheel:
-                            case ControlChange:
                             case KeyAfterTouch:
                                 skippedEvents[cast(ubyte) ev.type | cast(ubyte) ev.note.channel] = ev;
+                                break;
+                            case ControlChange:
+                                if (ev.note.note < 32) {
+                                    long i = (cast(long) ccEvents.length) - 1;
+                                    while (i >= 0) {
+                                        if (ccEvents[i].note.channel == ev.note.channel && (
+                                                ccEvents[i].note.note == ev.note.note
+                                                || ccEvents[i].note.note == (ev.note.note + 32))) {
+                                            ccEvents = ccEvents.remove(i);
+                                        }
+                                        i--;
+                                    }
+                                }
+                                ccEvents ~= ev;
                                 break;
                             case NoteOn:
                             case NoteOff:
@@ -164,11 +178,15 @@ private final class MidiSequencer : Thread {
                             }
                         }
                         else {
-                            if (skippedEvents.length) {
-                                //writeln("skipped: ", skippedEvents.length);
-                            }
-                            foreach (skippedEvent; skippedEvents) {
-                                sendEvent(midiOut, skippedEvent);
+                            if (skippedEvents.length > 0 || ccEvents.length > 0) {
+                                foreach (ccEvent; ccEvents) {
+                                    sendEvent(midiOut, ccEvent);
+                                }
+                                foreach (skippedEvent; skippedEvents) {
+                                    sendEvent(midiOut, skippedEvent);
+                                }
+                                ccEvents.length = 0;
+                                skippedEvents.clear();
                             }
                             sendEvent(midiOut, ev);
                         }
