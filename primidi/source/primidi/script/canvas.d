@@ -15,7 +15,7 @@ package void loadCanvasLibrary(GrLibrary library) {
 
     library.addPrimitive(&_makeCanvasf, "Canvas", [grFloat, grFloat], [
             defCanvas
-            ]);
+        ]);
     library.addPrimitive(&_makeCanvasi, "Canvas", [grInt, grInt], [defCanvas]);
     library.addPrimitive(&_pushCanvas, "pushCanvas", [defCanvas]);
     library.addPrimitive(&_popCanvas, "popCanvas");
@@ -29,7 +29,7 @@ package void loadCanvasLibrary(GrLibrary library) {
     library.addPrimitive(&_setAlpha, "setAlpha", [defCanvas, grFloat]);
     library.addPrimitive(&_setPosition, "setPosition", [
             defCanvas, grFloat, grFloat
-            ]);
+        ]);
 }
 
 private void _makeCanvasf(GrCall call) {
@@ -41,7 +41,12 @@ private void _makeCanvasi(GrCall call) {
 }
 
 private void _pushCanvas(GrCall call) {
-    pushCanvas(call.getForeign!Canvas(0), false);
+    Canvas canvas = call.getForeign!Canvas(0);
+    if (!canvas) {
+        call.raise("Null parameter");
+        return;
+    }
+    pushCanvas(canvas, false);
 }
 
 private void _popCanvas(GrCall call) {
@@ -49,46 +54,79 @@ private void _popCanvas(GrCall call) {
 }
 
 private void _clearCanvas(GrCall call) {
-    pushCanvas(call.getForeign!Canvas(0), true);
+    Canvas canvas = call.getForeign!Canvas(0);
+    if (!canvas) {
+        call.raise("Null parameter");
+        return;
+    }
+    pushCanvas(canvas, true);
     popCanvas();
 }
 
 private void _renderCanvas(GrCall call) {
     Canvas canvas = call.getForeign!Canvas(0);
+    if (!canvas) {
+        call.raise("Null parameter");
+        return;
+    }
     canvas.draw(Vec2f(call.getFloat32(1), call.getFloat32(2)));
 }
 
 private void _setClearColor(GrCall call) {
     Canvas canvas = call.getForeign!Canvas(0);
-    auto obj = call.getObject(1);
+    GrObject obj = call.getObject(1);
+    if (!canvas || !obj) {
+        call.raise("Null parameter");
+        return;
+    }
     canvas.clearColor = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
 }
 
 private void _setClearAlpha(GrCall call) {
     Canvas canvas = call.getForeign!Canvas(0);
+    if (!canvas) {
+        call.raise("Null parameter");
+        return;
+    }
     canvas.clearAlpha = call.getFloat32(1);
 }
 
 private void _setBlend(GrCall call) {
     Canvas canvas = call.getForeign!Canvas(0);
+    if (!canvas) {
+        call.raise("Null parameter");
+        return;
+    }
     const Blend blend = call.getEnum!Blend(1);
     canvas.blend(blend);
 }
 
 private void _setColor(GrCall call) {
     Canvas canvas = call.getForeign!Canvas(0);
-    auto obj = call.getObject(1);
+    GrObject obj = call.getObject(1);
+    if (!canvas || !obj) {
+        call.raise("Null parameter");
+        return;
+    }
     const Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
     canvas.color(color);
 }
 
 private void _setAlpha(GrCall call) {
     Canvas canvas = call.getForeign!Canvas(0);
+    if (!canvas) {
+        call.raise("Null parameter");
+        return;
+    }
     const float alpha = call.getFloat32(1);
     canvas.alpha(alpha);
 }
 
 private void _setPosition(GrCall call) {
     Canvas canvas = call.getForeign!Canvas(0);
+    if (!canvas) {
+        call.raise("Null parameter");
+        return;
+    }
     canvas.position = Vec2f(call.getFloat32(1), call.getFloat32(2));
 }

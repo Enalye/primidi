@@ -10,8 +10,8 @@ import atelier, grimoire;
 import primidi.script.util;
 
 package void loadTextLibrary(GrLibrary library) {
-    const fontType = grGetForeignType("Font");
-    auto colorType = grGetClassType("Color");
+    const GrType fontType = grGetForeignType("Font");
+    const GrType colorType = grGetClassType("Color");
 
     library.addPrimitive(&_write0, "write", [grString, grFloat, grFloat]);
     library.addPrimitive(&_write1, "write", [
@@ -61,6 +61,10 @@ private void _write0(GrCall call) {
 
 private void _write1(GrCall call) {
     GrObject obj = call.getObject(3);
+    if (!obj) {
+        call.raise("Null parameter");
+        return;
+    }
     Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
     setScriptColor(color);
     _drawText(call.getString(0), call.getFloat(1), call.getFloat(2));
@@ -73,6 +77,10 @@ private void _write2(GrCall call) {
 
 private void _write3(GrCall call) {
     GrObject obj = call.getObject(3);
+    if (!obj) {
+        call.raise("Null parameter");
+        return;
+    }
     Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
     setScriptColor(color);
     setScriptAlpha(call.getFloat(4));
@@ -87,6 +95,10 @@ private void _write4(GrCall call) {
 private void _write5(GrCall call) {
     setScriptFont(call.getForeign!Font(3));
     GrObject obj = call.getObject(4);
+    if (!obj) {
+        call.raise("Null parameter");
+        return;
+    }
     Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
     setScriptColor(color);
     _drawText(call.getString(0), call.getFloat(1), call.getFloat(2));
@@ -101,6 +113,10 @@ private void _write6(GrCall call) {
 private void _write7(GrCall call) {
     setScriptFont(call.getForeign!Font(3));
     GrObject obj = call.getObject(4);
+    if (!obj) {
+        call.raise("Null parameter");
+        return;
+    }
     Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
     setScriptColor(color);
     setScriptAlpha(call.getFloat(5));

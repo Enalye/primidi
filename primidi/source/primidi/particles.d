@@ -8,36 +8,49 @@ module primidi.particles;
 import atelier;
 
 /// Simple particle.
-final class Particle  {
-	Color color = Color.white;
-	Vec2f position = Vec2f.zero;
+final class Particle {
+    Color color = Color.white;
+    Vec2f position = Vec2f.zero;
     float time = 0f;
-	float timeToLive = 60f;
-	float angle = 0f;
-	float speed = 0f;
-	float angleSpeed = 0f;
+    float timeToLive = 60f;
+    float angle = 0f;
+    float speed = 0f;
+    float angleSpeed = 0f;
     float alpha = 1f;
-    Sprite sprite;
+    private Sprite _sprite;
+
+    @property {
+        Sprite sprite() {
+            return _sprite;
+        }
+
+        Sprite sprite(Sprite sprite_) {
+            if (!sprite_) {
+                return _sprite = fetch!Sprite("texel");
+            }
+            return _sprite = sprite_;
+        }
+    }
 
     /// Update the particle, returns true if dead.
-	bool update(float deltaTime) {
-		time += deltaTime;
-		if(time > timeToLive && timeToLive > 0f)
-			return true;
+    bool update(float deltaTime) {
+        time += deltaTime;
+        if (time > timeToLive && timeToLive > 0f)
+            return true;
 
-		const Vec2f direction = Vec2f(1f, 0f).rotated(angle) * speed;
-		position += direction * deltaTime;
-		angle += angleSpeed * deltaTime;
-		
-		return false;
-	}
+        const Vec2f direction = Vec2f(1f, 0f).rotated(angle) * speed;
+        position += direction * deltaTime;
+        angle += angleSpeed * deltaTime;
+
+        return false;
+    }
 
     /// Render the particle
-	void draw() {
-        sprite.color = color;
-        sprite.alpha = alpha;
-        sprite.draw(position);
-	}
+    void draw() {
+        _sprite.color = color;
+        _sprite.alpha = alpha;
+        _sprite.draw(position);
+    }
 }
 
 private {
@@ -50,32 +63,32 @@ void initializeParticles() {
 }
 
 void resetParticles() {
-    if(!_particles)
+    if (!_particles)
         return;
     _particles.reset();
 }
 
 void updateParticles(float deltaTime) {
-    if(!_particles)
+    if (!_particles)
         return;
-    foreach(Particle particle, uint index; _particles) {
-        if(particle.update(deltaTime))
+    foreach (Particle particle, uint index; _particles) {
+        if (particle.update(deltaTime))
             _particles.markInternalForRemoval(index);
     }
     _particles.sweepMarkedData();
 }
 
 void drawParticles() {
-    if(!_particles)
+    if (!_particles)
         return;
-    foreach(Particle particle; _particles)
+    foreach (Particle particle; _particles)
         particle.draw();
 }
 
 Particle createParticle(Vec2f position, float angle, float speed, int timeToLive) {
-    if(!_particles)
+    if (!_particles)
         return null;
-    if((_particles.length + 1u) == _particles.capacity)
+    if ((_particles.length + 1u) == _particles.capacity)
         return null;
 
     Particle particle = new Particle;
@@ -83,8 +96,7 @@ Particle createParticle(Vec2f position, float angle, float speed, int timeToLive
     particle.angle = angle;
     particle.speed = speed;
     particle.timeToLive = timeToLive;
-    particle.sprite = fetch!Sprite("texel");
+    particle._sprite = fetch!Sprite("texel");
     _particles.push(particle);
     return particle;
 }
-

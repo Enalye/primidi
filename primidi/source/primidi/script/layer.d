@@ -20,16 +20,16 @@ package void loadLayerLibrary(GrLibrary library) {
 
     library.addPrimitive(&_setLayerClearColor, "setLayerClearColor", [
             grInt, defColor
-            ]);
+        ]);
     library.addPrimitive(&_setLayerClearColorDefault, "setLayerClearColor", [
             defColor
-            ]);
+        ]);
     library.addPrimitive(&_setLayerClearAlpha, "setLayerClearAlpha", [
             grInt, grFloat
-            ]);
+        ]);
     library.addPrimitive(&_setLayerClearAlphaDefault, "setLayerClearAlpha", [
             grFloat
-            ]);
+        ]);
     library.addPrimitive(&_setLayerBlend, "setLayerBlend", [grInt, defBlend]);
     library.addPrimitive(&_setLayerBlendDefault, "setLayerBlend", [defBlend]);
     library.addPrimitive(&_setLayerColor, "setLayerColor", [grInt, defColor]);
@@ -41,10 +41,10 @@ package void loadLayerLibrary(GrLibrary library) {
     library.addPrimitive(&_setCameraSizef, "setCameraSize", [grFloat, grFloat]);
     library.addPrimitive(&_setCameraPosition, "setCameraPosition", [
             grFloat, grFloat
-            ]);
+        ]);
     library.addPrimitive(&_setCameraClearColor, "setCameraClearColor", [
             defColor, grFloat
-            ]);
+        ]);
 }
 
 private void _setLayersCount(GrCall call) {
@@ -68,13 +68,21 @@ private void _getLayer(GrCall call) {
 }
 
 private void _setLayerClearColor(GrCall call) {
-    auto obj = call.getObject(1);
+    GrObject obj = call.getObject(1);
+    if (!obj) {
+        call.raise("Null parameter");
+        return;
+    }
     setLayerClearColor(call.getInt32(0), Color(obj.getFloat("r"),
             obj.getFloat("g"), obj.getFloat("b")));
 }
 
 private void _setLayerClearColorDefault(GrCall call) {
-    auto obj = call.getObject(0);
+    GrObject obj = call.getObject(0);
+    if (!obj) {
+        call.raise("Null parameter");
+        return;
+    }
     setLayerClearColor(-1, Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b")));
 }
 
@@ -95,13 +103,21 @@ private void _setLayerBlendDefault(GrCall call) {
 }
 
 private void _setLayerColor(GrCall call) {
-    auto obj = call.getObject(1);
+    GrObject obj = call.getObject(1);
+    if (!obj) {
+        call.raise("Null parameter");
+        return;
+    }
     const Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
     setLayerColor(call.getInt32(0), color);
 }
 
 private void _setLayerColorDefault(GrCall call) {
-    auto obj = call.getObject(0);
+    GrObject obj = call.getObject(0);
+    if (!obj) {
+        call.raise("Null parameter");
+        return;
+    }
     const Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
     setLayerColor(-1, color);
 }

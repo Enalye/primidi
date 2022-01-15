@@ -19,12 +19,16 @@ package void loadTextureLibrary(GrLibrary library) {
 }
 
 private void _makeTexture(GrCall call) {
-    auto tex = new Texture(getResourcePath(call.getString(0)));
-    call.setForeign(tex);
+    Texture texture = new Texture(getResourcePath(call.getString(0)));
+    call.setForeign(texture);
 }
 
 private void _castTextureToSprite(GrCall call) {
-    auto texture = call.getForeign!Texture(0);
-    auto sprite = new Sprite(texture);
+    Texture texture = call.getForeign!Texture(0);
+    if (!texture) {
+        call.raise("Null parameter");
+        return;
+    }
+    Sprite sprite = new Sprite(texture);
     call.setForeign!Sprite(sprite);
 }
