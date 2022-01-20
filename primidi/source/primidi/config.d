@@ -45,6 +45,9 @@ void loadConfig() {
         _configFilePath = buildNormalizedPath(getBasePath(), _configFilePath);
     }
     if(!exists(_configFilePath)) {
+        if(!_pluginFilePath.length) {
+            _pluginFilePath = buildNormalizedPath(absolutePath("plugin\\default\\bar\\bar1.json", getBasePath()));
+        }
         saveConfig();
         if(!exists(_configFilePath))
             return;

@@ -41,6 +41,19 @@ final class SpeedSlider : HSlider {
             return _speeds[id];
     }
 
+    override void onEvent(Event event) {
+        super.onEvent(event);
+        switch (event.type) with (Event.Type) {
+        case mouseWheel:
+        case mouseUpdate:
+        case mouseDown:
+            triggerCallback();
+            break;
+        default:
+            break;
+        }
+    }
+
     override void draw() {
         _cursorSprite.color = Color.fromHex(isClicked ? 0x007ad9 : (isHovered ? 0x747474 : 0xcccccc));
         _railBorderSprite.anchor = Vec2f(0f, .5f);
