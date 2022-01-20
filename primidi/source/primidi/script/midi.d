@@ -12,24 +12,24 @@ import primidi.midi, primidi.player;
 package void loadMidiLibrary(GrLibrary library) {
     auto barType = library.addForeign("Bar");
     auto noteType = library.addForeign("Note");
-    library.addPrimitive(&clock_getTime, "getTime", [], [grFloat]);
+    library.addPrimitive(&clock_getTime, "getTime", [], [grReal]);
     library.addPrimitive(&seq_getTick, "getTick", [], [grInt]);
     library.addPrimitive(&seq_setInterval, "setInterval", [grInt]);
-    library.addPrimitive(&seq_setHitRatio, "setRatio", [grFloat]);
-    library.addPrimitive(&seq_getHitRatio, "getRatio", [], [grFloat]);
+    library.addPrimitive(&seq_setHitRatio, "setRatio", [grReal]);
+    library.addPrimitive(&seq_getHitRatio, "getRatio", [], [grReal]);
     library.addPrimitive(&seq_getMidiName, "getMidiName", [], [grString]);
     library.addPrimitive(&seq_isMidiPlaying, "isMidiPlaying", [], [grBool]);
-    library.addPrimitive(&seq_getMidiDuration, "getMidiDuration", [], [grFloat]);
-    library.addPrimitive(&seq_getMidiTime, "getMidiTime", [], [grFloat]);
+    library.addPrimitive(&seq_getMidiDuration, "getMidiDuration", [], [grReal]);
+    library.addPrimitive(&seq_getMidiTime, "getMidiTime", [], [grReal]);
     library.addPrimitive(&seq_getMinPitch, "getMinPitch", [], [grInt]);
     library.addPrimitive(&seq_getMaxPitch, "getMaxPitch", [], [grInt]);
-    
+
     library.addPrimitive(&bar_getTick, "getTick", [barType], [grInt]);
     library.addPrimitive(&bar_getStep, "getStep", [barType], [grInt]);
     library.addPrimitive(&bar_getCount, "getCount", [barType], [grInt]);
-    library.addPrimitive(&bar_getPlayTime, "getPlayTime", [barType], [grFloat]);
-    library.addPrimitive(&bar_getTime, "getTime", [barType], [grFloat]);
-    library.addPrimitive(&bar_getDuration, "getDuration", [barType], [grFloat]);
+    library.addPrimitive(&bar_getPlayTime, "getPlayTime", [barType], [grReal]);
+    library.addPrimitive(&bar_getTime, "getTime", [barType], [grReal]);
+    library.addPrimitive(&bar_getDuration, "getDuration", [barType], [grReal]);
 
     library.addPrimitive(&bar_isPlaying, "isPlaying", [barType], [grBool]);
     library.addPrimitive(&bar_isAlive, "isAlive", [barType], [grBool]);
@@ -39,18 +39,18 @@ package void loadMidiLibrary(GrLibrary library) {
     library.addPrimitive(&note_getPitch, "getPitch", [noteType], [grInt]);
     library.addPrimitive(&note_getStep, "getStep", [noteType], [grInt]);
     library.addPrimitive(&note_getVelocity, "getVelocity", [noteType], [grInt]);
-    library.addPrimitive(&note_getPlayTime, "getPlayTime", [noteType], [grFloat]);
-    library.addPrimitive(&note_getTime, "getTime", [noteType], [grFloat]);
-    library.addPrimitive(&note_getDuration, "getDuration", [noteType], [grFloat]);
+    library.addPrimitive(&note_getPlayTime, "getPlayTime", [noteType], [grReal]);
+    library.addPrimitive(&note_getTime, "getTime", [noteType], [grReal]);
+    library.addPrimitive(&note_getDuration, "getDuration", [noteType], [grReal]);
 
     library.addPrimitive(&note_isPlaying, "isPlaying", [noteType], [grBool]);
     library.addPrimitive(&note_isAlive, "isAlive", [noteType], [grBool]);
 
-    library.addPrimitive(&chan_getPitchBend, "getPitchBend", [grInt], [grFloat]);
+    library.addPrimitive(&chan_getPitchBend, "getPitchBend", [grInt], [grReal]);
 }
 
 private void clock_getTime(GrCall call) {
-    call.setFloat(getMidiTime() / 1_000f);
+    call.setReal(getMidiTime() / 1_000f);
 }
 
 private void seq_getTick(GrCall call) {
@@ -62,11 +62,11 @@ private void seq_setInterval(GrCall call) {
 }
 
 private void seq_setHitRatio(GrCall call) {
-    setInternalSequencerHitRatio(call.getFloat(0));
+    setInternalSequencerHitRatio(call.getReal(0));
 }
 
 private void seq_getHitRatio(GrCall call) {
-    call.setFloat(getInternalSequencerHitRatio());
+    call.setReal(getInternalSequencerHitRatio());
 }
 
 private void seq_getMidiName(GrCall call) {
@@ -78,11 +78,11 @@ private void seq_isMidiPlaying(GrCall call) {
 }
 
 private void seq_getMidiDuration(GrCall call) {
-    call.setFloat(getMidiDuration());
+    call.setReal(getMidiDuration());
 }
 
 private void seq_getMidiTime(GrCall call) {
-    call.setFloat(getMidiTime());
+    call.setReal(getMidiTime());
 }
 
 private void seq_getMinPitch(GrCall call) {
@@ -96,7 +96,7 @@ private void seq_getMaxPitch(GrCall call) {
 // Bar
 private void bar_getTick(GrCall call) {
     Bar bar = call.getForeign!Bar(0);
-    if(!bar) {
+    if (!bar) {
         call.raise("Null parameter");
         return;
     }
@@ -105,7 +105,7 @@ private void bar_getTick(GrCall call) {
 
 private void bar_getStep(GrCall call) {
     Bar bar = call.getForeign!Bar(0);
-    if(!bar) {
+    if (!bar) {
         call.raise("Null parameter");
         return;
     }
@@ -114,7 +114,7 @@ private void bar_getStep(GrCall call) {
 
 private void bar_getCount(GrCall call) {
     Bar bar = call.getForeign!Bar(0);
-    if(!bar) {
+    if (!bar) {
         call.raise("Null parameter");
         return;
     }
@@ -123,34 +123,34 @@ private void bar_getCount(GrCall call) {
 
 private void bar_getPlayTime(GrCall call) {
     Bar bar = call.getForeign!Bar(0);
-    if(!bar) {
+    if (!bar) {
         call.raise("Null parameter");
         return;
     }
-    call.setFloat(bar.playTime);
+    call.setReal(bar.playTime);
 }
 
 private void bar_getTime(GrCall call) {
     Bar bar = call.getForeign!Bar(0);
-    if(!bar) {
+    if (!bar) {
         call.raise("Null parameter");
         return;
     }
-    call.setFloat(bar.time);
+    call.setReal(bar.time);
 }
 
 private void bar_getDuration(GrCall call) {
     Bar bar = call.getForeign!Bar(0);
-    if(!bar) {
+    if (!bar) {
         call.raise("Null parameter");
         return;
     }
-    call.setFloat(bar.duration);
+    call.setReal(bar.duration);
 }
 
 private void bar_isAlive(GrCall call) {
     Bar bar = call.getForeign!Bar(0);
-    if(!bar) {
+    if (!bar) {
         call.raise("Null parameter");
         return;
     }
@@ -159,7 +159,7 @@ private void bar_isAlive(GrCall call) {
 
 private void bar_isPlaying(GrCall call) {
     Bar bar = call.getForeign!Bar(0);
-    if(!bar) {
+    if (!bar) {
         call.raise("Null parameter");
         return;
     }
@@ -169,7 +169,7 @@ private void bar_isPlaying(GrCall call) {
 // Note
 private void note_getChannel(GrCall call) {
     Note note = call.getForeign!Note(0);
-    if(!note) {
+    if (!note) {
         call.raise("Null parameter");
         return;
     }
@@ -178,7 +178,7 @@ private void note_getChannel(GrCall call) {
 
 private void note_getPitch(GrCall call) {
     Note note = call.getForeign!Note(0);
-    if(!note) {
+    if (!note) {
         call.raise("Null parameter");
         return;
     }
@@ -187,7 +187,7 @@ private void note_getPitch(GrCall call) {
 
 private void note_getTick(GrCall call) {
     Note note = call.getForeign!Note(0);
-    if(!note) {
+    if (!note) {
         call.raise("Null parameter");
         return;
     }
@@ -196,7 +196,7 @@ private void note_getTick(GrCall call) {
 
 private void note_getStep(GrCall call) {
     Note note = call.getForeign!Note(0);
-    if(!note) {
+    if (!note) {
         call.raise("Null parameter");
         return;
     }
@@ -205,7 +205,7 @@ private void note_getStep(GrCall call) {
 
 private void note_getVelocity(GrCall call) {
     Note note = call.getForeign!Note(0);
-    if(!note) {
+    if (!note) {
         call.raise("Null parameter");
         return;
     }
@@ -214,34 +214,34 @@ private void note_getVelocity(GrCall call) {
 
 private void note_getPlayTime(GrCall call) {
     Note note = call.getForeign!Note(0);
-    if(!note) {
+    if (!note) {
         call.raise("Null parameter");
         return;
     }
-    call.setFloat(note.playTime);
+    call.setReal(note.playTime);
 }
 
 private void note_getTime(GrCall call) {
     Note note = call.getForeign!Note(0);
-    if(!note) {
+    if (!note) {
         call.raise("Null parameter");
         return;
     }
-    call.setFloat(note.time);
+    call.setReal(note.time);
 }
 
 private void note_getDuration(GrCall call) {
     Note note = call.getForeign!Note(0);
-    if(!note) {
+    if (!note) {
         call.raise("Null parameter");
         return;
     }
-    call.setFloat(note.duration);
+    call.setReal(note.duration);
 }
 
 private void note_isAlive(GrCall call) {
     Note note = call.getForeign!Note(0);
-    if(!note) {
+    if (!note) {
         call.raise("Null parameter");
         return;
     }
@@ -250,7 +250,7 @@ private void note_isAlive(GrCall call) {
 
 private void note_isPlaying(GrCall call) {
     Note note = call.getForeign!Note(0);
-    if(!note) {
+    if (!note) {
         call.raise("Null parameter");
         return;
     }
@@ -263,5 +263,5 @@ private void chan_getPitchBend(GrCall call) {
         call.raise("Channel index out of bounds");
         return;
     }
-    call.setFloat(getPitchBend(cast(ubyte) chan));
+    call.setReal(getPitchBend(cast(ubyte) chan));
 }

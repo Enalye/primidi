@@ -95,7 +95,7 @@ private final class ScriptHandler {
             _engine.load(_bytecode);
 
             if (_engine.hasAction("onLoad"))
-                _engine.callAction("onLoad");
+                _engine.callAction("onLoad", GrEngine.Priority.immediate);
 
             _timeout = new TimeoutThread(this);
             _timeout.start();
@@ -187,7 +187,7 @@ private final class ScriptHandler {
             _engine = new GrEngine;
             _engine.load(_bytecode);
             if (_engine.hasAction("onLoad"))
-                _engine.callAction("onLoad");
+                _engine.callAction("onLoad", GrEngine.Priority.immediate);
             _isLoaded = true;
         }
         catch (Exception e) {

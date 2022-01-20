@@ -17,11 +17,11 @@ package void loadTweenLibrary(GrLibrary library) {
             "InOutElastic", "InBounce", "OutBounce", "InOutBounce"
         ]) {
         mixin(
-                "library.addPrimitive(&_ease!(\"" ~ value ~ "\"), \"ease" ~ value
-                ~ "\", [grFloat], [grFloat]);");
+            "library.addPrimitive(&_ease!(\"" ~ value ~ "\"), \"ease" ~ value
+                ~ "\", [grReal], [grReal]);");
     }
 }
 
 private void _ease(string value)(GrCall call) {
-    mixin("call.setFloat(ease" ~ value ~ "(call.getFloat(0)));");
+    mixin("call.setReal(ease" ~ value ~ "(call.getReal(0)));");
 }

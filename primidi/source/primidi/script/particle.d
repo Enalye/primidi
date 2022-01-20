@@ -14,7 +14,7 @@ package void loadParticleLibrary(GrLibrary library) {
     const GrType defParticle = library.addForeign("Particle");
 
     library.addPrimitive(&_makeParticle, "Particle", [
-            grFloat, grFloat, grFloat, grFloat, grInt
+            grReal, grReal, grReal, grReal, grInt
         ], [defParticle]);
 
     library.addPrimitive(&_setSprite, "setSprite", [defParticle, defSprite]);
@@ -23,35 +23,35 @@ package void loadParticleLibrary(GrLibrary library) {
     library.addPrimitive(&_setColor, "setColor", [defParticle, defColor]);
     library.addPrimitive(&_getColor, "getColor", [defParticle], [defColor]);
 
-    library.addPrimitive(&_setAlpha, "setAlpha", [defParticle, grFloat]);
-    library.addPrimitive(&_getAlpha, "getAlpha", [defParticle], [grFloat]);
+    library.addPrimitive(&_setAlpha, "setAlpha", [defParticle, grReal]);
+    library.addPrimitive(&_getAlpha, "getAlpha", [defParticle], [grReal]);
 
     library.addPrimitive(&_setPosition, "setPosition", [
-            defParticle, grFloat, grFloat
+            defParticle, grReal, grReal
         ]);
     library.addPrimitive(&_getPosition, "getPosition", [defParticle], [
-            grFloat, grFloat
+            grReal, grReal
         ]);
 
-    library.addPrimitive(&_setAngle, "setAngle", [defParticle, grFloat]);
-    library.addPrimitive(&_getAngle, "getAngle", [defParticle], [grFloat]);
+    library.addPrimitive(&_setAngle, "setAngle", [defParticle, grReal]);
+    library.addPrimitive(&_getAngle, "getAngle", [defParticle], [grReal]);
 
-    library.addPrimitive(&_setSpeed, "setSpeed", [defParticle, grFloat]);
-    library.addPrimitive(&_getSpeed, "getSpeed", [defParticle], [grFloat]);
+    library.addPrimitive(&_setSpeed, "setSpeed", [defParticle, grReal]);
+    library.addPrimitive(&_getSpeed, "getSpeed", [defParticle], [grReal]);
 
     library.addPrimitive(&_setAngleSpeed, "setAngleSpeed", [
-            defParticle, grFloat
+            defParticle, grReal
         ]);
     library.addPrimitive(&_getAngleSpeed, "getAngleSpeed", [defParticle], [
-            grFloat
+            grReal
         ]);
 
     library.addPrimitive(&_isAlive, "isAlive", [defParticle], [grBool]);
 }
 
 private void _makeParticle(GrCall call) {
-    call.setForeign!Particle(createParticle(Vec2f(call.getFloat(0),
-            call.getFloat(1)), call.getFloat(2), call.getFloat(3), cast(int) call.getInt(4)));
+    call.setForeign!Particle(createParticle(Vec2f(call.getReal(0),
+            call.getReal(1)), call.getReal(2), call.getReal(3), cast(int) call.getInt(4)));
 }
 
 private void _setSprite(GrCall call) {
@@ -80,7 +80,7 @@ private void _setColor(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    particle.color = Color(color.getFloat("r"), color.getFloat("g"), color.getFloat("b"));
+    particle.color = Color(color.getReal("r"), color.getReal("g"), color.getReal("b"));
 }
 
 private void _getColor(GrCall call) {
@@ -90,9 +90,9 @@ private void _getColor(GrCall call) {
         return;
     }
     auto c = call.createObject("Color");
-    c.setFloat("r", particle.color.r);
-    c.setFloat("g", particle.color.g);
-    c.setFloat("b", particle.color.b);
+    c.setReal("r", particle.color.r);
+    c.setReal("g", particle.color.g);
+    c.setReal("b", particle.color.b);
     call.setObject(c);
 }
 
@@ -102,7 +102,7 @@ private void _setAlpha(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    particle.alpha = call.getFloat(1);
+    particle.alpha = call.getReal(1);
 }
 
 private void _getAlpha(GrCall call) {
@@ -111,7 +111,7 @@ private void _getAlpha(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    call.setFloat(particle.alpha);
+    call.setReal(particle.alpha);
 }
 
 private void _setPosition(GrCall call) {
@@ -120,7 +120,7 @@ private void _setPosition(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    particle.position = Vec2f(call.getFloat(1), call.getFloat(2));
+    particle.position = Vec2f(call.getReal(1), call.getReal(2));
 }
 
 private void _getPosition(GrCall call) {
@@ -129,8 +129,8 @@ private void _getPosition(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    call.setFloat(particle.position.x);
-    call.setFloat(particle.position.y);
+    call.setReal(particle.position.x);
+    call.setReal(particle.position.y);
 }
 
 private void _setAngle(GrCall call) {
@@ -139,7 +139,7 @@ private void _setAngle(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    particle.angle = call.getFloat(1);
+    particle.angle = call.getReal(1);
 }
 
 private void _getAngle(GrCall call) {
@@ -148,7 +148,7 @@ private void _getAngle(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    call.setFloat(particle.angle);
+    call.setReal(particle.angle);
 }
 
 private void _setSpeed(GrCall call) {
@@ -157,7 +157,7 @@ private void _setSpeed(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    particle.speed = call.getFloat(1);
+    particle.speed = call.getReal(1);
 }
 
 private void _getSpeed(GrCall call) {
@@ -166,7 +166,7 @@ private void _getSpeed(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    call.setFloat(particle.speed);
+    call.setReal(particle.speed);
 }
 
 private void _setAngleSpeed(GrCall call) {
@@ -175,7 +175,7 @@ private void _setAngleSpeed(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    particle.angleSpeed = call.getFloat(1);
+    particle.angleSpeed = call.getReal(1);
 }
 
 private void _getAngleSpeed(GrCall call) {
@@ -184,7 +184,7 @@ private void _getAngleSpeed(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    call.setFloat(particle.angleSpeed);
+    call.setReal(particle.angleSpeed);
 }
 
 private void _isAlive(GrCall call) {

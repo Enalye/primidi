@@ -13,149 +13,149 @@ package void loadTextLibrary(GrLibrary library) {
     const GrType fontType = grGetForeignType("Font");
     const GrType colorType = grGetClassType("Color");
 
-    library.addPrimitive(&_write0, "write", [grString, grFloat, grFloat]);
-    library.addPrimitive(&_write1, "write", [
-            grString, grFloat, grFloat, colorType
+    library.addPrimitive(&_print0, "print", [grString, grReal, grReal]);
+    library.addPrimitive(&_print1, "print", [
+            grString, grReal, grReal, colorType
         ]);
-    library.addPrimitive(&_write2, "write", [
-            grString, grFloat, grFloat, grFloat
+    library.addPrimitive(&_print2, "print", [
+            grString, grReal, grReal, grReal
         ]);
-    library.addPrimitive(&_write3, "write", [
-            grString, grFloat, grFloat, colorType, grFloat
+    library.addPrimitive(&_print3, "print", [
+            grString, grReal, grReal, colorType, grReal
         ]);
-    library.addPrimitive(&_write4, "write", [
-            grString, grFloat, grFloat, fontType
+    library.addPrimitive(&_print4, "print", [
+            grString, grReal, grReal, fontType
         ]);
-    library.addPrimitive(&_write5, "write", [
-            grString, grFloat, grFloat, fontType, colorType
+    library.addPrimitive(&_print5, "print", [
+            grString, grReal, grReal, fontType, colorType
         ]);
-    library.addPrimitive(&_write6, "write", [
-            grString, grFloat, grFloat, fontType, grFloat
+    library.addPrimitive(&_print6, "print", [
+            grString, grReal, grReal, fontType, grReal
         ]);
-    library.addPrimitive(&_write7, "write", [
-            grString, grFloat, grFloat, fontType, colorType, grFloat
+    library.addPrimitive(&_print7, "print", [
+            grString, grReal, grReal, fontType, colorType, grReal
         ]);
 
     library.addPrimitive(&_getTextSize1, "getTextSize", [grString], [
-            grFloat, grFloat
+            grReal, grReal
         ]);
-    library.addPrimitive(&_getTextWidth1, "getTextWidth", [grString], [grFloat]);
+    library.addPrimitive(&_getTextWidth1, "getTextWidth", [grString], [grReal]);
     library.addPrimitive(&_getTextHeight1, "getTextHeight", [grString], [
-            grFloat
+            grReal
         ]);
 
     library.addPrimitive(&_getTextSize2, "getTextSize", [grString, fontType], [
-            grFloat, grFloat
+            grReal, grReal
         ]);
     library.addPrimitive(&_getTextWidth2, "getTextWidth", [grString, fontType], [
-            grFloat
+            grReal
         ]);
     library.addPrimitive(&_getTextHeight2, "getTextHeight", [grString, fontType], [
-            grFloat
+            grReal
         ]);
 }
 
-private void _write0(GrCall call) {
-    _drawText(call.getString(0), call.getFloat(1), call.getFloat(2));
+private void _print0(GrCall call) {
+    _drawText(call.getString(0), call.getReal(1), call.getReal(2));
 }
 
-private void _write1(GrCall call) {
+private void _print1(GrCall call) {
     GrObject obj = call.getObject(3);
     if (!obj) {
         call.raise("Null parameter");
         return;
     }
-    Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
+    Color color = Color(obj.getReal("r"), obj.getReal("g"), obj.getReal("b"));
     setScriptColor(color);
-    _drawText(call.getString(0), call.getFloat(1), call.getFloat(2));
+    _drawText(call.getString(0), call.getReal(1), call.getReal(2));
 }
 
-private void _write2(GrCall call) {
-    setScriptAlpha(call.getFloat(3));
-    _drawText(call.getString(0), call.getFloat(1), call.getFloat(2));
+private void _print2(GrCall call) {
+    setScriptAlpha(call.getReal(3));
+    _drawText(call.getString(0), call.getReal(1), call.getReal(2));
 }
 
-private void _write3(GrCall call) {
+private void _print3(GrCall call) {
     GrObject obj = call.getObject(3);
     if (!obj) {
         call.raise("Null parameter");
         return;
     }
-    Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
+    Color color = Color(obj.getReal("r"), obj.getReal("g"), obj.getReal("b"));
     setScriptColor(color);
-    setScriptAlpha(call.getFloat(4));
-    _drawText(call.getString(0), call.getFloat(1), call.getFloat(2));
+    setScriptAlpha(call.getReal(4));
+    _drawText(call.getString(0), call.getReal(1), call.getReal(2));
 }
 
-private void _write4(GrCall call) {
+private void _print4(GrCall call) {
     setScriptFont(call.getForeign!Font(3));
-    _drawText(call.getString(0), call.getFloat(1), call.getFloat(2));
+    _drawText(call.getString(0), call.getReal(1), call.getReal(2));
 }
 
-private void _write5(GrCall call) {
+private void _print5(GrCall call) {
     setScriptFont(call.getForeign!Font(3));
     GrObject obj = call.getObject(4);
     if (!obj) {
         call.raise("Null parameter");
         return;
     }
-    Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
+    Color color = Color(obj.getReal("r"), obj.getReal("g"), obj.getReal("b"));
     setScriptColor(color);
-    _drawText(call.getString(0), call.getFloat(1), call.getFloat(2));
+    _drawText(call.getString(0), call.getReal(1), call.getReal(2));
 }
 
-private void _write6(GrCall call) {
+private void _print6(GrCall call) {
     setScriptFont(call.getForeign!Font(3));
-    setScriptAlpha(call.getFloat(4));
-    _drawText(call.getString(0), call.getFloat(1), call.getFloat(2));
+    setScriptAlpha(call.getReal(4));
+    _drawText(call.getString(0), call.getReal(1), call.getReal(2));
 }
 
-private void _write7(GrCall call) {
+private void _print7(GrCall call) {
     setScriptFont(call.getForeign!Font(3));
     GrObject obj = call.getObject(4);
     if (!obj) {
         call.raise("Null parameter");
         return;
     }
-    Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
+    Color color = Color(obj.getReal("r"), obj.getReal("g"), obj.getReal("b"));
     setScriptColor(color);
-    setScriptAlpha(call.getFloat(5));
-    _drawText(call.getString(0), call.getFloat(1), call.getFloat(2));
+    setScriptAlpha(call.getReal(5));
+    _drawText(call.getString(0), call.getReal(1), call.getReal(2));
 }
 
 private void _getTextSize1(GrCall call) {
     const Vec2f size = _getTextSize(call.getString(0));
-    call.setFloat(size.x);
-    call.setFloat(size.y);
+    call.setReal(size.x);
+    call.setReal(size.y);
 }
 
 private void _getTextWidth1(GrCall call) {
     const Vec2f size = _getTextSize(call.getString(0));
-    call.setFloat(size.x);
+    call.setReal(size.x);
 }
 
 private void _getTextHeight1(GrCall call) {
     const Vec2f size = _getTextSize(call.getString(0));
-    call.setFloat(size.y);
+    call.setReal(size.y);
 }
 
 private void _getTextSize2(GrCall call) {
     setScriptFont(call.getForeign!Font(1));
     const Vec2f size = _getTextSize(call.getString(0));
-    call.setFloat(size.x);
-    call.setFloat(size.y);
+    call.setReal(size.x);
+    call.setReal(size.y);
 }
 
 private void _getTextWidth2(GrCall call) {
     setScriptFont(call.getForeign!Font(1));
     const Vec2f size = _getTextSize(call.getString(0));
-    call.setFloat(size.x);
+    call.setReal(size.x);
 }
 
 private void _getTextHeight2(GrCall call) {
     setScriptFont(call.getForeign!Font(1));
     const Vec2f size = _getTextSize(call.getString(0));
-    call.setFloat(size.y);
+    call.setReal(size.y);
 }
 
 /// Render text on screen

@@ -25,25 +25,25 @@ package void loadLayerLibrary(GrLibrary library) {
             defColor
         ]);
     library.addPrimitive(&_setLayerClearAlpha, "setLayerClearAlpha", [
-            grInt, grFloat
+            grInt, grReal
         ]);
     library.addPrimitive(&_setLayerClearAlphaDefault, "setLayerClearAlpha", [
-            grFloat
+            grReal
         ]);
     library.addPrimitive(&_setLayerBlend, "setLayerBlend", [grInt, defBlend]);
     library.addPrimitive(&_setLayerBlendDefault, "setLayerBlend", [defBlend]);
     library.addPrimitive(&_setLayerColor, "setLayerColor", [grInt, defColor]);
     library.addPrimitive(&_setLayerColorDefault, "setLayerColor", [defColor]);
-    library.addPrimitive(&_setLayerAlpha, "setLayerAlpha", [grInt, grFloat]);
-    library.addPrimitive(&_setLayerAlphaDefault, "setLayerAlpha", [grFloat]);
+    library.addPrimitive(&_setLayerAlpha, "setLayerAlpha", [grInt, grReal]);
+    library.addPrimitive(&_setLayerAlphaDefault, "setLayerAlpha", [grReal]);
 
     library.addPrimitive(&_setCameraSizei, "setCameraSize", [grInt, grInt]);
-    library.addPrimitive(&_setCameraSizef, "setCameraSize", [grFloat, grFloat]);
+    library.addPrimitive(&_setCameraSizef, "setCameraSize", [grReal, grReal]);
     library.addPrimitive(&_setCameraPosition, "setCameraPosition", [
-            grFloat, grFloat
+            grReal, grReal
         ]);
     library.addPrimitive(&_setCameraClearColor, "setCameraClearColor", [
-            defColor, grFloat
+            defColor, grReal
         ]);
 }
 
@@ -73,8 +73,8 @@ private void _setLayerClearColor(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    setLayerClearColor(call.getInt32(0), Color(obj.getFloat("r"),
-            obj.getFloat("g"), obj.getFloat("b")));
+    setLayerClearColor(call.getInt32(0), Color(obj.getReal("r"),
+            obj.getReal("g"), obj.getReal("b")));
 }
 
 private void _setLayerClearColorDefault(GrCall call) {
@@ -83,15 +83,15 @@ private void _setLayerClearColorDefault(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    setLayerClearColor(-1, Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b")));
+    setLayerClearColor(-1, Color(obj.getReal("r"), obj.getReal("g"), obj.getReal("b")));
 }
 
 private void _setLayerClearAlpha(GrCall call) {
-    setLayerClearAlpha(call.getInt32(0), call.getFloat32(1));
+    setLayerClearAlpha(call.getInt32(0), call.getReal32(1));
 }
 
 private void _setLayerClearAlphaDefault(GrCall call) {
-    setLayerClearAlpha(-1, call.getFloat32(0));
+    setLayerClearAlpha(-1, call.getReal32(0));
 }
 
 private void _setLayerBlend(GrCall call) {
@@ -108,7 +108,7 @@ private void _setLayerColor(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    const Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
+    const Color color = Color(obj.getReal("r"), obj.getReal("g"), obj.getReal("b"));
     setLayerColor(call.getInt32(0), color);
 }
 
@@ -118,20 +118,20 @@ private void _setLayerColorDefault(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    const Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
+    const Color color = Color(obj.getReal("r"), obj.getReal("g"), obj.getReal("b"));
     setLayerColor(-1, color);
 }
 
 private void _setLayerAlpha(GrCall call) {
-    setLayerAlpha(call.getInt32(0), call.getFloat32(1));
+    setLayerAlpha(call.getInt32(0), call.getReal32(1));
 }
 
 private void _setLayerAlphaDefault(GrCall call) {
-    setLayerAlpha(-1, call.getFloat32(0));
+    setLayerAlpha(-1, call.getReal32(0));
 }
 
 private void _setCameraSizef(GrCall call) {
-    //_canvas.size = Vec2f(call.getFloat32(0), call.getFloat32(1));
+    //_canvas.size = Vec2f(call.getReal32(0), call.getReal32(1));
 }
 
 private void _setCameraSizei(GrCall call) {
@@ -139,12 +139,12 @@ private void _setCameraSizei(GrCall call) {
 }
 
 private void _setCameraPosition(GrCall call) {
-    //_canvas.position = Vec2f(call.getFloat32(0), call.getFloat32(1));
+    //_canvas.position = Vec2f(call.getReal32(0), call.getReal32(1));
 }
 
 private void _setCameraClearColor(GrCall call) {
     /+auto obj = call.getObject(0);
-    const Color color = Color(obj.getFloat("r"), obj.getFloat("g"), obj.getFloat("b"));
+    const Color color = Color(obj.getReal("r"), obj.getReal("g"), obj.getReal("b"));
     _canvas.color = color;
-    _canvas.alpha = call.getFloat32(1);+/
+    _canvas.alpha = call.getReal32(1);+/
 }

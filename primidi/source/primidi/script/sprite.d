@@ -22,27 +22,27 @@ package void loadSpriteLibrary(GrLibrary library) {
     library.addPrimitive(&_setSpriteClip, "setClip", [
             defSprite, grInt, grInt, grInt, grInt
         ]);
-    library.addPrimitive(&_setSpriteAngle, "setAngle", [defSprite, grFloat]);
+    library.addPrimitive(&_setSpriteAngle, "setAngle", [defSprite, grReal]);
     library.addPrimitive(&_setSpriteAnchor, "setAnchor", [
-            defSprite, grFloat, grFloat
+            defSprite, grReal, grReal
         ]);
     library.addPrimitive(&_setSpriteColor, "setColor", [defSprite, defColor]);
-    library.addPrimitive(&_setSpriteAlpha, "setAlpha", [defSprite, grFloat]);
+    library.addPrimitive(&_setSpriteAlpha, "setAlpha", [defSprite, grReal]);
 
     library.addPrimitive(&_setSpriteSize, "setSize", [
-            defSprite, grFloat, grFloat
+            defSprite, grReal, grReal
         ]);
     library.addPrimitive(&_getSpriteSize, "getSize", [defSprite], [
-            grFloat, grFloat
+            grReal, grReal
         ]);
-    library.addPrimitive(&_getSpriteWidth, "getWidth", [defSprite], [grFloat]);
-    library.addPrimitive(&_getSpriteHeight, "getHeight", [defSprite], [grFloat]);
+    library.addPrimitive(&_getSpriteWidth, "getWidth", [defSprite], [grReal]);
+    library.addPrimitive(&_getSpriteHeight, "getHeight", [defSprite], [grReal]);
 
     library.addPrimitive(&_setSpriteScale, "setScale", [
-            defSprite, grFloat, grFloat
+            defSprite, grReal, grReal
         ]);
     library.addPrimitive(&_getSpriteScale, "getScale", [defSprite], [
-            grFloat, grFloat
+            grReal, grReal
         ]);
 
     library.addPrimitive(&_setSpriteFlip, "setFlip", [defSprite, grInt]);
@@ -51,11 +51,11 @@ package void loadSpriteLibrary(GrLibrary library) {
     library.addPrimitive(&_setSpriteBlend, "setBlend", [defSprite, defBlend]);
     library.addPrimitive(&_getSpriteBlend, "getBlend", [defSprite], [grInt]);
 
-    library.addPrimitive(&_spriteFit, "fit", [defSprite, grFloat, grFloat]);
+    library.addPrimitive(&_spriteFit, "fit", [defSprite, grReal, grReal]);
     library.addPrimitive(&_spriteContain, "contain", [
-            defSprite, grFloat, grFloat
+            defSprite, grReal, grReal
         ]);
-    library.addPrimitive(&_drawSprite, "draw", [defSprite, grFloat, grFloat]);
+    library.addPrimitive(&_drawSprite, "draw", [defSprite, grReal, grReal]);
 
     //library.addPrimitive(&_createText, "createText", ["font", "text"], [defFont, grString], [defSprite]);  
 }
@@ -95,7 +95,7 @@ private void _setSpriteAngle(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    sprite.angle = call.getFloat(1);
+    sprite.angle = call.getReal(1);
 }
 
 private void _setSpriteAnchor(GrCall call) {
@@ -104,7 +104,7 @@ private void _setSpriteAnchor(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    sprite.anchor = Vec2f(call.getFloat(1), call.getFloat(2));
+    sprite.anchor = Vec2f(call.getReal(1), call.getReal(2));
 }
 
 private void _setSpriteColor(GrCall call) {
@@ -114,7 +114,7 @@ private void _setSpriteColor(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    Color color = Color(c.getFloat("r"), c.getFloat("g"), c.getFloat("b"));
+    Color color = Color(c.getReal("r"), c.getReal("g"), c.getReal("b"));
     sprite.color = color;
 }
 
@@ -124,7 +124,7 @@ private void _setSpriteAlpha(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    sprite.alpha = call.getFloat(1);
+    sprite.alpha = call.getReal(1);
 }
 
 private void _setSpriteSize(GrCall call) {
@@ -133,7 +133,7 @@ private void _setSpriteSize(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    sprite.size = Vec2f(call.getFloat(1), call.getFloat(2));
+    sprite.size = Vec2f(call.getReal(1), call.getReal(2));
 }
 
 private void _getSpriteSize(GrCall call) {
@@ -142,8 +142,8 @@ private void _getSpriteSize(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    call.setFloat(sprite.size.x);
-    call.setFloat(sprite.size.y);
+    call.setReal(sprite.size.x);
+    call.setReal(sprite.size.y);
 }
 
 private void _getSpriteWidth(GrCall call) {
@@ -152,7 +152,7 @@ private void _getSpriteWidth(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    call.setFloat(sprite.size.x);
+    call.setReal(sprite.size.x);
 }
 
 private void _getSpriteHeight(GrCall call) {
@@ -161,7 +161,7 @@ private void _getSpriteHeight(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    call.setFloat(sprite.size.y);
+    call.setReal(sprite.size.y);
 }
 
 private void _setSpriteScale(GrCall call) {
@@ -170,7 +170,7 @@ private void _setSpriteScale(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    sprite.scale = Vec2f(call.getFloat(1), call.getFloat(2));
+    sprite.scale = Vec2f(call.getReal(1), call.getReal(2));
 }
 
 private void _getSpriteScale(GrCall call) {
@@ -179,8 +179,8 @@ private void _getSpriteScale(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    call.setFloat(sprite.scale.x);
-    call.setFloat(sprite.scale.y);
+    call.setReal(sprite.scale.x);
+    call.setReal(sprite.scale.y);
 }
 
 private void _setSpriteFlip(GrCall call) {
@@ -228,7 +228,7 @@ private void _spriteFit(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    sprite.fit(Vec2f(call.getFloat(1), call.getFloat(2)));
+    sprite.fit(Vec2f(call.getReal(1), call.getReal(2)));
 }
 
 private void _spriteContain(GrCall call) {
@@ -237,7 +237,7 @@ private void _spriteContain(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    sprite.contain(Vec2f(call.getFloat(1), call.getFloat(2)));
+    sprite.contain(Vec2f(call.getReal(1), call.getReal(2)));
 }
 
 private void _drawSprite(GrCall call) {
@@ -246,5 +246,5 @@ private void _drawSprite(GrCall call) {
         call.raise("Null parameter");
         return;
     }
-    sprite.draw(Vec2f(call.getFloat(1), call.getFloat(2)));
+    sprite.draw(Vec2f(call.getReal(1), call.getReal(2)));
 }
